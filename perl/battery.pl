@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: battery.pl,v 1.4 2004-03-13 11:21:05 mitch Exp $
+# $Id: battery.pl,v 1.5 2004-06-12 16:38:05 mitch Exp $
 #
 # Show laptop battery status
 #
@@ -27,9 +27,9 @@ while (my $line = <PROCBATTERY>) {
     chomp $line;
     if ($line =~ /^charging state:\s+discharg/) {
 	$state = 'DC';
-    } elsif ($line =~ /^present rate:\s+(\d+) mW/) {
+    } elsif ($line =~ /^present rate:\s+(\d+) m[AW]/) {
 	$rate = $1;
-    } elsif ($line =~ /^remaining capacity:\s+(\d+) mWh/) {
+    } elsif ($line =~ /^remaining capacity:\s+(\d+) m[AW]h/) {
 	$remain = $1;
     } elsif ($line =~ /^present voltage:\s+(\d+) mV/) {
 	$volt = $1;
@@ -42,7 +42,7 @@ open PROCMAX, '<', $procmax
     or die "can't open `$procmax': $1";
 while (my $line = <PROCMAX>) {
     chomp $line;
-    if ($line =~ /^last full capacity:\s+(\d+) mWh/) {
+    if ($line =~ /^last full capacity:\s+(\d+) m[AW]h/) {
 	$max = $1;
 	last;
     }
