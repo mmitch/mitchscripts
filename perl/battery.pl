@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: battery.pl,v 1.2 2004-03-06 17:27:46 mitch Exp $
+# $Id: battery.pl,v 1.3 2004-03-07 09:54:07 mitch Exp $
 #
 # Show laptop battery status
 #
@@ -7,12 +7,14 @@ use strict;
 
 # battery location
 my $procbattery = '/proc/acpi/battery/BAT0/state';
+my $procmax     = '/proc/acpi/battery/BAT0/info';
 
 # defaults
 my $state  = 'AC';
 my $rate   = 0;
 my $volt   = 0;
 my $remain = 0;
+my $max    = 0;
 
 # read data
 open PROCBATTERY, '<', $procbattery
@@ -32,12 +34,32 @@ while (my $line = <PROCBATTERY>) {
 close PROCBATTERY
     or die "can't close `$procbattery': $1";
 
+open PROCMAX, '<', $procmax
+    or die "can't open `$procmax': $1";
+while (my $line = <PROCMAX>) {
+    chomp $line;
+    if ($line =~ /^last full capacity:\s+(\d+) mWh/) {
+	$max = $1;
+	last;
+    }
+}
+close PROCMAX
+    or die "can't close `$procmax': $1";
+
 # print data
-printf "%s  %4.1fW  %4.1fV  %4.1fWh", $state, $rate/1000, $volt/1000, $remain/1000;
+my $percent = $remain / $max;
+my $p = sprintf "%.0f", $percent*10;
+my $battery = '#' x $p . '.' x (10 - $p );
+printf "%s", $state;
 if ($state eq 'DC') {
     my $calc = $remain / $rate;
     my $hours = int $calc;
     my $mins = int (($calc - $hours) * 60);
-    printf"  %d:%02dh left", $hours, $mins;
+    printf "  %d:%02dh left", $hours, $mins;
+} elsif ($state eq 'AC' and $rate > 0) {
+    my $calc = ($max - $remain) / $rate;
+    my $hours = int $calc;
+    my $mins = int (($calc - $hours) * 60);
+    printf "  %d:%02dh left", $hours, $mins;
 }
-print "\n";
+printf " \n[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000;
