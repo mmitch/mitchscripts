@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: battery.pl,v 1.3 2004-03-07 09:54:07 mitch Exp $
+# $Id: battery.pl,v 1.4 2004-03-13 11:21:05 mitch Exp $
 #
 # Show laptop battery status
 #
@@ -9,12 +9,16 @@ use strict;
 my $procbattery = '/proc/acpi/battery/BAT0/state';
 my $procmax     = '/proc/acpi/battery/BAT0/info';
 
+# temperature information
+my $proctemp    = '/proc/acpi/thermal_zone/THM0/temperature';
+
 # defaults
 my $state  = 'AC';
 my $rate   = 0;
 my $volt   = 0;
 my $remain = 0;
 my $max    = 0;
+my $temp   = 0;
 
 # read data
 open PROCBATTERY, '<', $procbattery
@@ -46,6 +50,18 @@ while (my $line = <PROCMAX>) {
 close PROCMAX
     or die "can't close `$procmax': $1";
 
+open PROCTEMP, '<', $proctemp
+    or die "can't open `$proctemp': $1";
+while (my $line = <PROCTEMP>) {
+    chomp $line;
+    if ($line =~ /^temperature:\s+(\d+) C/) {
+	$temp = $1;
+	last;
+    }
+}
+close PROCTEMP
+    or die "can't close `$proctemp': $1";
+
 # print data
 my $percent = $remain / $max;
 my $p = sprintf "%.0f", $percent*10;
@@ -62,4 +78,4 @@ if ($state eq 'DC') {
     my $mins = int (($calc - $hours) * 60);
     printf "  %d:%02dh left", $hours, $mins;
 }
-printf " \n[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000;
+printf " \n[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh  %2d°C\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000, $temp;
