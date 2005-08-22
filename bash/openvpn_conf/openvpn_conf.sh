@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: openvpn_conf.sh,v 1.4 2005-08-22 21:46:20 mitch Exp $
+# $Id: openvpn_conf.sh,v 1.5 2005-08-22 21:48:42 mitch Exp $
 
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
 
@@ -57,7 +57,7 @@ mkdir -p $CONFDIR_SRV $CONFDIR_CLT
 sed \
 -e 's/default_bits.*=.*$/default_bits = 2048/' \
 -e 's/private_key.*=.*$/private_key = ca.key/' \
--e 's/certificate.*=.*/certificate = ca.cert/' \
+-e 's/certificate.*=.*/certificate = ca.crt/' \
 -e 's/new_certs_dir.*=.*/new_certs_dir = ./' \
 -e 's/database.*=.*/database = index.txt/' \
 -e 's/serial.*=.*/serial = serial/' \
