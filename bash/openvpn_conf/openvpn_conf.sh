@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: openvpn_conf.sh,v 1.3 2005-08-22 20:49:49 mitch Exp $
+# $Id: openvpn_conf.sh,v 1.4 2005-08-22 21:46:20 mitch Exp $
 
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
 
@@ -74,7 +74,7 @@ echo creating CA...
 
     cd $TMPDIR
 
-    openssl req -new -x509 -nodes -keyout ca.key -out ca.cert -days $DAYS 3650 -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -new -x509 -nodes -keyout ca.key -out ca.crt -days $DAYS 3650 -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -86,15 +86,15 @@ root@$(hostname -f)
 .
 EOF
 
-    chmod 0600 ca.key ca.cert
-    openssl x509 -in ca.cert -noout -next_serial -out serial
+    chmod 0600 ca.key ca.crt
+    openssl x509 -in ca.crt -noout -next_serial -out serial
 
     touch index.txt
 
 )
 
-cp $TMPDIR/ca.key $CONFDIR_SRV
-cp $TMPDIR/ca.key $CONFDIR_CLT
+cp $TMPDIR/ca.crt $CONFDIR_SRV
+cp $TMPDIR/ca.crt $CONFDIR_CLT
 
 echo CA created
 
