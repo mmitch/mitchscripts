@@ -1,9 +1,9 @@
 #!/bin/bash
-# $Id: openvpn_conf.sh,v 1.5 2005-08-22 21:48:42 mitch Exp $
+# $Id: openvpn_conf.sh,v 1.6 2005-08-24 18:55:43 mitch Exp $
 
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
 
-# Generate a one time CA + server and client keye + OpenVPN
+# Generate a one time CA, server and client keys plus OpenVPN
 # configuration.  This gets you everything you need to set up a
 # point2point OpenVPN connection that connects two LANs to each other.
 # OpenSSL keyhandling is a hassle o_O
