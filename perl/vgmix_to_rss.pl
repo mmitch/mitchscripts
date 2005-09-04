@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: vgmix_to_rss.pl,v 1.1 2005-09-04 12:14:46 mitch Exp $
+# $Id: vgmix_to_rss.pl,v 1.2 2005-09-04 12:23:30 mitch Exp $
 #
 # VGMix.com HTTP to RSS gateway
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
@@ -7,6 +7,12 @@
 
 use strict;
 use POSIX qw(strftime);
+
+my $version   = ' vgmix_to_rss.pl $Revision: 1.2 $ ';
+$version =~ tr/$//d;
+$version =~ s/Revision: /v/;
+$version =~ s/^\s+//;
+$version =~ s/\s+$//;
 
 my $baseurl = 'http://www.vgmix.vom';
 my $line;
@@ -65,11 +71,28 @@ push @entries, $entry;
 
 # create output
 
+print <<"EOF";
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rss version="2.0"
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>VGMix Community News</title>
+    <link>http://www.vgmix.com</link>
+    <description>RSS gateway to http://www.vgmix.com</description>
+    <language>en</language>
+    <generator>$version</generator>
+EOF
+;
 foreach my $entry (@entries) {
-    print "\n----------------------------------------\n";
-    print "Title:\t$entry->{TITLE}\n";
-    print "URL:\t$entry->{URL}\n";
-    print "Date:\t$entry->{DATE}\n";
-    print "Text:\n$entry->{TEXT}\n";
+    print "    <item>\n";
+    print "      <title><![CDATA[$entry->{'TITLE'}]]</title>\n";
+    print "      <content:encoded>\n<![CDATA[$entry->{'TEXT'}]]></content:encoded>\n";
+    print "      <pubDate>$entry->{'DATE'}</pubDate>\n";
+    print "      <link>$entry->{'URL'}</link>\n";
+    print "    </item>\n";
 }
+
+print "  </channel>\n";
+print "</rss>\n";
 
