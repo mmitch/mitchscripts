@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: vgmix_to_rss.pl,v 1.2 2005-09-04 12:23:30 mitch Exp $
+# $Id: vgmix_to_rss.pl,v 1.3 2005-09-04 12:25:37 mitch Exp $
 #
 # VGMix.com HTTP to RSS gateway
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
@@ -8,7 +8,7 @@
 use strict;
 use POSIX qw(strftime);
 
-my $version   = ' vgmix_to_rss.pl $Revision: 1.2 $ ';
+my $version   = ' vgmix_to_rss.pl $Revision: 1.3 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -53,6 +53,8 @@ my $entry = process_newstitle($line);
 while ($line=<>) {
     last if $line =~ /forum_view.php\?forum_id=8/;
 
+    $line =~ s/\r//g;
+
     if ($line =~ /class="newstitle"/) {
 	push @entries, $entry;
 	$entry = process_newstitle($line);
@@ -86,7 +88,7 @@ EOF
 ;
 foreach my $entry (@entries) {
     print "    <item>\n";
-    print "      <title><![CDATA[$entry->{'TITLE'}]]</title>\n";
+    print "      <title><![CDATA[$entry->{'TITLE'}]]></title>\n";
     print "      <content:encoded>\n<![CDATA[$entry->{'TEXT'}]]></content:encoded>\n";
     print "      <pubDate>$entry->{'DATE'}</pubDate>\n";
     print "      <link>$entry->{'URL'}</link>\n";
