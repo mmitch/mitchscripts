@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: vgmix_to_rss.pl,v 1.5 2005-09-04 12:29:19 mitch Exp $
+# $Id: vgmix_to_rss.pl,v 1.6 2005-09-07 07:29:50 mitch Exp $
 #
 # VGMix.com HTTP to RSS gateway
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
@@ -8,7 +8,7 @@
 use strict;
 use POSIX qw(strftime);
 
-my $version   = ' vgmix_to_rss.pl $Revision: 1.5 $ ';
+my $version   = ' vgmix_to_rss.pl $Revision: 1.6 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -40,7 +40,7 @@ sub process_table
 	
 }
 
-# skip trailing garbage
+# skip to interesting part of page
 
 while ($line=<>) {
     last if $line =~ /class="newstitle"/;
