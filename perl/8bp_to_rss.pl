@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: 8bp_to_rss.pl,v 1.1 2005-10-19 16:45:23 mitch Exp $
+# $Id: 8bp_to_rss.pl,v 1.2 2005-10-19 17:34:33 mitch Exp $
 #
 # VGMix.com HTTP to RSS gateway
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
@@ -8,66 +8,41 @@
 use strict;
 use POSIX qw(strftime);
 
-my $version   = ' vgmix_to_rss.pl $Revision: 1.1 $ ';
+my $version   = ' vgmix_to_rss.pl $Revision: 1.2 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
 $version =~ s/\s+$//;
 
-my $baseurl = 'http://www.vgmix.com';
+my $baseurl = 'http://www.8bitpeoples.com';
 my $line;
 my @entries;
-
-sub process_newstitle
-{
-    my $title = shift;
-    $title =~ s|^.+<b>||;
-    $title =~s|</b>.+$||;
-    chomp $title;
-    return { TITLE => $title };
-}
-
-sub process_table
-{
-    my $entry = shift;
-    my $line = shift;
-    if ($line =~ /href="(topic_view.php\?topic_id=\d+)"/) {
-	$entry->{URL} = "$baseurl/$1";
-    }
-    if ($line =~ m| (\d+)/(\d+)/(\d+) @ (\d+):(\d+) ([AP]M) |) {
-	$entry->{DATE} = strftime("%a, %d %b %Y %H:%M:%S +0000", 0, $5, $4+( $6 eq 'P' ? 12 : 0), $2, $1-1, $3+100);
-    }
-	
-}
 
 # skip to interesting part of page
 
 while ($line=<>) {
-    last if $line =~ /class="newstitle"/;
+    last if $line =~ /FONT FACE="Arial"/;
 }
 
 # process entries
 
-my $entry = process_newstitle($line);
-
 while ($line=<>) {
-    last if $line =~ /forum_view.php\?forum_id=8/;
+    last unless $line =~ /^\s+(\d\d)\.(\d\d)\.(\d\d)/;
 
-    $line =~ s/\r//g;
+    my $entry = {DATE => strftime("%a, %d %b %Y %H:%M:%S +0000", 0, 0, 12, $2, $1-1, $3+100) };
 
-    if ($line =~ /class="newstitle"/) {
-	push @entries, $entry;
-	$entry = process_newstitle($line);
-    } elsif ($line =~ /^<table width="100%"/) {
-	process_table($entry, $line);
-	# skip next line!
-	$line=<>;
-    } else {
-	$entry->{TEXT} .= $line;
-    }
+    $line = <>;
+
+    $line =~ m|<a href="(.+)"><font color="\#ffffff"></font></a>|i;
+
+    $entry->{URL} = "$baseurl/$1";
+    $entry->{TITLE} = $2;
+
+    $line = <>;
+
+    push @entries, $entry;
+
 }
-
-push @entries, $entry;
 
 # finished processing input
 
@@ -79,9 +54,9 @@ print <<"EOF";
  xmlns:dc="http://purl.org/dc/elements/1.1/"
  xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>VGMix Community News</title>
-    <link>http://www.vgmix.com</link>
-    <description>RSS gateway to http://www.vgmix.com</description>
+    <title>8bitpeoples News</title>
+    <link>$baseurl</link>
+    <description>RSS gateway to $baseurl</description>
     <language>en</language>
     <generator>$version</generator>
 EOF
@@ -89,7 +64,7 @@ EOF
 foreach my $entry (@entries) {
     print "    <item>\n";
     print "      <title><![CDATA[$entry->{'TITLE'}]]></title>\n";
-    print "      <content:encoded>\n<![CDATA[$entry->{'TEXT'}]]></content:encoded>\n";
+    print "      <content:encoded>\n<![CDATA[$entry->{'TITLE'}]]></content:encoded>\n";
     print "      <pubDate>$entry->{'DATE'}</pubDate>\n";
     print "      <link>$entry->{'URL'}</link>\n";
     print "    </item>\n";
