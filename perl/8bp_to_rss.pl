@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: 8bp_to_rss.pl,v 1.2 2005-10-19 17:34:33 mitch Exp $
+# $Id: 8bp_to_rss.pl,v 1.3 2005-10-19 17:36:49 mitch Exp $
 #
 # VGMix.com HTTP to RSS gateway
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
@@ -8,7 +8,7 @@
 use strict;
 use POSIX qw(strftime);
 
-my $version   = ' vgmix_to_rss.pl $Revision: 1.2 $ ';
+my $version   = ' vgmix_to_rss.pl $Revision: 1.3 $ ';
 $version =~ tr/$//d;
 $version =~ s/Revision: /v/;
 $version =~ s/^\s+//;
@@ -33,7 +33,7 @@ while ($line=<>) {
 
     $line = <>;
 
-    $line =~ m|<a href="(.+)"><font color="\#ffffff"></font></a>|i;
+    $line =~ m|<a href="(.+)"><font color="\#ffffff">(.+)</font></a>|i;
 
     $entry->{URL} = "$baseurl/$1";
     $entry->{TITLE} = $2;
