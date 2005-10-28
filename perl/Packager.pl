@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: Packager.pl,v 1.2 2005-10-28 18:47:59 mitch Exp $
+# $Id: Packager.pl,v 1.3 2005-10-28 19:11:58 mitch Exp $
 use strict;
 
 my $entry = {};
@@ -35,13 +35,21 @@ while (my $line=<>) {
 
 print <<EOF;
 <html><head><title>cgarbs.de Debian package repository</title></head><body>
-<h1>Repository</h1>
+<h1>Contents</h1><ul>
+<li><a href="#1">Repository access</a></li>
+<li><a href="#2">Repository content</a></li>
+<li><a href="#3">Package overview</a></li>
+<li><a href="#4">Package details</a></li>
+</ul>
+<h1><a name="1">Repository access</a></h1>
 <p>The repository is available under:</p>
 <pre>
 deb     http://www.cgarbs.de/stuff ./
 deb-src http://www.cgarbs.de/stuff ./
 </pre>
-<h1>Intention and content</h1>
+<p>Put these lines in your <tt>/etc/apt/sources.list</tt> and you are ready to go.
+
+<h1><a name="2">Repository content</a></h1>
 <p>The repository contains different categories of software:</p><ul>
 
 <li>official packages for distribution<br>Here I offer packages of
@@ -91,7 +99,8 @@ href="mailto:debian\@cgarbs.de">contact me</a>.</p>
 <p>Packages for the amd64 architecture have been built under Debian
 unstable.  They might work under other branches as well (try to build
 from source), but don't expect them to.</p>
-<h1>Packages</h1>
+
+<h1><a name="3">Package overview</a></h1>
 <p>The following packages are currently available:</p><ul>
 EOF
     ;
@@ -101,7 +110,7 @@ foreach my $package (sort keys %{$packages}) {
 }
 print <<EOF;
 </ul>
-<h1>Details</h1>
+<h1><a name="4">Package details</a></h1>
 EOF
     ;
 foreach my $package (sort keys %{$packages}) {
@@ -118,7 +127,7 @@ EOF
 }
 my $date = `LANG=C date`;
 print <<"EOF";
-<br>
+<hr>
 <p align="right">generated $date by <a href="mailto:debian\@cgarbs.de">mitch</a></p>
 </body></html>
 EOF
