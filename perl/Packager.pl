@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: Packager.pl,v 1.1 2005-10-28 18:47:29 mitch Exp $
+# $Id: Packager.pl,v 1.2 2005-10-28 18:47:59 mitch Exp $
 use strict;
 
 my $entry = {};
@@ -75,7 +75,7 @@ more (e.g. <i>xmms-nas</i>).  When I still need them, I put them in
 here so they are available on my machines.  Perhaps you can use these,
 too.  Versions might be a bit outdated.</li>
 
-<li>others</br><i>libdbmdeep-perl</i> is my packaging of the DBM::Deep
+<li>others<br><i>libdbmdeep-perl</i> is my packaging of the DBM::Deep
 module because this module is needed by <i>p0rn-comfort</i>.
 <i>lm-batmon-acpi</i> is my patched version of the official
 <i>lm-batmon</i> package because my <a
