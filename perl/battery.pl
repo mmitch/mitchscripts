@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: battery.pl,v 1.5 2004-06-12 16:38:05 mitch Exp $
+# $Id: battery.pl,v 1.6 2005-10-30 00:52:24 mitch Exp $
 #
 # Show laptop battery status
 #
@@ -78,4 +78,4 @@ if ($state eq 'DC') {
     my $mins = int (($calc - $hours) * 60);
     printf "  %d:%02dh left", $hours, $mins;
 }
-printf " \n[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh  %2d°C\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000, $temp;
+printf " \n[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh  %2dÂ°C\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000, $temp;
