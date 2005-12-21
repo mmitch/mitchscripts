@@ -1,8 +1,24 @@
 #!/bin/bash
 #
-# $Id: beam.sh,v 1.2 2005-12-21 21:08:59 mitch Exp $
+# $Id: beam.sh,v 1.3 2005-12-21 21:53:59 mitch Exp $
 #
-# generate on-thy-fly-Torrents to copy data from A to B
+# generate on-thy-fly-torrents to copy data from A to B
+#
+# 2005 (c) by Christian Garbs <mitch@cgarbs.de>
+#
+# beam.sh <target> <file>
+#
+# depends:
+#  - ssh, scp (only local host)
+#  - bittornado (both hosts)
+#
+# recommends:
+#  - key authentication or ssh-agent
+#
+# TODO:
+#  - check free disk space on target
+#  - multicopy (multiple targets)
+#
 
 set -e
 
@@ -20,10 +36,16 @@ if [ -z "$TARGETHOST" ] ; then
 fi
 echo target "$TARGETHOST".
 
-if [ -z "$@" ] ; then
-    echo no FILES given.
+FILE="$1"
+shift
+if [ -z "$FILE" ] ; then
+    echo no FILE given.
     exit 1
 fi
+FILEPATH="$(dirname "$FILE")"
+FILENAME="$(basename "$FILE")"
+echo filename $FILENAME.
+echo path $FILEPATH.
 
 R_BEAMDIR=beamdir
 L_BEAMDIR=~/$R_BEAMDIR
@@ -43,12 +65,12 @@ I_SCREEN=$R_BEAMDIR/$BEAMID.in.sh
 I_SCREEN_LOCAL=$L_BEAMDIR/$BEAMID.in.sh
 
 echo -n creating torrent
-btmakemetafile "$TRACKER" "$@" --target $O_TORRENT > /dev/null
+(cd $FILEPATH; btmakemetafile "$TRACKER" "$FILENAME" --target $O_TORRENT > /dev/null)
 echo .
 
-echo "(btdownloadheadless $O_TORRENT & echo \$! > $O_PID) #| grep \"^seed.*1 seen recently\" | while read I; do kill \$(cat $O_PID); done; rm $O_PID $O_TORRENT $O_SCREEN $I_SCREEN_LOCAL" > $O_SCREEN
+echo "(cd $FILEPATH; btdownloadheadless $O_TORRENT & echo \$! > $O_PID) | grep -m1 \"^seed.*1 seen recently\"; kill \$(cat $O_PID); rm $O_PID $O_TORRENT $O_SCREEN $I_SCREEN_LOCAL" > $O_SCREEN
 chmod +x $O_SCREEN
-echo "(cd $R_BEAMDIR; btdownloadheadless $I_TORRENT & echo \$! > $I_PID) #| grep \"^time left.*Download Succeeded\" | while read I; do sleep 60; kill \$(cat $I_PID); done; rm $I_TORRENT $I_PID $I_SCREEN" > $I_SCREEN_LOCAL
+echo "(btdownloadheadless $I_TORRENT & echo \$! > $I_PID) | grep -m50 \"^time left.*Download Succeeded\"; kill \$(cat $I_PID); rm $I_TORRENT $I_PID $I_SCREEN" > $I_SCREEN_LOCAL
 chmod +x $I_SCREEN_LOCAL
 
 echo -n copying data
