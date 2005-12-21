@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Id: beam.sh,v 1.3 2005-12-21 21:53:59 mitch Exp $
+# $Id: beam.sh,v 1.4 2005-12-21 21:57:21 mitch Exp $
 #
 # generate on-thy-fly-torrents to copy data from A to B
 #
@@ -9,15 +9,16 @@
 # beam.sh <target> <file>
 #
 # depends:
-#  - ssh, scp (only local host)
 #  - bittornado (both hosts)
+#  - screen (both hosts)
+#  - ssh, scp (only source host)
 #
 # recommends:
 #  - key authentication or ssh-agent
 #
 # TODO:
 #  - check free disk space on target
-#  - multicopy (multiple targets)
+#  - multicopy (multiple target hosts)
 #
 
 set -e
