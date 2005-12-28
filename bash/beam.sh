@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# $Id: beam.sh,v 1.4 2005-12-21 21:57:21 mitch Exp $
+# $Id: beam.sh,v 1.5 2005-12-28 18:02:01 mitch Exp $
 #
 # generate on-thy-fly-torrents to copy data from A to B
 #
@@ -38,7 +38,6 @@ fi
 echo target "$TARGETHOST".
 
 FILE="$1"
-shift
 if [ -z "$FILE" ] ; then
     echo no FILE given.
     exit 1
