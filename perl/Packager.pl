@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: Packager.pl,v 1.3 2005-10-28 19:11:58 mitch Exp $
+# $Id: Packager.pl,v 1.4 2006-01-22 12:08:59 mitch Exp $
 use strict;
 
 my $entry = {};
@@ -34,7 +34,20 @@ while (my $line=<>) {
 }
 
 print <<EOF;
-<html><head><title>cgarbs.de Debian package repository</title></head><body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html><head>
+<title>cgarbs.de Debian package repository</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="shortcut icon" type="image/ico" href="pics/favicon.ico">
+<meta name="generator" content="Packager.pl">
+<meta name="robots" content="index,follow">
+<meta name="keywords" content="debian package repository">
+<meta name="author" content="Christian Garbs (debian\@cgarbs.de)">
+<meta name="language" content="en">
+<meta http-equiv="revisit-after" content="7 days">
+<meta http-equiv="content-language" content="en">
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-15">
+</head><body>
 <h1>Contents</h1><ul>
 <li><a href="#1">Repository access</a></li>
 <li><a href="#2">Repository content</a></li>
