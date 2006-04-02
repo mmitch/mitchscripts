@@ -1,20 +1,16 @@
 #!/usr/bin/perl -w
-# $Id: edictsort.pl,v 1.1 2006-04-02 19:27:42 mitch Exp $
+# $Id: edictsort.pl,v 1.2 2006-04-02 19:28:27 mitch Exp $
 # 2006 (c) by Christian Garbs <mitch@cgarbs.de>
 # Licensed under GNU GPL
 # 
-# convert edict to UTF8 and sort shortest first
+# sort entries from edict/wadokujt
 use strict;
 my %len;
-open EDICT, 'nkf -w /usr/share/edict/edict|' or die "can't open edict pipe: $!\n";
-while (my $line = <EDICT>) {
+while (my $line = <>) {
     if ($line =~ /^([^ \[]+)/) {
 	push @{$len{length $1}}, $line;
     }
 }
-close EDICT or die "can't close EDICT pipe: $!\n";
-open EDICT, '>', '/tmp/edict-utf8' or die "can't open /tmp/edict-utf8: $!\n";
 foreach my $len (sort {$a <=> $b} keys %len) {
-    print EDICT foreach @{$len{$len}};
+    print foreach @{$len{$len}};
 }
-close EDICT or die "can't close /tmp/edict-utf8: $!\n";
