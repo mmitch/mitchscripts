@@ -26,7 +26,7 @@
 
 <?
 
-$cachedir='/home/mitch/4chan';
+$cachedir='/home/mitch/pub/4chan';
 
 $find = popen("ls -t $cachedir", "r");
 if ($find) {
@@ -44,7 +44,7 @@ if ($find) {
 	fclose($idx);
       }
       echo "      <tr>\n";
-      echo "        <td><a href=\"file://$cachedir/{$entry['FILE']}\">{$entry['FILE']}</a> (<a href=\"{$entry['URL']}\">orig</a>)</td>\n";
+      echo "        <td><a href=\"/4chan/{$entry['FILE']}\">{$entry['FILE']}</a> (<a href=\"{$entry['URL']}\">orig</a>)</td>\n";
       echo "        <td>/{$entry['BOARD']}/</td>\n";
       echo "        <td>{$entry['NICK']}</td>\n";
       echo "        <td>{$entry['CHANNEL']}</td>\n";
@@ -59,6 +59,6 @@ if ($find) {
 
     <hr>
     <address><a href="mailto:mitch@cgarbs.de">Christian Garbs [Master Mitch]</a></address>
-    <p><small>$Revision: 1.1 $<br>$Date: 2006-01-07 19:19:11 $</small></p>
+    <p><small>$Revision: 1.2 $<br>$Date: 2006-06-12 21:14:59 $</small></p>
   </body>
 </html>
