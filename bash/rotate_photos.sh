@@ -1,5 +1,7 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.3 2006-12-12 19:16:13 mitch Exp $
+# $Id: rotate_photos.sh,v 1.4 2006-12-12 19:29:38 mitch Exp $
+
+set -e
 
 set_bg()
 {
@@ -9,9 +11,10 @@ set_bg()
 rotate()
 {
     (
-	jpegtran-mmx -copy all -rotate $1 -outfile NEW $FILE
-	touch -r $FILE NEW
-	mv NEW $FILE
+	TMP=NEW.$$
+	jpegtran-mmx -copy all -rotate $1 -outfile $TMP $FILE
+	touch -r $FILE $TMP
+	mv $TMP $FILE
     ) &
 }
 
