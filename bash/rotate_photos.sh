@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.1 2006-12-12 19:04:47 mitch Exp $
+# $Id: rotate_photos.sh,v 1.2 2006-12-12 19:13:14 mitch Exp $
 
 set_bg()
 {
@@ -9,7 +9,7 @@ set_bg()
 rotate()
 {
     (
-	jpegtran-mmx -rotate $1 -outfile NEW $FILE
+	jpegtran-mmx -copy all -rotate $1 -outfile NEW $FILE
 	touch -r $FILE NEW
 	mv NEW $FILE
     ) &
@@ -28,36 +28,45 @@ cat > .choices <<EOF
 2 counterclockwise 90°
 3 180°
 4 clockwise 90°
-5 quit
+5 again
+9 quit
 EOF
 
+NEXT=1
 for FILE in imgp????.jpg; do
 
-    set_bg $FILE
+    while [ $NEXT = 1 ]; do
     
-    ANSWER=$(dmenu -font "$FONT" -normbg $NORMBG -normfg $NORMFG -selbg $SELBG -selfg $SELFG < .choices)
-    echo $ANSWER
-    case "$ANSWER" in
+	set_bg $FILE
+	NEXT=1
 
-	1*)
-	    ;;
+	ANSWER=$(dmenu -font "$FONT" -normbg $NORMBG -normfg $NORMFG -selbg $SELBG -selfg $SELFG < .choices)
+	case "$ANSWER" in
+	    
+	    1*)
+		;;
+	    
+	    2*)
+		rotate 270
+		;;
+	    
+	    3*)
+		rotate 180
+		;;
+	    
+	    4*)
+		rotate 90
+		;;
+	    
+	    5*)
+		NEXT=0
+		;;
+	    9*)
+		break
+		;;
+	esac
 
-	2*)
-	    rotate 270
-	    ;;
-
-	3*)
-	    rotate 180
-	    ;;
-
-	4*)
-	    rotate 90
-	    ;;
-
-	5*)
-	    break
-	    ;;
-    esac
+    done
 
 done
 
