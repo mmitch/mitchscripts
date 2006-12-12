@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.2 2006-12-12 19:13:14 mitch Exp $
+# $Id: rotate_photos.sh,v 1.3 2006-12-12 19:16:13 mitch Exp $
 
 set_bg()
 {
@@ -32,10 +32,11 @@ cat > .choices <<EOF
 9 quit
 EOF
 
-NEXT=1
+QUIT=0
 for FILE in imgp????.jpg; do
 
-    while [ $NEXT = 1 ]; do
+    NEXT=0
+    while [ $NEXT = 0 ]; do
     
 	set_bg $FILE
 	NEXT=1
@@ -62,11 +63,19 @@ for FILE in imgp????.jpg; do
 		NEXT=0
 		;;
 	    9*)
-		break
+		QUIT=1
+		;;
+	    *)
+		NEXT=0
+		sleep 5
 		;;
 	esac
 
     done
+
+    if [ $QUIT = 1 ] ; then
+	break
+    fi
 
 done
 
