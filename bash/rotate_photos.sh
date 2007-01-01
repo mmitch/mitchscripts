@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.5 2007-01-01 21:18:04 mitch Exp $
+# $Id: rotate_photos.sh,v 1.6 2007-01-01 21:25:34 mitch Exp $
 
 set -e
 
@@ -83,3 +83,4 @@ for FILE in imgp????.jpg; do
 done
 
 killall -USR1 chbg
+rm -f .choices
