@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.4 2006-12-12 19:29:38 mitch Exp $
+# $Id: rotate_photos.sh,v 1.5 2007-01-01 21:18:04 mitch Exp $
 
 set -e
 
@@ -44,7 +44,7 @@ for FILE in imgp????.jpg; do
 	set_bg $FILE
 	NEXT=1
 
-	ANSWER=$(dmenu -font "$FONT" -normbg $NORMBG -normfg $NORMFG -selbg $SELBG -selfg $SELFG < .choices)
+	ANSWER=$(dmenu -fn "$FONT" -nb $NORMBG -nf $NORMFG -sb $SELBG -sf $SELFG < .choices)
 	case "$ANSWER" in
 	    
 	    1*)
