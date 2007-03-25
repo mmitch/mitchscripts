@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.4 2007-03-16 21:10:39 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.5 2007-03-25 17:58:32 mitch Exp $
 
 set -e
 
@@ -25,9 +25,9 @@ if [ $PICCOUNT -ge 1 ] ; then
 	COUNT=0
 	while read FILE; do
 	    if [ $(( $COUNT % 5 )) = 0 ]; then
-		echo -n $COUNT
+		echo $COUNT
 	    else
-		echo -n "."
+		echo "."
 	    fi
 	    COUNT=$(( $COUNT + 1 ))
 	done
