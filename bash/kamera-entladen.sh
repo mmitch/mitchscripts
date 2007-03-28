@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.5 2007-03-25 17:58:32 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.6 2007-03-28 17:55:33 mitch Exp $
 
 set -e
 
@@ -21,18 +21,17 @@ mount $USBPATH
 PICCOUNT=$(find $PICPATH -type f | wc -l)
 if [ $PICCOUNT -ge 1 ] ; then
     echo "$PICCOUNT pictures to copy"
-    mv -v $PICPATH/* $SAVEPATH | fgrep --line-buffered -- '->' | (
-	COUNT=0
-	while read FILE; do
-	    if [ $(( $COUNT % 5 )) = 0 ]; then
-		echo $COUNT
-	    else
-		echo "."
-	    fi
-	    COUNT=$(( $COUNT + 1 ))
-	done
-	echo
-    )
+    COUNT=0
+    for FILE in $PICPATH/* ; do
+	mv $FILE $SAVEPATH/
+	if [ $(( $COUNT % 5 )) = 0 ]; then
+	    echo -n $COUNT
+	else
+	    echo -n "."
+	fi
+	COUNT=$(( $COUNT + 1 ))
+    done
+    echo
 else
     echo "nothing to copy"
     rmdir $SAVEPATH
