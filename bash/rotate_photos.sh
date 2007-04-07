@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.6 2007-01-01 21:25:34 mitch Exp $
+# $Id: rotate_photos.sh,v 1.7 2007-04-07 13:40:01 mitch Exp $
 
 set -e
 
@@ -26,7 +26,9 @@ SELFG="#00DF00"
 
 CONVERT="jpegtran-mmx"
 
-cat > .choices <<EOF
+CHOICES=/tmp/rotate_photos.choices
+
+cat > "${CHOICES}" <<EOF
 1 none
 2 counterclockwise 90°
 3 180°
@@ -44,7 +46,7 @@ for FILE in imgp????.jpg; do
 	set_bg $FILE
 	NEXT=1
 
-	ANSWER=$(dmenu -fn "$FONT" -nb $NORMBG -nf $NORMFG -sb $SELBG -sf $SELFG < .choices)
+	ANSWER=$(dmenu -fn "$FONT" -nb $NORMBG -nf $NORMFG -sb $SELBG -sf $SELFG < "${CHOICES}")
 	case "$ANSWER" in
 	    
 	    1*)
@@ -83,4 +85,4 @@ for FILE in imgp????.jpg; do
 done
 
 killall -USR1 chbg
-rm -f .choices
+rm -f "${CHOICES}"
