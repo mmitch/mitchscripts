@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: Packager.pl,v 1.4 2006-01-22 12:08:59 mitch Exp $
+# $Id: Packager.pl,v 1.5 2007-04-20 20:25:58 mitch Exp $
 use strict;
 
 my $entry = {};
@@ -112,6 +112,8 @@ href="mailto:debian\@cgarbs.de">contact me</a>.</p>
 <p>Packages for the amd64 architecture have been built under Debian
 unstable.  They might work under other branches as well (try to build
 from source), but don't expect them to.</p>
+
+<p align="right">--January 2006</p>
 
 <h1><a name="3">Package overview</a></h1>
 <p>The following packages are currently available:</p><ul>
