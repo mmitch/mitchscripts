@@ -1,0 +1,20 @@
+#!/bin/sh
+# $Id: downscript,v 1.1 2007-04-25 21:05:16 mitch Exp $
+# Params are:
+# tun_dev tun_mtu link_mtu ifconfig_local_ip ifconfig_remote_ip [init |
+# restart]
+
+tun_dev="$1" 
+tun_mtu="$2"
+link_mtu="$3"
+local_ip="$4"
+remote_ip="$5"
+cmd="$6"
+mss=$(($tun_mtu - 40))
+mssv6=$(($tun_mtu - 133))
+
+echo "$0: $@"
+
+ip link set "$tun_dev" down
+
+exit 0

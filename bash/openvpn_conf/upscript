@@ -1,0 +1,33 @@
+#!/bin/sh    
+# $Id: upscript,v 1.1 2007-04-25 21:04:47 mitch Exp $
+# Params are:
+# tun_dev tun_mtu link_mtu ifconfig_local_ip ifconfig_remote_ip [init | restart]   
+
+real_local_ip=192.168.0.104
+tun_dev="$1"
+tun_mtu="$2"
+link_mtu="$3"
+local_ip="$4"
+remote_ip="$5"
+cmd="$6"
+mss=$(($tun_mtu - 40))
+#mssv6=$(($tun_mtu - 133))
+#tunnel_name=`basename ${0%.up}`
+
+echo "$0: $@"
+
+ip -4 addr add "$local_ip" scope link peer "$remote_ip" dev "$tun_dev"
+ip -4 addr add "$real_local_ip" dev "$tun_dev"
+ip link set "$tun_dev" up
+
+# moved here from firewall.sh
+for ON in accept_redirects accept_source_route; do
+    FILE=/proc/sys/net/ipv4/conf/${tun_dev}/${ON}
+    [ -e ${FILE} ] && echo 1 > ${FILE}
+done
+for OFF in rp_filter log_martians; do
+    FILE=/proc/sys/net/ipv4/conf/${tun_dev}/${OFF}
+    [ -e ${FILE} ] && echo 0 > ${FILE}
+done
+
+exit 0
