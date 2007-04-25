@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: openvpn_conf.sh,v 1.7 2007-04-25 21:05:05 mitch Exp $
+# $Id: openvpn_conf.sh,v 1.8 2007-04-25 21:06:54 mitch Exp $
 
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
 
@@ -26,8 +26,6 @@ echo "client hostname?"
 read HOST_CLT
 echo "client ip?"
 read IP_CLT
-echo "client network? [e.g. 169.254.65.2]"
-read NET_CLT
 echo "client tun?"
 read TUN_CLT
 
