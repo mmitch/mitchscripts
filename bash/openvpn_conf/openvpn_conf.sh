@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: openvpn_conf.sh,v 1.6 2005-08-24 18:55:43 mitch Exp $
+# $Id: openvpn_conf.sh,v 1.7 2007-04-25 21:05:05 mitch Exp $
 
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
 
@@ -18,22 +18,16 @@ echo "port? [e.g. 1195]"
 read PORT
 echo "server hostname? [e.g. nukunuku.yamamaya.is-a-geek.net]"
 read HOST_SRV
-echo "server ip? [e.g. 192.168.8.1]"
+echo "server ip? [e.g. 169.254.65.1] (taken from BGP=65001)"
 read IP_SRV
-echo "server network? [e.g. 192.168.0.0]"
-read NET_SRV
-echo "server netmask? [e.g. 255.255.255.0]"
-read MASK_SRV
 echo "server tun? [e.g. tun2]"
 read TUN_SRV
 echo "client hostname?"
 read HOST_CLT
 echo "client ip?"
 read IP_CLT
-echo "client network? [e.g. 192.168.0.0]"
+echo "client network? [e.g. 169.254.65.2]"
 read NET_CLT
-echo "client netmask? [e.g. 255.255.255.0]"
-read MASK_CLT
 echo "client tun?"
 read TUN_CLT
 
@@ -186,6 +180,8 @@ echo client key built
 echo building server configuration
 
 cat > $CONF_SRV <<EOF
+#push "route $NET_SRV $MASK_SRV" 
+#route $NET_CLT $MASK_CLT
 #tun-ipv6
 ca      $COMBINED/ca.crt
 cert    $COMBINED/$HOST_SRV.crt
@@ -194,6 +190,7 @@ dh      $COMBINED/dh1024.pem
 dev $TUN_SRV
 float
 ifconfig $IP_SRV $IP_CLT
+ifconfig-noexec
 key-method 2
 persist-key
 persist-tun
@@ -201,13 +198,13 @@ ping 15
 ping-restart 300
 ping-timer-rem
 port $PORT
-push "route $NET_SRV $MASK_SRV" 
 remote $HOST_CLT
 resolv-retry infinite
-route $NET_CLT $MASK_CLT
 tls-server
 tun-mtu 1427
 verb 3
+up /etc/openvpn/upscript
+down /etc/openvpn/downscript
 EOF
 
 echo server configuration built
@@ -218,11 +215,13 @@ echo building client configuration
 
 cat > $CONF_CLT <<EOF
 #tun-ipv6
+#route $NET_SRV $MASK_SRV
 ca      $COMBINED/ca.crt
 cert    $COMBINED/$HOST_CLT.crt
 key     $COMBINED/$HOST_CLT.key
 dev $TUN_CLT
 ifconfig $IP_CLT $IP_SRV
+ifconfig-noexec
 key-method 2
 persist-key
 persist-tun
@@ -231,13 +230,25 @@ ping-restart 300
 ping-timer-rem
 port $PORT
 remote $HOST_SRV
-route $NET_SRV $MASK_SRV
 tls-client
 tun-mtu 1427
 verb 3
+up /etc/openvpn/upscript
+down /etc/openvpn/downscript
 EOF
 
 echo client configuration built
+
+##### up/downscripts
+
+echo distributing up-/downscripts
+
+install -m 755 upscript    $HOST_SRV/etc/openvpn/upscript
+install -m 755 upscript    $HOST_CLT/etc/openvpn/upscript
+install -m 755 downscript  $HOST_SRV/etc/openvpn/downscript
+install -m 755 downscript  $HOST_CLT/etc/openvpn/downscript
+
+echo up-/downscripts distributed
 
 ##### aufräumen
 
