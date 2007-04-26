@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.7 2007-04-07 13:40:01 mitch Exp $
+# $Id: rotate_photos.sh,v 1.8 2007-04-26 17:50:46 mitch Exp $
 
 set -e
 
@@ -12,7 +12,7 @@ rotate()
 {
     (
 	TMP=NEW.$$
-	jpegtran-mmx -copy all -rotate $1 -outfile $TMP $FILE
+	jpegtran -copy all -rotate $1 -outfile $TMP $FILE
 	touch -r $FILE $TMP
 	mv $TMP $FILE
     ) &
@@ -23,8 +23,6 @@ NORMBG="#004000"
 NORMFG="#00B000"
 SELBG="#006000"
 SELFG="#00DF00"
-
-CONVERT="jpegtran-mmx"
 
 CHOICES=/tmp/rotate_photos.choices
 
