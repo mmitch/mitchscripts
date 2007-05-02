@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: openvpn_conf.sh,v 1.8 2007-04-25 21:06:54 mitch Exp $
+# $Id: openvpn_conf.sh,v 1.9 2007-05-02 22:05:22 mitch Exp $
 
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
 
@@ -16,7 +16,7 @@ TMPDIR=$(mktemp -d)
 
 echo "port? [e.g. 1195]"
 read PORT
-echo "server hostname? [e.g. nukunuku.yamamaya.is-a-geek.net]"
+echo "server hostname? [e.g. ranmachan.dyndns.org]"
 read HOST_SRV
 echo "server ip? [e.g. 169.254.65.1] (taken from BGP=65001)"
 read IP_SRV
