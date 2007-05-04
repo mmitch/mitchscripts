@@ -1,5 +1,17 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.9 2007-05-04 18:30:15 mitch Exp $
+# $Id: rotate_photos.sh,v 1.10 2007-05-04 18:32:04 mitch Exp $
+
+# check for stuff we need
+CHECK_FOR()
+{
+    if [ ! -x "$(which $1)" ] ; then
+	echo "binary `$1' needed, but not found" 1>&2
+	exit 1
+    fi
+}
+CHECK_FOR chbg
+CHECK_FOR jpegtran
+CHECK_FOR dmenu
 
 set -e
 
