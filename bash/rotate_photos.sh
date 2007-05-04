@@ -1,11 +1,11 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.10 2007-05-04 18:32:04 mitch Exp $
+# $Id: rotate_photos.sh,v 1.11 2007-05-04 18:32:38 mitch Exp $
 
 # check for stuff we need
 CHECK_FOR()
 {
     if [ ! -x "$(which $1)" ] ; then
-	echo "binary `$1' needed, but not found" 1>&2
+	echo "binary \`$1' needed, but not found" 1>&2
 	exit 1
     fi
 }
