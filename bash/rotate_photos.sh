@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.8 2007-04-26 17:50:46 mitch Exp $
+# $Id: rotate_photos.sh,v 1.9 2007-05-04 18:30:15 mitch Exp $
 
 set -e
 
@@ -36,7 +36,7 @@ cat > "${CHOICES}" <<EOF
 EOF
 
 QUIT=0
-for FILE in imgp????.jpg; do
+for FILE in *.jpg *.JPG; do
 
     NEXT=0
     while [ $NEXT = 0 ]; do
