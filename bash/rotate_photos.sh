@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.11 2007-05-04 18:32:38 mitch Exp $
+# $Id: rotate_photos.sh,v 1.12 2007-05-04 18:35:47 mitch Exp $
 
 # check for stuff we need
 CHECK_FOR()
@@ -49,6 +49,8 @@ EOF
 
 QUIT=0
 for FILE in *.jpg *.JPG; do
+
+    [ -r $FILE ] || continue
 
     NEXT=0
     while [ $NEXT = 0 ]; do
