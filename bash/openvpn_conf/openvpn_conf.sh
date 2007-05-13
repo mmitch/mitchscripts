@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: openvpn_conf.sh,v 1.9 2007-05-02 22:05:22 mitch Exp $
+# $Id: openvpn_conf.sh,v 1.10 2007-05-13 10:24:01 mitch Exp $
 
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>
 
@@ -251,3 +251,11 @@ echo up-/downscripts distributed
 ##### aufräumen
 
 rm -r $TMPDIR
+
+##### HInweis
+
+echo
+echo REMEMBER TO CORRECTLY SET THE REAL GLOBAL IP IN UP/DOWNSCRIPT
+echo "(only relevant for the first time, the next tunnel can then"
+echo " use the existing script)"
+echo 
