@@ -1,5 +1,5 @@
 <?
-// $Id: 4chan.php,v 1.3 2006-06-13 12:49:39 mitch Exp $
+// $Id: 4chan.php,v 1.4 2007-05-17 13:07:48 mitch Exp $
 // cookie handling
 //if (isset($comic) && isset($id) && isset($tag)) {
 //  setcookie("lastVisited[$tag]", $id, time()+( 3600 * 24 * 365 * 5));
@@ -49,7 +49,7 @@ if ($find) {
 	$entry['CHAN'] = '4chan';
       }
       echo "      <tr>\n";
-      echo "        <td><a href=\"/4chan/{$entry['FILE']}\">{$entry['FILE']}</a> (<a href=\"{$entry['URL']}\">orig</a>)</td>\n";
+      echo "        <td><a href=\"/4chan/", rawurlencode($entry['FILE']), "\">{$entry['FILE']}</a> (<a href=\"{$entry['URL']}\">orig</a>)</td>\n";
       echo "        <td>{$entry['CHAN']}</td>\n";
       echo "        <td>/{$entry['BOARD']}/</td>\n";
       echo "        <td>{$entry['NICK']}</td>\n";
@@ -65,6 +65,6 @@ if ($find) {
 
     <hr>
     <address><a href="mailto:mitch@cgarbs.de">Christian Garbs [Master Mitch]</a></address>
-    <p><small>$Revision: 1.3 $<br>$Date: 2006-06-13 12:49:39 $</small></p>
+    <p><small>$Revision: 1.4 $<br>$Date: 2007-05-17 13:07:48 $</small></p>
   </body>
 </html>
