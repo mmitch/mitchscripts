@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.6 2007-03-28 17:55:33 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.7 2007-06-08 18:16:39 mitch Exp $
 
 set -e
 
@@ -30,6 +30,20 @@ if [ $PICCOUNT -ge 1 ] ; then
 	    echo -n "."
 	fi
 	COUNT=$(( $COUNT + 1 ))
+
+	# autogenerate thumbnails from RAWs
+
+	FILENAME=${FILE##*/}
+	if [[ $FILENAME == *.pef ]] ; then
+	    (
+		cd $SAVEPATH/
+		FILENAME=${FILENAME%%.pef}
+		dcraw -q 0 -h -T $FILENAME.pef
+		convert -scale 50% $FILENAME.tiff ${FILENAME}_thumb.jpg
+		rm $FILENAME.tiff
+	    ) &
+	fi
+
     done
     echo
 else
@@ -37,10 +51,13 @@ else
     rmdir $SAVEPATH
 fi
 
-echo finished
+echo copied
 
 sync
 umount $USBPATH
 eject $USBPATH || true
 
 echo unmounted
+
+wait
+echo finished
