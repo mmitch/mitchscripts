@@ -1,12 +1,15 @@
 #!/bin/bash
 #
-# $Id: update.sh,v 1.1 2007-06-11 19:39:45 mitch Exp $
+# $Id: update.sh,v 1.2 2007-06-11 21:36:16 mitch Exp $
 #
 # 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 # licensed under GNU GPL
 #
 # download www statistics from info.shuttle.de
 #
+
+# halt on error
+set -e
 
 # read user & password from text file (format: "user:passwd")
 read USERPASSWD < ./.userpasswd 
@@ -38,8 +41,13 @@ done \
 
 # unzip archives
 for ZIP in ./download/*.zip; do
-    unzip -joq ${ZIP} -d logs
+    unzip -joq ${ZIP} -d logs && rm ${ZIP}    
 done
 
 # call webalizer
-webalizer
+(
+    for LOG in ./logs/*; do
+	cat $LOG
+    done
+) \
+    | webalizer
