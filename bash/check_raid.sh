@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: check_raid.sh,v 1.2 2007-06-24 12:27:12 mitch Exp $
+# $Id: check_raid.sh,v 1.3 2007-06-26 21:58:16 mitch Exp $
 #
 # 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 # Licensed under GNU GPL 
@@ -23,11 +23,13 @@ abend()
 
 echo check >> /sys/block/$MD/md/sync_action
 
-while [ "$(cat /sys/block/$MD/md/sync_action)" != "idle" ] ; do
+STATUS=just_started
+while [ "$STATUS" != "idle" ] ; do
 	sleep 60
+	read STATUS < /sys/block/$MD/md/sync_action
 done
 
-ERRORS="$(cat /sys/block/$MD/md/mismatch_cnt)"
+read ERRORS < /sys/block/$MD/md/mismatch_cnt
 
 if [ "$ERRORS" -gt 0 ] ; then
 	(
