@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: check_raid.sh,v 1.3 2007-06-26 21:58:16 mitch Exp $
+# $Id: check_raid.sh,v 1.4 2007-06-26 22:32:01 mitch Exp $
 #
 # 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 # Licensed under GNU GPL 
@@ -21,6 +21,10 @@ abend()
 [ "$MD" ] || abend "usage: check_raid.sh <mdX>"
 [ -d /sys/block/$MD ] || abend "RAID device $MD does not exist"
 
+SWAPPRIO=$(grep ^/dev/$MD /proc/swaps | awk '{print $5}')
+
+[ $SWAPPRIO ] && swapoff /dev/$MD
+
 echo check >> /sys/block/$MD/md/sync_action
 
 STATUS=just_started
@@ -30,6 +34,8 @@ while [ "$STATUS" != "idle" ] ; do
 done
 
 read ERRORS < /sys/block/$MD/md/mismatch_cnt
+
+[ $SWAPPRIO ] && swapon -p $SWAPPRIO /dev/$MD
 
 if [ "$ERRORS" -gt 0 ] ; then
 	(
