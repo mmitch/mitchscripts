@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: edictsort.pl,v 1.2 2006-04-02 19:28:27 mitch Exp $
+# $Id: edictsort.pl,v 1.3 2007-07-11 18:56:21 mitch Exp $
 # 2006 (c) by Christian Garbs <mitch@cgarbs.de>
 # Licensed under GNU GPL
 # 
@@ -7,7 +7,7 @@
 use strict;
 my %len;
 while (my $line = <>) {
-    if ($line =~ /^([^ \[]+)/) {
+    if ($line =~ /^([^ \[;|]+)/) {
 	push @{$len{length $1}}, $line;
     }
 }
