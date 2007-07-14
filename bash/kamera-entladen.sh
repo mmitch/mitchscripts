@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.7 2007-06-08 18:16:39 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.8 2007-07-14 17:14:52 mitch Exp $
 
 set -e
 
@@ -35,6 +35,7 @@ if [ $PICCOUNT -ge 1 ] ; then
 
 	FILENAME=${FILE##*/}
 	if [[ $FILENAME == *.pef ]] ; then
+	    wait
 	    (
 		cd $SAVEPATH/
 		FILENAME=${FILENAME%%.pef}
