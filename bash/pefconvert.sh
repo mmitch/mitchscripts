@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: pefconvert.sh,v 1.1 2007-07-14 21:19:10 mitch Exp $
+# $Id: pefconvert.sh,v 1.2 2007-07-14 21:21:49 mitch Exp $
 #
 # mass convert Pentax RAWs (.pef) to jpeg/tiff/tiff16
 #
@@ -63,5 +63,5 @@ for FILE in *.pef; do
 
     esac
 	
-done
-# | backgrounder.pl $CPUS -
+done \
+| backgrounder.pl $CPUS -
