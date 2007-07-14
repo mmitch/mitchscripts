@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.12 2007-05-04 18:35:47 mitch Exp $
+# $Id: rotate_photos.sh,v 1.13 2007-07-14 19:46:50 mitch Exp $
 
 # check for stuff we need
 CHECK_FOR()
@@ -27,6 +27,15 @@ rotate()
 	jpegtran -copy all -rotate $1 -outfile $TMP $FILE
 	touch -r $FILE $TMP
 	mv $TMP $FILE
+	# check for thumbnails of RAW images
+	RAW=${FILE//_thumb.jpg/}
+	if [ -e ${RAW}.pef ] ; then
+	    ROTATEFILE=${RAW}.pef.rotation
+	    OLDROTATE=0
+	    [ -e $ROTATEFILE ] && OLDROTATE=$(< $ROTATEFILE) && rm $ROTATEFILE
+	    NEWROTATE=$(( $OLDROTATE + $1 ))
+	    [ $NEWROTATE != 0 ] && echo $NEWROTATE > $ROTATEFILE
+	fi
     ) &
 }
 
