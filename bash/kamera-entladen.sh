@@ -1,11 +1,23 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.10 2007-08-04 21:02:01 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.11 2007-08-04 21:03:10 mitch Exp $
 
 set -e
 
 USBPATH=/mnt/pentax
 PICPATH=$USBPATH/dcim/100pentx
 SAVE=/mnt/bilder/Fotos/more/upload_$(date +%Y%m%d)
+
+# check for stuff we need
+CHECK_FOR()
+{
+    if [ ! -x "$(which $1)" ] ; then
+        echo "binary \`$1' needed, but not found" 1>&2
+        exit 1
+    fi
+}
+CHECK_FOR dcraw
+CHECK_FOR exiftool
+
 
 SAVEPATH=$SAVE
 COUNT=
