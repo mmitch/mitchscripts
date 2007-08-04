@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.11 2007-08-04 21:03:10 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.12 2007-08-04 21:11:44 mitch Exp $
 
 set -e
 
@@ -52,7 +52,7 @@ if [ $PICCOUNT -ge 1 ] ; then
 		cd $SAVEPATH/
 		FILENAME=${FILENAME%%.pef}
 		dcraw -q 0 -h -c -T $FILENAME.pef | convert -scale 50% - ${FILENAME}_thumb.jpg
-		exiftool -q -TagsFromFile $FILENAME.pef -PreviewImage= -ThumbnailImage= -makernotes:all= ${FILENAME}_thumb.jpg
+		exiftool -q -overwrite_original -TagsFromFile $FILENAME.pef -PreviewImage= -ThumbnailImage= -makernotes:all= ${FILENAME}_thumb.jpg
 	    ) &
 	fi
 
