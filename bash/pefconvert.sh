@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: pefconvert.sh,v 1.2 2007-07-14 21:21:49 mitch Exp $
+# $Id: pefconvert.sh,v 1.3 2007-08-04 21:15:21 mitch Exp $
 #
 # mass convert Pentax RAWs (.pef) to jpeg/tiff/tiff16
 #
@@ -30,6 +30,19 @@ fi
 [ "$1" = '-t' ] && FORMAT=2
 [ "$1" = '-T' ] && FORMAT=3
 
+# check for stuff we need
+CHECK_FOR()
+{
+    if [ ! -x "$(which $1)" ] ; then
+        echo "binary \`$1' needed, but not found" 1>&2
+        exit 1
+    fi
+}
+CHECK_FOR convert
+CHECK_FOR dcraw
+CHECK_FOR exiftool
+
+
 # run how many parallel conversions?
 CPUS=$(grep ^processor /proc/cpuinfo | wc -l)
 
@@ -47,21 +60,24 @@ for FILE in *.pef; do
     case $FORMAT in
 
 	1)
-	    echo -n "dcraw -c -w -q 3 -t $FLIP \"$FILE\" | convert -quality 90 - \"${FILE%.pef}.jpg\""
-	    echo "&& touch -r \"$FILE\" \"${FILE%.pef}.jpg\""
+	    NEWFILE="${FILE%.pef}.jpg"
+	    echo -n " dcraw -c -w -q 3 -t $FLIP \"$FILE\" | convert -quality 90 - \"$NEWFILE\""
 	    ;;
 
 	2)
-	    echo -n "dcraw -c -w -q 3 -t $FLIP \"$FILE\" | convert -compress LZW - \"${FILE%.pef}.tiff\""
-	    echo "&& touch -r \"$FILE\" \"${FILE%.pef}.tiff\""
+	    NEWFILE="${FILE%.pef}.tiff"
+	    echo -n " dcraw -c -w -q 3 -t $FLIP \"$FILE\" | convert -compress LZW - \"$NEWFILE\" "
 	    ;;
 
 	3)
-	    echo -n "dcraw -c -w -q 3 -t $FLIP -4 -T \"$FILE\" | convert -compress LZW - \"${FILE%.pef}.tiff\""
-	    echo "&& touch -r \"$FILE\" \"${FILE%.pef}.tiff\""
+	    NEWFILE="${FILE%.pef}.tiff"
+	    echo -n "dcraw -c -w -q 3 -t $FLIP -4 -T \"$FILE\" | convert -compress LZW - \"$NEWFILE\""
 	    ;;
 
     esac
+
+    echo -n " && exiftool -q -overwrite_original -TagsFromFile \"$FILE\" -PreviewImage= -ThumbnailImage= -makernotes:all= \"$NEWFILE\""
+    echo    " && touch -r \"$FILE\" \"$NEWFILE\""
 	
 done \
 | backgrounder.pl $CPUS -
