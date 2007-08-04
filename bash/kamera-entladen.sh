@@ -1,9 +1,9 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.8 2007-07-14 17:14:52 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.9 2007-08-04 19:51:00 mitch Exp $
 
 set -e
 
-USBPATH=/mnt/usb_part
+USBPATH=/mnt/pentax
 PICPATH=$USBPATH/dcim/100pentx
 SAVE=/mnt/bilder/Fotos/more/upload_$(date +%Y%m%d)
 
