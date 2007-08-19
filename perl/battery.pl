@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: battery.pl,v 1.9 2007-08-19 16:44:04 mitch Exp $
+# $Id: battery.pl,v 1.10 2007-08-19 16:44:58 mitch Exp $
 #
 # Show laptop battery status
 #
@@ -119,7 +119,7 @@ if ($status) {
     printf "%s:%sh%s [%s] %.1fW %d°C [%s]\n",
     $hours,
     $mins,
-    ($state eq 'AC') ? '+' : '-',
+    ($state eq 'AC') ? ($rate > 0 ? '+' : ' ' ) : '-',
     $battery,
     $rate/1000,
     $temp,
