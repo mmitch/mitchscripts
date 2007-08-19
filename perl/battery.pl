@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-# $Id: battery.pl,v 1.7 2007-07-11 18:57:34 mitch Exp $
+# $Id: battery.pl,v 1.8 2007-08-19 16:43:25 mitch Exp $
 #
 # Show laptop battery status
 #
@@ -102,11 +102,16 @@ my ($calc, $hours, $mins);
 if ($state eq 'DC') {
     $calc = $remain / $rate;
     $hours = int $calc;
-    $mins = int (($calc - $hours) * 60);
-} elsif ($state eq 'AC' and $rate > 0) {
-    $calc = ($max - $remain) / $rate;
-    $hours = int $calc;
-    $mins = int (($calc - $hours) * 60);
+    $mins = sprintf '%02d', int (($calc - $hours) * 60);
+} elsif ($state eq 'AC') {
+    if ($rate > 0) {
+	$calc = ($max - $remain) / $rate;
+	$hours = int $calc;
+	$mins = sprintf '%02d', int (($calc - $hours) * 60);
+    } else {
+	$hours = '-';
+	$mins = '--';
+    }
 }
 
 # print data
@@ -120,7 +125,7 @@ if ($status) {
     $temp,
     ($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.';
 } else {
-    printf "%s  %d:%02dh left \n", $state, $hours, $mins;
+    printf "%s  %s:%sh left \n", $state, $hours, $mins;
     printf "[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh  %2d°C\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000, $temp;
     printf "cpu %s\n", ($curfreq == $minfreq) ? 'slow' : (($curfreq == $maxfreq) ? 'fast' : 'intermediate');
 }
