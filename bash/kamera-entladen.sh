@@ -1,11 +1,28 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.12 2007-08-04 21:11:44 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.13 2007-09-10 15:08:38 mitch Exp $
 
 set -e
 
+if [ "$1" == '-h' ] ; then
+    cat <<'EOF'
+kamera-entladen.sh [-h] [mountpoint target]
+  -h  prints this help
+
+version $Id: kamera-entladen.sh,v 1.13 2007-09-10 15:08:38 mitch Exp $
+EOF
+    exit 0;
+fi
+
 USBPATH=/mnt/pentax
-PICPATH=$USBPATH/dcim/100pentx
 SAVE=/mnt/bilder/Fotos/more/upload_$(date +%Y%m%d)
+
+if [ "$1" -a "$2" ] ; then
+    USBPATH="$1"
+    SAVE="$2"
+fi
+
+PICPATH=$USBPATH/dcim/100pentx
+
 
 # check for stuff we need
 CHECK_FOR()
