@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.13 2007-07-14 19:46:50 mitch Exp $
+# $Id: rotate_photos.sh,v 1.14 2007-09-16 16:23:18 mitch Exp $
 
 # check for stuff we need
 CHECK_FOR()
@@ -46,6 +46,8 @@ SELBG="#006000"
 SELFG="#00DF00"
 
 CHOICES=/tmp/rotate_photos.choices
+
+pidof floatbg && killall floatbg
 
 cat > "${CHOICES}" <<EOF
 1 none
