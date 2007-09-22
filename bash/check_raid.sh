@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: check_raid.sh,v 1.5 2007-09-20 18:05:58 lalufu Exp $
+# $Id: check_raid.sh,v 1.6 2007-09-22 12:48:19 mitch Exp $
 #
 # 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 # Licensed under GNU GPL 
@@ -39,7 +39,7 @@ read ERRORS < /sys/block/$MD/md/mismatch_cnt
 
 [ $SWAPPRIO ] && swapon -p $SWAPPRIO /dev/$MD
 
-if [ "$ERRORS" -ne "$CURCOUNT" ] ; then
+if [ "$ERRORS" -ne 0 ] ; then
 	(
 		date
 		echo "this is the RAID check on device $MD"
