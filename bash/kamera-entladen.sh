@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.13 2007-09-10 15:08:38 mitch Exp $
+# $Id: kamera-entladen.sh,v 1.14 2007-10-21 16:33:31 mitch Exp $
 
 set -e
 
@@ -8,7 +8,7 @@ if [ "$1" == '-h' ] ; then
 kamera-entladen.sh [-h] [mountpoint target]
   -h  prints this help
 
-version $Id: kamera-entladen.sh,v 1.13 2007-09-10 15:08:38 mitch Exp $
+version $Id: kamera-entladen.sh,v 1.14 2007-10-21 16:33:31 mitch Exp $
 EOF
     exit 0;
 fi
@@ -45,7 +45,7 @@ done
 mkdir $SAVEPATH
 
 echo saving at $SAVEPATH
-mount $USBPATH
+mount | grep " on $USBPATH " >/dev/null || mount $USBPATH 
 
 PICCOUNT=$(find $PICPATH -type f | wc -l)
 if [ $PICCOUNT -ge 1 ] ; then
