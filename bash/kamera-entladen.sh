@@ -39,6 +39,7 @@ CHECK_FOR exiftool
 SAVEPATH=$SAVE
 COUNT=
 while [ -e $SAVEPATH ] ; do
+    rmdir $SAVEPATH 2>/dev/null && break
     COUNT=$(( $COUNT + 1 ))
     SAVEPATH=${SAVE}_$(printf %02d $COUNT)
 done
