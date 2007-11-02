@@ -70,9 +70,11 @@ buildpem()
     # öffentlicher Teil
     sed -n -e '/-----BEGIN/{:l1 p; n; b l1}' $1.crt >  $1-public.pem
     sed -n -e '/-----BEGIN/{:l1 p; n; b l1}' ca.crt >> $1-public.pem
+    chmod 600 $1-public.pem
 
     # privater Teil
     cat $1.key $1-public.pem > $1-private.pem
+    chmod 600 $1-private.pem
 
 }
     
