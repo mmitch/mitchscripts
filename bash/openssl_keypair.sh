@@ -1,4 +1,5 @@
 #!/bin/bash
+# $Id: openvpn_conf.sh,v 1.10 2007-05-13 10:24:01 mitch Exp $
 
 # 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 
@@ -105,7 +106,7 @@ echo CA created
 
 echo creating DH...
 
-openssl dhparam -out dh1024.pem 1024
+openssl dhparam -out dh1024.pem 128
 chmod 600 dh1024.pem
 
 echo DH created
