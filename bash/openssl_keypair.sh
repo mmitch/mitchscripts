@@ -3,13 +3,13 @@
 
 # 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 
-# Generate a one time CA, server and client keys
+# Generate a one time CA and some signed keys
 # OpenSSL keyhandling is a hassle o_O
 
 set +e
 
 ## baut eine CA und signiert sie mit sich selbst
-sub buildca()
+buildca()
 {
     set +e
 
@@ -34,7 +34,7 @@ EOF
 
 
 ## baut einen Key und signiert ihn mit der CA
-sub buildkey()
+buildkey()
 {
     set +e
     
@@ -46,7 +46,7 @@ n/a
 .
 private
 .
-server OpenSSL key
+OpenSSL key $1
 root
 .
 .
@@ -64,7 +64,7 @@ EOF
 }
 
 ## baut Sammeldateien aus CA, private und public key
-sub buildpem()
+buildpem()
 {
 
     # öffentlicher Teil
@@ -106,7 +106,7 @@ echo CA created
 
 echo creating DH...
 
-openssl dhparam -out dh1024.pem 1024
+openssl dhparam -out dh1024.pem 128
 chmod 600 dh1024.pem
 
 echo DH created
@@ -129,9 +129,20 @@ buildpem two
 
 echo pems built
 
+##### cleanup
+
+echo cleaning up
+
+rm two.* one.* index.* ca.* serial* ????????????????.pem openssl.cnf dh1024.pem
+
+echo up cleant #sic! :-)
+
 ##### aufräumen
 
 echo results are in $TMPDIR
-echo copy server.pem + client-ca.pem to server
-echo copy client.pem + server-ca.pem to client
-echo run c_rehash on both systems
+# this really works!
+# server:
+#   $ stunnel -p ssl.*/one-private.pem -a ssl.* -A ssl.*/two-private.pem -f -d 8000 -r 80 -P /tmp/one.pid -v 3
+# client:
+#   $ stunnel -p ssl.*/two-private.pem -a ssl.* -A ssl.*/one-public.pem -f -r 8000 -c -P /tmp/two.pid -v 3
+
