@@ -106,7 +106,7 @@ echo CA created
 
 echo creating DH...
 
-openssl dhparam -out dh1024.pem 128
+openssl dhparam -out dh1024.pem 1024
 chmod 600 dh1024.pem
 
 echo DH created
