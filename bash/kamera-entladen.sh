@@ -17,8 +17,8 @@ USBPATH=/mnt/pentax
 SAVE=/mnt/bilder/Fotos/more/upload_$(date +%Y%m%d)
 
 if [ "$1" -a "$2" ] ; then
-    USBPATH="$1"
-    SAVE="$2"
+    USBPATH="${1%/}"
+    SAVE="${2%/}"
 fi
 
 PICPATH=$USBPATH/dcim/100pentx
