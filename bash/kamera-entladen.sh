@@ -21,8 +21,6 @@ if [ "$1" -a "$2" ] ; then
     SAVE="${2%/}"
 fi
 
-PICPATH=$USBPATH/dcim/100pentx
-
 
 # check for stuff we need
 CHECK_FOR()
@@ -48,12 +46,19 @@ mkdir $SAVEPATH
 echo saving at $SAVEPATH
 mount | grep " on $USBPATH " >/dev/null || mount $USBPATH 
 
+PICPATH=$USBPATH/dcim/100pentx
+if [ ! -d $PICPATH ] ; then
+    PICPATH=$USBPATH/DCIM/100PENTX
+fi
+
 PICCOUNT=$(find $PICPATH -type f | wc -l)
 if [ $PICCOUNT -ge 1 ] ; then
     echo "$PICCOUNT pictures to copy"
     COUNT=0
     for FILE in $PICPATH/* ; do
-	mv $FILE $SAVEPATH/
+	FILENAME=$(echo ${FILE##*/}|tr A-Z a-z)
+	mv $FILE $SAVEPATH/$FILENAME
+	chmod -x $SAVEPATH/$FILENAME
 	if [ $(( $COUNT % 5 )) = 0 ]; then
 	    echo -n $COUNT
 	else
@@ -63,7 +68,6 @@ if [ $PICCOUNT -ge 1 ] ; then
 
 	# autogenerate thumbnails from RAWs
 
-	FILENAME=${FILE##*/}
 	if [[ $FILENAME == *.pef ]] ; then
 	    wait
 	    (
