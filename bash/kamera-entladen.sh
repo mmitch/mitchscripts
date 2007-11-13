@@ -88,7 +88,7 @@ fi
 echo copied
 
 sync
-umount $USBPATH
+umount $USBPATH || pumount $USBPATH
 eject $USBPATH || true
 
 echo unmounted
