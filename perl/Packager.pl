@@ -60,7 +60,8 @@ print <<EOF;
 deb     http://www.cgarbs.de/stuff ./
 deb-src http://www.cgarbs.de/stuff ./
 </pre>
-<p>Put these lines in your <tt>/etc/apt/sources.list</tt> and you are ready to go.
+<p>Put these lines in your <tt>/etc/apt/sources.list</tt> and you are ready to go.<br>
+My repository key is available <a href="/gpg-key">here</a>.</p>
 
 <h1><a name="2">Repository content</a></h1>
 <p>The repository contains different categories of software:</p><ul>
