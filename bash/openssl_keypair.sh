@@ -67,7 +67,7 @@ EOF
 buildpem()
 {
 
-    # ˆffentlicher Teil
+    # √∂ffentlicher Teil
     sed -n -e '/-----BEGIN/{:l1 p; n; b l1}' $1.crt >  $1-public.pem
     sed -n -e '/-----BEGIN/{:l1 p; n; b l1}' ca.crt >> $1-public.pem
     chmod 600 $1-public.pem
@@ -139,7 +139,7 @@ rm two.* one.* index.* ca.* serial* ????????????????.pem openssl.cnf dh1024.pem
 
 echo up cleant #sic! :-)
 
-##### aufr‰umen
+##### aufr√§umen
 
 echo results are in $TMPDIR
 # this really works!
