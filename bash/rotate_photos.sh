@@ -17,24 +17,24 @@ set -e
 
 set_bg()
 {
-    chbg -once -mode smart -max_grow 100 -max_size 100 -scenario /home/mitch/download/xxx/pic/SORT/NAMED/.scenario $1
+    chbg -once -mode smart -max_grow 100 -max_size 100 -scenario /home/mitch/download/xxx/pic/SORT/NAMED/.scenario "$1"
 }
 
 rotate()
 {
     (
 	TMP=NEW.$$
-	jpegtran -copy all -rotate $1 -outfile $TMP $FILE
-	touch -r $FILE $TMP
-	mv $TMP $FILE
+	jpegtran -copy all -rotate "$1" -outfile $TMP "$FILE"
+	touch -r "$FILE" $TMP
+	mv $TMP "$FILE"
 	# check for thumbnails of RAW images
-	RAW=${FILE//_thumb.jpg/}
-	if [ -e ${RAW}.pef ] ; then
-	    ROTATEFILE=${RAW}.pef.rotation
+	RAW="${FILE//_thumb.jpg/}"
+	if [ -e "${RAW}.pef" ] ; then
+	    ROTATEFILE="${RAW}.pef.rotation"
 	    OLDROTATE=0
-	    [ -e $ROTATEFILE ] && OLDROTATE=$(< $ROTATEFILE) && rm $ROTATEFILE
+	    [ -e "$ROTATEFILE" ] && OLDROTATE=$(< "$ROTATEFILE") && rm "$ROTATEFILE"
 	    NEWROTATE=$(( $OLDROTATE + $1 ))
-	    [ $NEWROTATE != 0 ] && echo $NEWROTATE > $ROTATEFILE
+	    [ $NEWROTATE != 0 ] && echo $NEWROTATE > "$ROTATEFILE"
 	fi
     ) &
 }
@@ -61,12 +61,12 @@ EOF
 QUIT=0
 for FILE in *.jpg *.JPG; do
 
-    [ -r $FILE ] || continue
+    [ -r "$FILE" ] || continue
 
     NEXT=0
     while [ $NEXT = 0 ]; do
     
-	set_bg $FILE
+	set_bg "$FILE"
 	NEXT=1
 
 	ANSWER=$(dmenu -fn "$FONT" -nb $NORMBG -nf $NORMFG -sb $SELBG -sf $SELFG < "${CHOICES}")
