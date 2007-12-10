@@ -94,8 +94,8 @@ for FILE in *.pef; do
 		echo "i w3040 h2024 f0 Eb1 Eev1 Er1 Ra0 Rb0 Rc0 Rd0 Re0 Va1 Vb0 Vc0 Vd0 Vx0 Vy0 a0 b0 c0 d0 e0 g0 p0 r0 t0 v10.0 y0 Vm5 u10 n\"${NEWFILE}-${FLENGTH}-R.tif\""
 		echo "i w3040 h2024 f0 Eb1 Eev0 Er1 Ra0 Rb0 Rc0 Rd0 Re0 Va1 Vb0 Vc0 Vd0 Vx0 Vy0 a0 b0 c0 d0 e0 g0 p0 r0 t0 v10.0 y0 Vm5 u10 n\"${NEWFILE}-${FLENGTH}-G.tif\""
 		echo "i w3040 h2024 f0 Eb1 Eev0 Er1 Ra0 Rb0 Rc0 Rd0 Re0 Va1 Vb0 Vc0 Vd0 Vx0 Vy0 a0 b0 c0 d0 e0 g0 p0 r0 t0 v10.0 y0 Vm5 u10 n\"${NEWFILE}-${FLENGTH}-B.tif\""
-		echo 'v a0 b0 c0 p0 r0 y0 '
-		echo 'v a2 b2 c2 p2 r2 y2 '
+		echo 'v c0 v0 '
+		echo 'v c2 v2 '
 		echo 'v '
 ) > "${NEWFILE}-${FLENGTH}".pto
 
