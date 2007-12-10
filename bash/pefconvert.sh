@@ -80,12 +80,25 @@ for FILE in *.pef; do
 
 	10)
 	    NEWFILE="${FILE%.pef}"
-	    FLENGTH=$(exiftool "$FILE"  | grep -m 1 ^Focal\ Length | tr -cd 0-9.)
-	    echo -n " dcraw -c -w -q 3 -t $FLIP \"$FILE\" > \"$NEWFILE.tmp\" "
+	    FLENGTH=$(exiftool -FocalLength "$FILE" | tr -cd 0-9.)
+	    echo -n " dcraw -c -w -q 3 \"$FILE\" > \"$NEWFILE.tmp\" "
 	    echo -n " && convert \"$NEWFILE.tmp\" -channel RG -evaluate set 0 -compress LZW \"${NEWFILE}-${FLENGTH}-B.tif\" "
 	    echo -n " && convert \"$NEWFILE.tmp\" -channel GB -evaluate set 0 -compress LZW \"${NEWFILE}-${FLENGTH}-R.tif\" "
 	    echo -n " && convert \"$NEWFILE.tmp\" -channel BR -evaluate set 0 -compress LZW \"${NEWFILE}-${FLENGTH}-G.tif\" "
+	    echo -n " && exiftool -overwrite_original \"-FocalLength=${FLENGTH}\" \"${NEWFILE}-${FLENGTH}-\"?.tif "
 	    echo    " && rm \"$NEWFILE.tmp\" "
+
+	    (
+		echo 'p f2 w3032 h1819 v10  E1 R0 T n"TIFF c:NONE"'
+		echo 'm g1 i0 f0 m2 p0.00784314'
+		echo "i w3040 h2024 f0 Eb1 Eev1 Er1 Ra0 Rb0 Rc0 Rd0 Re0 Va1 Vb0 Vc0 Vd0 Vx0 Vy0 a0 b0 c0 d0 e0 g0 p0 r0 t0 v10.0 y0 Vm5 u10 n\"${NEWFILE}-${FLENGTH}-R.tif\""
+		echo "i w3040 h2024 f0 Eb1 Eev0 Er1 Ra0 Rb0 Rc0 Rd0 Re0 Va1 Vb0 Vc0 Vd0 Vx0 Vy0 a0 b0 c0 d0 e0 g0 p0 r0 t0 v10.0 y0 Vm5 u10 n\"${NEWFILE}-${FLENGTH}-G.tif\""
+		echo "i w3040 h2024 f0 Eb1 Eev0 Er1 Ra0 Rb0 Rc0 Rd0 Re0 Va1 Vb0 Vc0 Vd0 Vx0 Vy0 a0 b0 c0 d0 e0 g0 p0 r0 t0 v10.0 y0 Vm5 u10 n\"${NEWFILE}-${FLENGTH}-B.tif\""
+		echo 'v a0 b0 c0 p0 r0 y0 '
+		echo 'v a2 b2 c2 p2 r2 y2 '
+		echo 'v '
+) > "${NEWFILE}-${FLENGTH}".pto
+
 	    ;;
 
     esac
