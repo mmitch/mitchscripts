@@ -22,6 +22,8 @@ pefconvert.sh [-h|-j|-t|-T]
  -j  convert to JPEG (default)
  -t  convert to 8bit TIFF
  -T  convert to 16bit TIFF
+ -a  convert for chromatic abberation error calculation,
+     see http://hugin.sourceforge.net/tutorials/tca/en.shtml
 EOF
     exit 0
 fi
@@ -29,6 +31,7 @@ fi
 [ "$1" = '-j' ] && FORMAT=1
 [ "$1" = '-t' ] && FORMAT=2
 [ "$1" = '-T' ] && FORMAT=3
+[ "$1" = '-a' ] && FORMAT=10
 
 # check for stuff we need
 CHECK_FOR()
@@ -72,13 +75,25 @@ for FILE in *.pef; do
 
 	3)
 	    NEWFILE="${FILE%.pef}.tiff"
-	    echo -n "dcraw -c -w -q 3 -t $FLIP -4 -T \"$FILE\" | convert -compress LZW - \"$NEWFILE\""
+	    echo -n " dcraw -c -w -q 3 -t $FLIP -4 -T \"$FILE\" | convert -compress LZW - \"$NEWFILE\""
+	    ;;
+
+	10)
+	    NEWFILE="${FILE%.pef}"
+	    FLENGTH=$(exiftool "$FILE"  | grep -m 1 ^Focal\ Length | tr -cd 0-9.)
+	    echo -n " dcraw -c -w -q 3 -t $FLIP \"$FILE\" > \"$NEWFILE.tmp\" "
+	    echo -n " && convert \"$NEWFILE.tmp\" -channel RG -evaluate set 0 -compress LZW \"${NEWFILE}-${FLENGTH}-B.tif\" "
+	    echo -n " && convert \"$NEWFILE.tmp\" -channel GB -evaluate set 0 -compress LZW \"${NEWFILE}-${FLENGTH}-R.tif\" "
+	    echo -n " && convert \"$NEWFILE.tmp\" -channel BR -evaluate set 0 -compress LZW \"${NEWFILE}-${FLENGTH}-G.tif\" "
+	    echo    " && rm \"$NEWFILE.tmp\" "
 	    ;;
 
     esac
 
-    echo -n " && exiftool -q -overwrite_original -TagsFromFile \"$FILE\" -PreviewImage= -ThumbnailImage= -makernotes:all= \"$NEWFILE\""
-    echo    " && touch -r \"$FILE\" \"$NEWFILE\""
+    if [ $FORMAT -lt 10 ] ; then
+	echo -n " && exiftool -q -overwrite_original -TagsFromFile \"$FILE\" -PreviewImage= -ThumbnailImage= -makernotes:all= \"$NEWFILE\""
+	echo    " && touch -r \"$FILE\" \"$NEWFILE\""
+    fi
 	
 done \
 | backgrounder.pl $CPUS -
