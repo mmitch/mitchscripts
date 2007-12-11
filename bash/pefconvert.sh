@@ -48,7 +48,7 @@ CHECK_FOR exiftool
 
 
 # run how many parallel conversions?
-CPUS=$(grep ^processor /proc/cpuinfo | wc -l)
+CPUS=$(( $(grep ^processor /proc/cpuinfo | wc -l) + 1 ))
 
 # read all files
 for FILE in *.pef; do
