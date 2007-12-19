@@ -1,5 +1,4 @@
 #!/bin/bash
-# $Id: kamera-entladen.sh,v 1.14 2007-10-21 16:33:31 mitch Exp $
 
 set -e
 
@@ -7,8 +6,6 @@ if [ "$1" == '-h' ] ; then
     cat <<'EOF'
 kamera-entladen.sh [-h] [mountpoint target]
   -h  prints this help
-
-version $Id: kamera-entladen.sh,v 1.14 2007-10-21 16:33:31 mitch Exp $
 EOF
     exit 0;
 fi
