@@ -10,6 +10,7 @@
 # - backgrounder.pl from www.cgarbs.de
 # - dcraw
 # - convert from imagemagick
+# - exiftool
 
 # default values
 FORMAT=1
