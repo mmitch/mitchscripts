@@ -21,6 +21,7 @@ if [ "$1" = '-h' ] ; then
 pefconvert.sh [-h|-j|-t|-T]
  -h  help
  -j  convert to JPEG (default)
+ -J  convert to JPEG thumbnail
  -t  convert to 8bit TIFF
  -T  convert to 16bit TIFF
  -a  convert for chromatic abberation error calculation,
@@ -30,8 +31,9 @@ EOF
 fi
 
 [ "$1" = '-j' ] && FORMAT=1
-[ "$1" = '-t' ] && FORMAT=2
-[ "$1" = '-T' ] && FORMAT=3
+[ "$1" = '-J' ] && FORMAT=2
+[ "$1" = '-t' ] && FORMAT=3
+[ "$1" = '-T' ] && FORMAT=4
 [ "$1" = '-a' ] && FORMAT=10
 
 # check for stuff we need
@@ -70,11 +72,16 @@ for FILE in *.pef; do
 	    ;;
 
 	2)
+	    NEWFILE="${FILE%.pef}_thumb.jpg"
+	    echo -n "dcraw -q 0 -h -c -T -t $FLIP \"$FILE\" | convert -scale 50% - \"$NEWFILE\""
+	    ;;
+
+	3)
 	    NEWFILE="${FILE%.pef}.tiff"
 	    echo -n " dcraw -c -w -q 3 -t $FLIP \"$FILE\" | convert -compress LZW - \"$NEWFILE\" "
 	    ;;
 
-	3)
+	4)
 	    NEWFILE="${FILE%.pef}.tiff"
 	    echo -n " dcraw -c -w -q 3 -t $FLIP -4 -T \"$FILE\" | convert -compress LZW - \"$NEWFILE\""
 	    ;;
