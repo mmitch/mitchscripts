@@ -1,5 +1,4 @@
 #!/bin/bash
-# $Id: pefconvert.sh,v 1.4 2007-08-11 15:47:34 mitch Exp $
 #
 # mass convert Pentax RAWs (.pef) to jpeg/tiff/tiff16
 #

@@ -1,7 +1,5 @@
 #!/bin/bash
 #
-# $Id: beam.sh,v 1.6 2005-12-28 18:02:40 mitch Exp $
-#
 # generate on-thy-fly-torrents to copy data from A to B
 #
 # 2005 (c) by Christian Garbs <mitch@cgarbs.de>

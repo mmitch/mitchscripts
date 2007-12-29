@@ -1,5 +1,4 @@
 #!/bin/bash
-# $Id: check_raid.sh,v 1.6 2007-09-22 12:48:19 mitch Exp $
 #
 # 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 # Licensed under GNU GPL 

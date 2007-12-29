@@ -1,5 +1,4 @@
 #!/bin/bash
-# $Id: openvpn_conf.sh,v 1.10 2007-05-13 10:24:01 mitch Exp $
 
 # 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 

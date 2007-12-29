@@ -1,5 +1,4 @@
 #!/bin/bash
-# $Id: rotate_photos.sh,v 1.14 2007-09-16 16:23:18 mitch Exp $
 
 # check for stuff we need
 CHECK_FOR()
