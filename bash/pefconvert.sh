@@ -17,7 +17,7 @@ FORMAT=1
 # commandline handling
 if [ "$1" = '-h' ] ; then
     cat <<EOF
-pefconvert.sh [-h|-j|-t|-T]
+pefconvert.sh [-h|-j|-t|-T] [image.pef] [...]
  -h  help
  -j  convert to JPEG (default)
  -J  convert to JPEG thumbnail
@@ -29,11 +29,14 @@ EOF
     exit 0
 fi
 
-[ "$1" = '-j' ] && FORMAT=1
-[ "$1" = '-J' ] && FORMAT=2
-[ "$1" = '-t' ] && FORMAT=3
-[ "$1" = '-T' ] && FORMAT=4
-[ "$1" = '-a' ] && FORMAT=10
+[ "$1" = '-j' ] && FORMAT=1  && shift
+[ "$1" = '-J' ] && FORMAT=1  && shift
+[ "$1" = '-t' ] && FORMAT=2  && shift
+[ "$1" = '-T' ] && FORMAT=3  && shift
+[ "$1" = '-a' ] && FORMAT=10 && shift
+
+FILES="${@}"
+FILES="${FILES:=*.pef}"
 
 # check for stuff we need
 CHECK_FOR()
@@ -53,7 +56,7 @@ CHECK_FOR exiftool
 CPUS=$(grep ^processor /proc/cpuinfo | wc -l)
 
 # read all files
-for FILE in *.pef; do
+for FILE in $FILES; do
     FLIP=0
     if [ -e "$FILE.rotation" ] ; then
 	case $(< "$FILE.rotation") in
