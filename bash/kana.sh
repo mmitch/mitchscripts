@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# 2006 (c) by Christian Garbs <mitch@cgarbs.de>
+# licensed under the GNU GPL v2 and no later versions
+
 cat <<EOF
 アイウエオ - あいうえお
 カキクケコ K かきくけこ

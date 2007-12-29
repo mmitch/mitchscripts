@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# 2007 (c) by Christian Garbs <mitch@cgarbs.de>
+# licensed under the GNU GPL v2 and no later versions
 
 set -e
 
