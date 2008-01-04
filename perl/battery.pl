@@ -116,14 +116,20 @@ if ($state eq 'DC') {
 
 # print data
 if ($status) {
-    printf "%s:%sh%s [%s] %.1fW %d°C [%s]\n",
-    $hours,
-    $mins,
-    ($state eq 'AC') ? ($rate > 0 ? '+' : ' ' ) : '-',
-    $battery,
-    $rate/1000,
-    $temp,
-    ($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.';
+    if ($rate > 0) {
+	printf "%s:%sh%s [%s] %.1fW %d°C [%s]\n",
+	$hours,
+	$mins,
+	($state eq 'AC') ? ($rate > 0 ? '+' : ' ' ) : '-',
+	$battery,
+	$rate/1000,
+	$temp,
+	($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.';
+    } else {
+	printf "%d°C [%s]\n",
+	$temp,
+	($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.';
+    }
 } else {
     printf "%s  %s:%sh left \n", $state, $hours, $mins;
     printf "[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh  %2d°C\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000, $temp;
