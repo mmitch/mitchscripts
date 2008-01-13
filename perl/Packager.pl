@@ -63,7 +63,10 @@ deb-src http://www.cgarbs.de/stuff ./
 My repository key is available <a href="/gpg-key">here</a>.</p>
 
 <h1><a name="2">Repository content</a></h1>
-<p>The repository contains different categories of software:</p><ul>
+
+<p>This repository contains different categories of software for the
+<i>i386</i>, <i>amd64</i> and <i>sparc</i> architectures (the focus
+being on i386):</p><ul>
 
 <li>official packages for distribution<br>Here I offer packages of
 software that is available on my <a
@@ -74,6 +77,7 @@ but when I want to test new features on different machines you might
 find release-candidates or even CVS snapshots inside.  Usually,
 everything will work.</li>
 
+
 <li>inofficial packages<br>Some packages are not yet to be officially
 released, but I already use them on multiple machines so I put them in
 here.  These packages might be finished but without proper
@@ -82,7 +86,10 @@ documentation or a page on my website (e.g. <i>grabcd-encode</i> and
 (e.g. <i>soundconvert</i> - see the note in the package description).
 You might try them, but don't expect them to be working as smoothly as
 those things that are listed on my <a
-href="http://www.cgarbs.de/download.en.html">homepage</a>.</li>
+href="http://www.cgarbs.de/download.en.html">homepage</a>.<br> Most of
+these packages live inside my <a
+href="http://www.cgarbs.de/cgi-bin/gitweb.cgi">git
+repository</a>.</li>
 
 
 <li>personal packages<br>As I am lazy, I sometimes transfer personal
@@ -91,29 +98,35 @@ setups via packages from one machine to another
 course you can install these packages but they might not be of much
 use to you.</li>
 
+
+<li>backports and updates<br>Some things that I do need on my systems
+are not yet available in Etch or on <a
+href="http://www.backports.org">backports.org</a>, so sometimes I
+build a backport by myself.  To distribute it to all my machines these
+packages are put here.  This ranges from simple repackagings for Etch
+to genuine updates to CVS snapshots or new releases (e.g. <i>hugin</i>
+or <i>qtpfsgui</i>).
+
+
 <li>old packages<br>Some packages once were in Debian but are not any
-more (e.g. <i>xmms-nas</i>).  When I still need them, I put them in
-here so they are available on my machines.  Perhaps you can use these,
-too.  Versions might be a bit outdated.</li>
+more.  When I still need them, I put them in here so they are
+available on my machines (e.g. <i>xmms-nas</i>).  And when I don't
+need them any more, I still keep them for whatever reasen
+(<i>v2strip</i>).  Perhaps you can use these, too.  Versions might be
+a bit outdated.</li>
+
 
 <li>others<br><i>libdbmdeep-perl</i> is my packaging of the DBM::Deep
-module because this module is needed by <i>p0rn-comfort</i>.
-<i>lm-batmon-acpi</i> is my patched version of the official
-<i>lm-batmon</i> package because my <a
-href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=270520">ACPI
-patch</a> has not yet been accepted into Debian.</li>
+module because this module is needed by <i>p0rn-comfort</i>.</li>
 
 </ul>
 
-<p>Packages for the all and i386 architecture have been built under
-Debian Sarge.  They might also work under testing/unstable, if not,
-try to build them from source.  If this fails, please <a
+<p>Currently, all packages should be packaged for Etch.  They might
+also work under testing/unstable, if not, try to build them from
+source.  If this fails, please <a
 href="mailto:debian\@cgarbs.de">contact me</a>.</p>
-<p>Packages for the amd64 architecture have been built under Debian
-unstable.  They might work under other branches as well (try to build
-from source), but don't expect them to.</p>
 
-<p align="right">--January 2006</p>
+<p align="right">--January 2008</p>
 
 <h1><a name="3">Package overview</a></h1>
 <p>The following packages are currently available:</p><ul>
