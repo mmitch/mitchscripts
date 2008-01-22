@@ -33,6 +33,11 @@ CHECK_FOR()
 CHECK_FOR dcraw
 CHECK_FOR exiftool
 
+# always clean up possible empty path
+remove_empty_savepath()
+{
+    rmdir "$SAVEPATH" 2>/dev/null || true
+}
 
 SAVEPATH=$SAVE
 COUNT=
@@ -41,6 +46,8 @@ while [ -e $SAVEPATH ] ; do
     SAVEPATH=${SAVE}_$(printf %02d $COUNT)
 done
 mkdir $SAVEPATH
+trap remove_empty_savepath EXIT
+
 
 echo saving at $SAVEPATH
 mount | grep " on $USBPATH " >/dev/null || mount $USBPATH 
@@ -81,7 +88,6 @@ if [ $PICCOUNT -ge 1 ] ; then
     echo
 else
     echo "nothing to copy"
-    rmdir $SAVEPATH
 fi
 
 echo copied
