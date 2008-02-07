@@ -1,0 +1,111 @@
+# to be sourced from ~/.alias
+
+# tin singletion (avoid messing up read articles)
+alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else tin; fi'
+
+# Trogdor!
+alias sbemail.exe='mutt'
+
+# list newest files first
+alias rls='ls -rt'
+
+
+# default start page in (e)links
+links()
+{
+	if [ -z "$*" ]; then
+		/usr/bin/elinks http://www.mitch.h.shuttle.de/mediawiki/index.php/Hauptseite
+	else
+		/usr/bin/elinks "$*"
+	fi
+}
+
+# dump all links on a website
+dumpurls()
+{
+	lynx -dump "$@" | cut -c 7- | grep ^http:
+}
+
+# enable Japanese input method
+JAP()
+{
+	(
+		XMODIFIERS="@im=kinput2"
+		LC_CTYPE=ja_JP.UTF-8
+		echo variables set
+		export XMODIFIERS
+		export LC_CTYPE
+		echo variables exported
+		echo -n starting kinput2
+		kinput2 -xim -canna -kinput &
+		echo -n .
+		sleep 1
+		echo -n .
+		sleep 1
+		echo .
+		echo switching editor
+		export EDITOR=jmacs
+		export VISUAL=jmacs
+		echo running command
+		if [ -z "$@" ]; then
+			x-terminal-emulator
+		else
+			"$@"
+		fi
+		echo command finished
+		killall kinput2
+		echo kinput2 killed
+	)
+}
+
+# quick www fetch (e.g. for sites that reject wget's useragent)
+CHAN()
+{
+	GET "$1" > "$(basename "$1")"
+}
+
+# snap a window
+SHOT()
+{
+	FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
+	xwd | convert - $FILE
+	echo $FILE
+}
+
+# snap the screen
+SHOT_ALL()
+{
+	FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
+	xwd -root | convert - $FILE
+	echo $FILE
+}
+
+# snap a window and publish on www
+SHOT_WEB()
+{
+	FILE=$(SHOT)
+	ari_temp $FILE
+	rm $FILE
+}
+
+# snap a window and publish locally
+SHOT_MITCH()
+{
+	FILE=$(SHOT)
+	mitch_temp $FILE
+	rm $FILE
+}
+
+# set window title on ssh connection
+ssh()
+{
+	xtermset -T "ssh $*"
+	/usr/bin/ssh "$@"
+	xtermset -T "$USER@$HOSTNAME"
+}
+
+# lookup inside WadokuJT
+edict()
+{
+	grep -i "$@" /home/mitch/WadokuJT.txt | /home/mitch/perl/edictsort.pl | sensible-pager
+}
