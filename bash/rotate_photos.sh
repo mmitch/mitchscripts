@@ -26,7 +26,7 @@ rotate()
 {
     (
 	TMP=NEW.$$
-	jpegtran -copy all -rotate "$1" -outfile $TMP "$FILE"
+	jpegtran -trim -copy all -rotate "$1" -outfile $TMP "$FILE"
 	touch -r "$FILE" $TMP
 	mv $TMP "$FILE"
 	# check for thumbnails of RAW images
