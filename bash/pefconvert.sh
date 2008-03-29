@@ -30,9 +30,9 @@ EOF
 fi
 
 [ "$1" = '-j' ] && FORMAT=1  && shift
-[ "$1" = '-J' ] && FORMAT=1  && shift
-[ "$1" = '-t' ] && FORMAT=2  && shift
-[ "$1" = '-T' ] && FORMAT=3  && shift
+[ "$1" = '-J' ] && FORMAT=2  && shift
+[ "$1" = '-t' ] && FORMAT=3  && shift
+[ "$1" = '-T' ] && FORMAT=4  && shift
 [ "$1" = '-a' ] && FORMAT=10 && shift
 
 FILES="${@}"
