@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# 2006-2007 (c) by Christian Garbs <mitch@cgarbs.de>
+# 2006-2008 (c) by Christian Garbs <mitch@cgarbs.de>
 # licensed under the GNU GPL v2 and no later versions
 
 # check for stuff we need
@@ -57,55 +57,65 @@ cat > "${CHOICES}" <<EOF
 3 180°
 4 clockwise 90°
 5 again
+6 back
 9 quit
 EOF
 
 QUIT=0
+declare -a FILES
 for FILE in *.jpg *.JPG; do
+    FILES+=($FILE)
+done
+
+CURRENT=0
+NEXT=0
+
+while [ "$QUIT" = 0 ] ; do
+
+    CURRENT=$(( $CURRENT + $NEXT ))
+
+    [ ${CURRENT} -gt ${#FILES[*]} ] && break
+    [ ${CURRENT} -lt 0 ] && break
+
+    FILE="${FILES[${CURRENT}]}"
+    NEXT=1
 
     [ -r "$FILE" ] || continue
 
-    NEXT=0
-    while [ $NEXT = 0 ]; do
-    
-	set_bg "$FILE"
-	NEXT=1
+    set_bg "$FILE"
 
-	ANSWER=$(dmenu -fn "$FONT" -nb $NORMBG -nf $NORMFG -sb $SELBG -sf $SELFG < "${CHOICES}")
-	case "$ANSWER" in
-	    
-	    1*)
-		;;
-	    
-	    2*)
-		rotate 270
-		;;
-	    
-	    3*)
-		rotate 180
-		;;
-	    
-	    4*)
-		rotate 90
-		;;
-	    
-	    5*)
-		NEXT=0
-		;;
-	    9*)
-		QUIT=1
-		;;
-	    *)
-		NEXT=0
-		sleep 5
-		;;
-	esac
-
-    done
-
-    if [ $QUIT = 1 ] ; then
-	break
-    fi
+    ANSWER=$(dmenu -fn "$FONT" -nb $NORMBG -nf $NORMFG -sb $SELBG -sf $SELFG < "${CHOICES}")
+    case "$ANSWER" in
+	
+	1*)
+	    ;;
+	
+	2*)
+	    rotate 270
+	    ;;
+	
+	3*)
+	    rotate 180
+	    ;;
+	
+	4*)
+	    rotate 90
+	    ;;
+	
+	5*)
+	    NEXT=0
+	    ;;
+	6*)
+	    NEXT=-1
+	    ;;
+	9*)
+	    QUIT=1
+	    ;;
+	*)
+	    NEXT=0
+	    sleep 5
+	    ;;
+    esac
 
 done
 
