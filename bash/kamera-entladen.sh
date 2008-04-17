@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# 2007-2008 (c) by Christian Garbs <mitch@cgarbs.de>
+# 2007 (c) by Christian Garbs <mitch@cgarbs.de>
 # licensed under the GNU GPL v2 and no later versions
 
 set -e
@@ -39,13 +39,13 @@ remove_empty_savepath()
     rmdir "$SAVEPATH" 2>/dev/null || true
 }
 
-SAVEPATH="$SAVE"
+SAVEPATH=$SAVE
 COUNT=
-while [ -e "$SAVEPATH" ] ; do
+while [ -e $SAVEPATH ] ; do
     COUNT=$(( $COUNT + 1 ))
-    SAVEPATH="${SAVE}_$(printf %02d $COUNT)"
+    SAVEPATH=${SAVE}_$(printf %02d $COUNT)
 done
-mkdir "$SAVEPATH"
+mkdir $SAVEPATH
 trap remove_empty_savepath EXIT
 
 
@@ -63,8 +63,8 @@ if [ $PICCOUNT -ge 1 ] ; then
     COUNT=0
     for FILE in $PICPATH/* ; do
 	FILENAME=$(echo ${FILE##*/}|tr A-Z a-z)
-	mv $FILE "$SAVEPATH/$FILENAME"
-	chmod -x "$SAVEPATH/$FILENAME"
+	mv $FILE $SAVEPATH/$FILENAME
+	chmod -x $SAVEPATH/$FILENAME
 	if [ $(( $COUNT % 5 )) = 0 ]; then
 	    echo -n $COUNT
 	else
@@ -77,7 +77,7 @@ if [ $PICCOUNT -ge 1 ] ; then
 	if [[ $FILENAME == *.pef ]] ; then
 	    wait
 	    (
-		cd "$SAVEPATH/"
+		cd $SAVEPATH/
 		FILENAME=${FILENAME%%.pef}
 		dcraw -q 0 -h -c -T $FILENAME.pef | convert -scale 50% - ${FILENAME}_thumb.jpg
 		exiftool -q -overwrite_original -TagsFromFile $FILENAME.pef -PreviewImage= -ThumbnailImage= -makernotes:all= ${FILENAME}_thumb.jpg
