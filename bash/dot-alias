@@ -6,7 +6,7 @@ alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else tin
 # Trogdor!
 alias sbemail.exe='mutt'
 
-# list newest files first
+# list newest files last
 alias rls='ls -rt'
 
 
