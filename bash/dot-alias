@@ -1,6 +1,6 @@
 # to be sourced from ~/.alias
 
-# tin singletion (avoid messing up read articles)
+# tin singleton (avoid messing up read articles)
 alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else tin; fi'
 
 # Trogdor!
