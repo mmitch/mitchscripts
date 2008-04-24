@@ -1,5 +1,10 @@
 #!/usr/bin/perl -w
-# $Id: Packager.pl,v 1.5 2007-04-20 20:25:58 mitch Exp $
+# 
+# 2005-2008 (c) by Christian Garbs <mitch@cgarbs.de>
+#
+# usage:
+# (zcat Packages.gz ; echo ~~~START~SOURCES~~~ ; zcat Sources.gz) | Packager.pl > some.html
+#
 use strict;
 
 my $entry = {};
