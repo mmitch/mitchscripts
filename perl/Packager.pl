@@ -4,14 +4,20 @@ use strict;
 
 my $entry = {};
 my $packages = {};
+my $sources = {};
 
-while (my $line=<>) {
+my $line;
+while ($line=<>) {
     chomp $line;
-    if ($line =~ /^\s*$/) {
+    if ($line =~ /^~~~START~SOURCES~~~$/) {
+	last;
+
+    } elsif ($line =~ /^\s*$/) {
 	
 	# add
 	my $key = $entry->{Package};
 	$packages->{$key}->{text} = $entry->{text};
+	$packages->{$key}->{source} = exists $entry->{Source} ? $entry->{Source} : $key;
 	push @{$packages->{$key}->{arch}}, $entry->{Architecture};
 	$entry->{Filename} =~ s:^.*/::;
 	push @{$packages->{$key}->{file}}, $entry->{Filename};
@@ -29,6 +35,32 @@ while (my $line=<>) {
 	my ($keyword, $value) = split /: /, $line, 2;
 	$entry->{$keyword} = $value;
 
+    }
+
+}
+
+if ($line and $line =~ /^~~~START~SOURCES~~~$/) {
+    $entry = {};
+    while ($line=<>) {
+	chomp $line;
+	if ($line =~ /^\s*$/) {
+	    
+	    # add
+	    my $key = $entry->{Package};
+	    $sources->{$key}->{files} = $entry->{files};
+	    
+	    $entry = {};
+	    
+	} elsif ($line =~ /^\s\S+\s\d+\s(\S+)$/) {
+	    
+	    push @{$entry->{files}}, $1;
+
+	} else {
+
+	    my ($keyword, $value) = split /: /, $line, 2;
+	    $entry->{$keyword} = $value;
+
+	}
     }
 
 }
@@ -145,6 +177,9 @@ foreach my $package (sort keys %{$packages}) {
     print "<h2><a name=\"$package\">$package</a></h2><ul>";
     foreach my $file (sort @{$packages->{$package}->{file}}) {
 	print "<li><a href=\"http://www.cgarbs.de/stuff/$file\">$file</a></li>\n";
+    }
+    foreach my $file (sort @{$sources->{$packages->{$package}->{source}}->{files}}) {
+	print "<li><small><a href=\"http://www.cgarbs.de/stuff/$file\">$file</a></small></li>\n";
     }
     print <<"EOF";
 </ul><pre>
