@@ -2,7 +2,7 @@
 #
 # mass convert Pentax RAWs (.pef) to jpeg/tiff/tiff16
 #
-# 2007 (c) by Christian Garbs <mitch@cgarbs.de>
+# 2007-2008 (c) by Christian Garbs <mitch@cgarbs.de>
 # licensed under the GNU GPL v2 and no later versions
 #
 # needs
