@@ -57,6 +57,12 @@ CPUS=$(grep ^processor /proc/cpuinfo | wc -l)
 
 # read all files
 for FILE in $FILES; do
+
+    if [ "$FILES" = '*.pef' ] ; then
+	echo "no input files (*.pef) found" 1>&2
+	exit 1
+    fi
+
     FLIP=0
     if [ -e "$FILE.rotation" ] ; then
 	case $(< "$FILE.rotation") in
