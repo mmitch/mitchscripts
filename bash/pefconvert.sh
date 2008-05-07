@@ -58,7 +58,7 @@ CPUS=$(grep ^processor /proc/cpuinfo | wc -l)
 # read all files
 for FILE in $FILES; do
 
-    if [ "$FILES" = '*.pef' ] ; then
+    if [ "$FILE" = '*.pef' ] ; then
 	echo "no input files (*.pef) found" 1>&2
 	exit 1
     fi
