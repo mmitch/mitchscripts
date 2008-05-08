@@ -9,6 +9,8 @@ alias sbemail.exe='mutt'
 # list newest files last
 alias rls='ls -rt'
 
+# never start irssi without screen again
+alias irssi='screen -d -R -S irssi -t irssi irssi'
 
 # default start page in (e)links
 links()
