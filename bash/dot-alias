@@ -12,6 +12,9 @@ alias rls='ls -rt'
 # copy EXIF timestamps to file timestamps
 alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate .'
 
+# never start irssi without screen again
+alias irssi='screen -d -R -S irssi -t irssi irssi'
+
 # default start page in (e)links
 links()
 {
