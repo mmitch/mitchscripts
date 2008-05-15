@@ -107,5 +107,5 @@ ssh()
 # lookup inside WadokuJT
 edict()
 {
-	grep -i "$@" /home/mitch/WadokuJT.txt | /home/mitch/perl/edictsort.pl | sensible-pager
+	grep -i "$@" /home/mitch/WadokuJT.txt | sensible-pager
 }
