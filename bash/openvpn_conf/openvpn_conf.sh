@@ -1,7 +1,7 @@
 #!/bin/bash
 # $Id: openvpn_conf.sh,v 1.10 2007-05-13 10:24:01 mitch Exp $
 
-# 2005 (c) by Christian Garbs <mitch@cgarbs.de>
+# 2005,2007-2008 (c) by Christian Garbs <mitch@cgarbs.de>
 
 # Generate a one time CA, server and client keys plus OpenVPN
 # configuration.  This gets you everything you need to set up a
