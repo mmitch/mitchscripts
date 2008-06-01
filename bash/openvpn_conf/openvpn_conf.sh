@@ -248,9 +248,22 @@ install -m 755 downscript  $HOST_CLT/etc/openvpn/downscript
 
 echo up-/downscripts distributed
 
+##### Ergebnisse einpacken
+
+echo building archives
+
+tar -czf ${HOST_SRV}.tar.gz $HOST_SRV
+tar -czf ${HOST_CLT}.tar.gz $HOST_CLT
+
+echo archives built
+
 ##### aufräumen
 
-rm -r $TMPDIR
+echo cleaning
+
+rm -r $TMPDIR $HOST_SRV $HOST_CLT
+
+echo clean
 
 ##### Hinweis
 
