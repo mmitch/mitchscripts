@@ -60,8 +60,9 @@ CREATE_BADPIXELS()
 # subdirectory.
 # Always use "dcraw -d -j -t 0" when locating bad pixels!!
 # Format is: pixel column, pixel row, UNIX time of death
-# 2008/06/01
-1023	587	1212271200
+# 2008/05/01
+1023	587	1209592800
+53	1187	1209592800
 EOF
 }
 
@@ -146,5 +147,5 @@ done \
 | backgrounder.pl $CPUS -
 
 # restore old .badpixels
-rm -f .badpixels
-[ -e .badpixels.$$ ] && mv .badpixels.$$ .badpixels 
+#rm -f .badpixels
+#[ -e .badpixels.$$ ] && mv .badpixels.$$ .badpixels 
