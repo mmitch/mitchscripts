@@ -252,7 +252,7 @@ echo up-/downscripts distributed
 
 rm -r $TMPDIR
 
-##### HInweis
+##### Hinweis
 
 echo
 echo REMEMBER TO CORRECTLY SET THE REAL GLOBAL IP IN UP/DOWNSCRIPT
