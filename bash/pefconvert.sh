@@ -51,9 +51,27 @@ CHECK_FOR convert
 CHECK_FOR dcraw
 CHECK_FOR exiftool
 
+# generate badpixels file
+CREATE_BADPIXELS()
+{
+    cat <<EOF
+# ~/.badpixels file for my Pentax *istDL
+# dcraw will use this file if run in the same directory, or in any
+# subdirectory.
+# Always use "dcraw -d -j -t 0" when locating bad pixels!!
+# Format is: pixel column, pixel row, UNIX time of death
+# 2008/06/01
+1023	587	1212271200
+EOF
+}
+
 
 # run how many parallel conversions?
 CPUS=$(grep ^processor /proc/cpuinfo | wc -l)
+
+# backup old .badpixels if present
+[ -e .badpixels ] && mv .badpixels .badpixels.$$
+CREATE_BADPIXELS > .badpixels
 
 # read all files
 for FILE in $FILES; do
@@ -126,3 +144,7 @@ for FILE in $FILES; do
 	
 done \
 | backgrounder.pl $CPUS -
+
+# restore old .badpixels
+rm -f .badpixels
+[ -e .badpixels.$$ ] && mv .badpixels.$$ .badpixels 
