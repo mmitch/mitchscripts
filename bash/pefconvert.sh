@@ -6,10 +6,10 @@
 # licensed under the GNU GPL v2 and no later versions
 #
 # needs
-# - backgrounder.pl from www.cgarbs.de
-# - dcraw
-# - convert from imagemagick
-# - exiftool
+# - backgrounder.pl from http://www.cgarbs.de/backgrounder.en.html
+# - dcraw           from http://www.cybercom.net/~dcoffin/dcraw/
+# - convert         from http://www.imagemagick.org/
+# - exiftool        from http://www.sno.phy.queensu.ca/~phil/exiftool/
 
 # default values
 FORMAT=1
