@@ -9,6 +9,8 @@ alias sbemail.exe='mutt'
 # list newest files last
 alias rls='ls -rt'
 
+# copy EXIF timestamps to file timestamps
+alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate .'
 
 # default start page in (e)links
 links()
@@ -109,3 +111,4 @@ edict()
 {
 	grep -i "$@" /home/mitch/WadokuJT.txt | sensible-pager
 }
+
