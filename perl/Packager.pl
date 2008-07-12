@@ -22,6 +22,7 @@ while ($line=<>) {
 	# add
 	my $key = $entry->{Package};
 	$packages->{$key}->{text} = $entry->{text};
+	$packages->{$key}->{description} = $entry->{Description};
 	$packages->{$key}->{source} = exists $entry->{Source} ? $entry->{Source} : $key;
 	push @{$packages->{$key}->{arch}}, $entry->{Architecture};
 	$entry->{Filename} =~ s:^.*/::;
@@ -179,7 +180,8 @@ print <<EOF;
 EOF
     ;
 foreach my $package (sort keys %{$packages}) {
-    print "<h2><a name=\"$package\">$package</a></h2><ul>";
+    print "<h2><a name=\"$package\">$package</a></h2>\n";
+    print "<p>$packages->{$package}->{description}</p><ul>";
     foreach my $file (sort @{$packages->{$package}->{file}}) {
 	print "<li><a href=\"http://www.cgarbs.de/stuff/$file\">$file</a></li>\n";
     }
