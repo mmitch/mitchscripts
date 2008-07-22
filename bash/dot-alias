@@ -31,6 +31,11 @@ dumpurls()
 	lynx -dump "$@" | cut -c 7- | grep ^http:
 }
 
+# dump all pictures from an imageboard thread
+boardget() {
+        dumpurls "$1" | egrep '\.(jpg|png|gif)$' | sort | uniq | wget -i-
+}
+
 # enable Japanese input method
 JAP()
 {
