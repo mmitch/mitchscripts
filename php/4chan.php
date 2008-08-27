@@ -64,7 +64,6 @@ if ($find) {
     </table>
 
     <hr>
-    <address><a href="mailto:mitch@cgarbs.de">Christian Garbs [Master Mitch]</a></address>
-    <p><small>$Revision: 1.4 $<br>$Date: 2007-05-17 13:07:48 $</small></p>
+    <address><small>brought to you by <a href="http://www.cgarbs.de/cgi-bin/gitweb.cgi/mitchscripts.git?a=blob;f=php/4chan.php;hb=HEAD">4chan.php</a> and <a href="http://www.cgarbs.de/cgi-bin/gitweb.cgi/irssi-scripts.git?a=blob;f=4chan.pl;hb=HEAD">4chan.pl</a></small></address>
   </body>
 </html>
