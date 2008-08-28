@@ -15,6 +15,9 @@ alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate .'
 # never start irssi without screen again
 alias irssi='screen -d -R -S irssi -t irssi irssi'
 
+# debsign all signable files
+alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'
+
 # default start page in (e)links
 links()
 {
