@@ -265,10 +265,3 @@ rm -r $TMPDIR $HOST_SRV $HOST_CLT
 
 echo clean
 
-##### Hinweis
-
-echo
-echo REMEMBER TO CORRECTLY SET THE REAL GLOBAL IP IN UP/DOWNSCRIPT
-echo "(only relevant for the first time, the next tunnel can then"
-echo " use the existing script)"
-echo 
