@@ -19,6 +19,7 @@ alias irssi='screen -d -R -S irssi -t irssi irssi'
 alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'
 
 # default start page in (e)links
+# $1: URL (optional)
 links()
 {
 	if [ -z "$*" ]; then
@@ -29,17 +30,20 @@ links()
 }
 
 # dump all links on a website
+# $1: URL
 dumpurls()
 {
 	lynx -dump "$@" | cut -c 7- | grep ^http:
 }
 
 # dump all pictures from an imageboard thread
+# $1: URL
 boardget() {
         dumpurls "$1" | egrep '\.(jpg|png|gif)$' | sort | uniq | wget -i-
 }
 
 # enable Japanese input method
+# $1: command to execute
 JAP()
 {
 	(
@@ -72,6 +76,7 @@ JAP()
 }
 
 # quick www fetch (e.g. for sites that reject wget's useragent)
+# $1: URL
 CHAN()
 {
 	GET "$1" > "$(basename "$1")"
@@ -118,8 +123,8 @@ ssh()
 }
 
 # lookup inside WadokuJT
+# $1: word
 edict()
 {
 	grep -i "$@" /home/mitch/WadokuJT.txt | sensible-pager
 }
-
