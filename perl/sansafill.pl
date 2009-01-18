@@ -19,7 +19,7 @@ EOF
     exit 1;
 }
 
-my ($mode, $source, $target, $free);
+my ($mode, $source, $target, $minfree);
 
 die_help() unless @ARGV > 0;
 
@@ -27,14 +27,18 @@ if ($ARGV[0] eq '--shuffle' and @ARGV == 2) {
     $mode = 1;
     $source = $ARGV[1];
     $target = $ARGV[1];
+    die "srcpath does not exist" unless -d $source;
 } elsif ($ARGV[0] eq '--fill' and @ARGV == 4) {
     $mode = 2;
     $source = $ARGV[1];
     $target = $ARGV[2];
-    $free = $ARGV[3];
+    $minfree = $ARGV[3];
 } else {
     die_help();
 }
+
+die "source path `$source' does not exist" unless -d $source;
+die "target path `$target' does not exist" unless -d $target;
 
 
 
@@ -68,10 +72,76 @@ use List::Util 'shuffle';
 ### do something
 #
 
+sub diskfree($) {
+    # poor man's df
+    # if you want it portable, use Filesys::Statvfs
+    my $dir = shift;
+    my $size;
+
+    open DF, "df -P $dir|" or warn "can't open df: $!";
+    my $line = <DF>; # skip header
+
+    if ( $line = <DF> ) {
+        if ($line =~ /\s(\d+)\s+\d{1,3}% (\/.*)$/) {
+            $size = $1;
+        }
+    } else {
+        $size = -1; #some error occurred
+    }
+
+    close DF or warn "can't close df: $!";
+    return $size;
+}
+
+if ($mode == 2) {
+    use File::Copy;
+    $|++;
+}
 my $filename = 'aaaaaaaa';
 
-foreach $file (@files) {
-    
-    
+foreach my $file (@files) {
 
+    if ($mode == 1) {
+
+	rename $file, $target.'/'.$filename.'.X.mp3';
+
+    } else {
+
+	my $newfile = $target.'/'.$filename.'.mp3';
+	while (-e $newfile) {
+	    $filename++;
+	    $newfile = $target.'/'.$filename.'.mp3';
+	}
+
+	my $free = diskfree $target;
+	last if $free < $minfree;
+
+	my ($sec,$min,$hour,undef) = localtime(time);
+	my $name = $file;
+	$name =~ s|^.*/||;
+	printf '[%02d:%02d:%02d] (%7dk) %s...', 
+	$hour, $min, $sec,
+	int $free,
+	$name
+	    ;
+
+	copy( $file, $newfile.'.tmp' ) or die "could not copy `$file': $!";
+	rename $newfile.'.tmp', $newfile;
+
+	print "OK\n";
+
+    }
+
+    $filename++;
+}
+
+if ($mode == 1) {
+    chdir $target;
+    opendir FILES, $target or die $!;
+    while (my $file = readdir FILES) {
+	if ($file =~ /^(.*)\.X\.mp3$/i and -f $file) {
+	    rename $file, $1.'.mp3';
+	}
+    }
+    closedir FILES or die $!;
 }
