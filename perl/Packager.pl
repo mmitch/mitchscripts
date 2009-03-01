@@ -53,13 +53,13 @@ if ($line and $line =~ /^~~~START~SOURCES~~~$/) {
 	    
 	    # add
 	    my $key = $entry->{Package};
-	    $sources->{$key}->{files} = $entry->{files};
+	    $sources->{$key}->{files} = [ keys %{$entry->{files}} ];
 	    
 	    $entry = {};
 	    
 	} elsif ($line =~ /^\s\S+\s\d+\s(\S+)$/) {
 	    
-	    push @{$entry->{files}}, $1;
+	    $entry->{files}->{$1}++;
 
 	} else {
 
