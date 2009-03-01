@@ -86,7 +86,7 @@ if [ $PICCOUNT -ge 1 ] ; then
 	    (
 		cd "$SAVEPATH/"
 		FILENAME=${FILENAME%%.pef}
-		dcraw -q 0 -h -c -T $FILENAME.pef 2>/dev/null | convert -scale 50% - ${FILENAME}_thumb.jpg 2>/dev/null && \
+		dcraw -q 0 -h -c -T $FILENAME.pef | convert -scale 50% - ${FILENAME}_thumb.jpg && \
 		exiftool -q -overwrite_original -TagsFromFile $FILENAME.pef -PreviewImage= -ThumbnailImage= -makernotes:all= ${FILENAME}_thumb.jpg
 	    ) &
 	fi
