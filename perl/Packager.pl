@@ -159,10 +159,12 @@ module because this module is needed by <i>p0rn-comfort</i>.</li>
 
 </ul>
 
-<p>Currently, all packages should be packaged for Etch.  They might
-also work under testing/unstable, if not, try to build them from
-source.  If this fails, please <a
-href="mailto:debian\@cgarbs.de">contact me</a>.</p>
+<p>Currently, I'm in a transition phase.  Some packages are already
+packaged for Lenny, others are still packaged for Etch.  When a
+package is officially available only from Lenny, I'll try to keep the
+Etch version around.  The packages might also work under
+testing/unstable, if not, try to build them from source.  If this
+fails, please <a href="mailto:debian\@cgarbs.de">contact me</a>.</p>
 
 <p align="right">--January 2008</p>
 
