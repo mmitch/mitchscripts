@@ -7,10 +7,17 @@ set -e
 
 if [ "$1" == '-h' ] ; then
     cat <<'EOF'
-kamera-entladen.sh [-h] [mountpoint target]
+kamera-entladen.sh [-h|-t] [mountpoint target]
   -h  prints this help
+  -t  generate thumbnails
 EOF
     exit 0;
+fi
+
+if [ "$1" == '-t' ] ; then
+    THUMBNAILS=yes
+else
+    THUMBNAILS=no
 fi
 
 USBPATH=/mnt/pentax
@@ -74,7 +81,7 @@ if [ $PICCOUNT -ge 1 ] ; then
 
 	# autogenerate thumbnails from RAWs
 
-	if [[ $FILENAME == *.pef ]] ; then
+	if [[ ( "$THUMBNAILS" = 'yes' ) && ( "$FILENAME" == *.pef) ]] ; then
 	    wait
 	    (
 		cd "$SAVEPATH/"
