@@ -3,7 +3,7 @@
 
 set -e
 
-SRC="${1:-/mnt/mp3/SANSA_STAGE/KWED}"
+SRC="${1}"
 MOUNT=/mnt/usb_part
 DIR=_random
 FREE=48000
@@ -16,6 +16,28 @@ count_dupes()
     echo OK
     DUPECOUNT=$(wc -l $DUPES | cut -d \  -f 1)
 }
+
+## choose source directory
+
+if [ ! "$SRC" ] ; then
+
+    DIR=/mnt/mp3/SANSA_STAGE
+    DEFAULT="$DIR"/KWED
+    ITEMS[0]="$DEFAULT"
+    ITEMS[1]=''
+
+    for FILE in "$DIR"/* ; do
+	[ -d "$FILE" ] || continue
+	[ "$FILE" = "$DEFAULT" ] && continue
+        ITEMS[${#ITEMS[*]}]="$FILE"
+        ITEMS[${#ITEMS[*]}]=''
+    done
+
+    SRC="$(dialog --stdout --menu "choose source directory" 0 0 0 "${ITEMS[@]}")"
+    
+    [ "$SRC" ] || exit 1
+fi
+
 
 ## setup
 
