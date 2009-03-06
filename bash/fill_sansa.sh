@@ -3,7 +3,7 @@
 
 set -e
 
-SRC="${1:-/mnt/mp3/SANSA_STAGE}"
+SRC="${1:-/mnt/mp3/SANSA_STAGE/KWED}"
 MOUNT=/mnt/usb_part
 DIR=_random
 FREE=48000
