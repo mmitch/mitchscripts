@@ -1,5 +1,9 @@
 # to be sourced from ~/.alias
 
+# no localized manpages
+LC_MESSAGES=C
+export LC_MESSAGES
+
 # tin singleton (avoid messing up read articles)
 alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else tin; fi'
 
