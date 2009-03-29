@@ -13,7 +13,7 @@ sub die_help()
     print STDERR << "EOF";
 usage:
     sansafill.pl --shuffle /path/to/shuffle
-    sansafill.pl --fill /source/path /target/path MB_free
+    sansafill.pl --fill /source/path /target/path kB_free
 EOF
     ;
     exit 1;
