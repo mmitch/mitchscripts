@@ -19,15 +19,22 @@ MSGWAIT=5
 
 WORKFILE="${MSGFILE}.work"
 
-# wait for messages
+# clean up old messages
+
+rm "$MSGFILE"
+
+# wait for new messages
 
 while sleep "$MSGWAIT"; do
     if [ -s "$MSGFILE" ] ; then
+
+	# process messages
 	mv "$MSGFILE" "$WORKFILE"
 	while read LINE; do
 	    echo "$LINE" | "$DZEN_BIN" -fg "$DZEN_FG" -bg "$DZEN_BG" -fn "$DZEN_FONT" -p "$DZEN_TIMEOUT"
 	done < "$WORKFILE"
 	rm "$WORKFILE"
+
     fi
 done
 
