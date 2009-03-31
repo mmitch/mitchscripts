@@ -10,9 +10,9 @@
 
 DZEN_BIN=/home/mitch/svn/dzen/dzen2
 DZEN_FONT='-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*'
-DZEN_FG=black
-DZEN_BG=gray
-DZEN_TIMEOUT=3
+DZEN_FG='#ccc'
+DZEN_BG='#222'
+DZEN_TIMEOUT=5
 
 MSGFILE=~/.notify
 MSGWAIT=5
