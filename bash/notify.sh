@@ -13,6 +13,7 @@ DZEN_FONT='-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*'
 DZEN_FG='#ccc'
 DZEN_BG='#222'
 DZEN_TIMEOUT=5
+DZEN_JUSTIFY=l
 
 MSGFILE=~/.notify
 MSGWAIT=5
@@ -31,7 +32,7 @@ while sleep "$MSGWAIT"; do
 	# process messages
 	mv "$MSGFILE" "$WORKFILE"
 	while read LINE; do
-	    echo "$LINE" | "$DZEN_BIN" -fg "$DZEN_FG" -bg "$DZEN_BG" -fn "$DZEN_FONT" -p "$DZEN_TIMEOUT"
+	    echo "$LINE" | "$DZEN_BIN" -fg "$DZEN_FG" -bg "$DZEN_BG" -fn "$DZEN_FONT" -p "$DZEN_TIMEOUT" -ta "$DZEN_JUSTIFY"
 	done < "$WORKFILE"
 	rm "$WORKFILE"
 
