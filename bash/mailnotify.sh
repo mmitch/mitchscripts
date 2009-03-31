@@ -22,7 +22,7 @@ tail -f ~/Mail/from | while read LINE; do
 	FOLDER="${FOLDER#/home/mitch/Mail/}"
 
 	if [ "$FOLDER" != 'spam' ] ; then
-	    echo "$FOLDER   %%   $FROM   %%   $SUBJECT" >> ~/.notify
+	    echo "   $FOLDER   %%   $FROM   %%   $SUBJECT" >> ~/.notify
 	fi
     fi
 
