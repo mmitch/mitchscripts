@@ -21,7 +21,7 @@ WORKFILE="${MSGFILE}.work"
 
 # clean up old messages
 
-rm "$MSGFILE"
+rm -f "$MSGFILE"
 
 # wait for new messages
 
