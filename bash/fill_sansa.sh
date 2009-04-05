@@ -5,7 +5,7 @@ set -e
 
 SRC="${1}"
 MOUNT=/mnt/usb_part
-DIR=_random
+STICKDIR=_random
 FREE=48000
 DUPES=/tmp/sansa_script_fdupes
 
@@ -53,9 +53,9 @@ fi
 
 ## do the work
 
-if [ -d $MOUNT/$DIR ] ; then
+if [ -d $MOUNT/$STICKDIR ] ; then
     echo source dir: $SRC
-    sansafill.pl --fill "$SRC" $MOUNT/$DIR $FREE
+    sansafill.pl --fill "$SRC" $MOUNT/$STICKDIR $FREE
     count_dupes
     while [ $DUPECOUNT -gt 0 ] ; do
 	echo $DUPECOUNT dupes
@@ -64,11 +64,11 @@ if [ -d $MOUNT/$DIR ] ; then
 		rm "$FILE"
 	    fi
 	done < $DUPES
-	sansafill.pl --fill "$SRC" $MOUNT/$DIR $FREE
+	sansafill.pl --fill "$SRC" $MOUNT/$STICKDIR $FREE
 	count_dupes
     done
 else
-    echo $MOUNT/$DIR not found, skipping
+    echo $MOUNT/$STICKDIR not found, skipping
 fi
 
 
