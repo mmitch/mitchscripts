@@ -115,6 +115,7 @@ foreach my $file (@files) {
 
 	my $free = diskfree $target;
 	last if $free < $minfree;
+	next if $free*1024 < (stat($file))[7];
 
 	my ($sec,$min,$hour,undef) = localtime(time);
 	my $name = $file;
