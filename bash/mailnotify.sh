@@ -21,7 +21,7 @@ tail -n 1 -f ~/Mail/from | while read LINE; do
 	FOLDER="${FOLDER%/new/*}"
 	FOLDER="${FOLDER#/home/mitch/Mail/}"
 
-	if [ "$FOLDER" != 'spam' -a "$FOLDER" != '/dev/null' ] ; then
+	if [[ ! "${FOLDER}" =~ (spam|null) ]] ; then
 	    echo "%%   $FOLDER   %%   $FROM   %%   $SUBJECT" >> ~/.notify
 	fi
     fi
