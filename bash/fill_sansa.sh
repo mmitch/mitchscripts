@@ -22,11 +22,11 @@ count_dupes()
 if [ ! "$SRC" ] ; then
 
     DIR=/mnt/mp3/SANSA_STAGE
-    DEFAULT="$DIR"/KWED
+    DEFAULT="$DIR"/good
     ITEMS[0]="$DEFAULT"
     ITEMS[1]=''
 
-    for FILE in "$DIR"/* ; do
+    for FILE in "$DIR"/* "$DIR"/good/* ; do
 	[ -d "$FILE" ] || continue
 	[ "$FILE" = "$DEFAULT" ] && continue
         ITEMS[${#ITEMS[*]}]="$FILE"
