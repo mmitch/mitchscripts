@@ -7,14 +7,15 @@ SRC="${1}"
 MOUNT=/mnt/usb_part
 STICKDIR=_random
 FREE=48000
-DUPES=/tmp/sansa_script_fdupes
+TMPFILE=/tmp/sansa_script_fdupes
+BACKTITLE='--backtitle fill_sansa.sh'
 
 count_dupes()
 {
     echo -n checkdupes...
-    fdupes -q -f $MOUNT/$STICKDIR > $DUPES || yes
+    fdupes -q -f $MOUNT/$STICKDIR > $TMPFILE || true
     echo OK
-    DUPECOUNT=$(wc -l $DUPES | cut -d \  -f 1)
+    DUPECOUNT=$(wc -l $TMPFILE | cut -d \  -f 1)
 }
 
 ## print help text
@@ -28,6 +29,20 @@ usage:
   <src_dir>  source path (default: ask)
 EOF
     exit 1
+fi
+
+## choose removal of old files
+
+if dialog $BACKTITLE --yesno "erase old files?" 0 0 ; then
+    REMOVE=yes
+else
+    REMOVE=no
+fi
+
+## choose free space
+
+if dialog $BACKTITLE --stdout --inputbox "free space [kB]" 0 0 $FREE > $TMPFILE ; then
+    read FREE < $TMPFILE || true
 fi
 
 ## choose source directory
@@ -46,7 +61,7 @@ if [ ! "$SRC" ] ; then
         ITEMS[${#ITEMS[*]}]=''
     done
 
-    SRC="$(dialog --stdout --menu "choose source directory" 0 0 0 "${ITEMS[@]}")"
+    SRC="$(dialog $BACKTITLE --stdout --menu "choose source directory" 0 0 0 "${ITEMS[@]}")"
     
     [ "$SRC" ] || exit 1
 fi
@@ -67,9 +82,11 @@ fi
 ## do the work
 
 if [ -d $MOUNT/$STICKDIR ] ; then
-    if [ $( ls $MOUNT/$STICKDIR/ | wc -l ) -gt 0 ] ; then
-	echo removing old files
-	rm  $MOUNT/$STICKDIR/*
+    if [ $REMOVE = 'yes' ] ; then
+	if [ $( ls $MOUNT/$STICKDIR/ | wc -l ) -gt 0 ] ; then
+	    echo removing old files
+	    rm  $MOUNT/$STICKDIR/*
+	fi
     fi
     echo source dir: $SRC
     sansafill.pl --fill "$SRC" $MOUNT/$STICKDIR $FREE
@@ -80,7 +97,7 @@ if [ -d $MOUNT/$STICKDIR ] ; then
 	    if [ "$FILE" ]; then
 		rm "$FILE"
 	    fi
-	done < $DUPES
+	done < $TMPFILE
 	sansafill.pl --fill "$SRC" $MOUNT/$STICKDIR $FREE
 	count_dupes
     done
