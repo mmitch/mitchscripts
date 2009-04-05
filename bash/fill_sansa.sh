@@ -17,6 +17,19 @@ count_dupes()
     DUPECOUNT=$(wc -l $DUPES | cut -d \  -f 1)
 }
 
+## print help text
+
+if [ "$SRC" = '-h' ] ; then
+    cat <<EOF
+usage:
+  fill_sansa.sh [-h] [<src_dir>]
+
+  -h         print help text
+  <src_dir>  source path (default: ask)
+EOF
+    exit 1
+fi
+
 ## choose source directory
 
 if [ ! "$SRC" ] ; then
