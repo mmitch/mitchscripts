@@ -7,7 +7,7 @@
 # licensed under GNU GPL v2
 #
 
-tail -f ~/Mail/from | while read LINE; do
+tail -n 1 -f ~/Mail/from | while read LINE; do
 
     if [[ "$LINE" =~ ^From ]] ; then
 	FROM="${LINE:5}"
@@ -21,7 +21,7 @@ tail -f ~/Mail/from | while read LINE; do
 	FOLDER="${FOLDER%/new/*}"
 	FOLDER="${FOLDER#/home/mitch/Mail/}"
 
-	if [ "$FOLDER" != 'spam' ] ; then
+	if [ "$FOLDER" != 'spam' -a "$FOLDER" != '/dev/null' ] ; then
 	    echo "%%   $FOLDER   %%   $FROM   %%   $SUBJECT" >> ~/.notify
 	fi
     fi
