@@ -67,6 +67,10 @@ fi
 ## do the work
 
 if [ -d $MOUNT/$STICKDIR ] ; then
+    if [ $( ls $MOUNT/$STICKDIR/ | wc -l ) -gt 0 ] ; then
+	echo removing old files
+	rm  $MOUNT/$STICKDIR/*
+    fi
     echo source dir: $SRC
     sansafill.pl --fill "$SRC" $MOUNT/$STICKDIR $FREE
     count_dupes
