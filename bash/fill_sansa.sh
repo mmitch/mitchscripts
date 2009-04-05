@@ -12,7 +12,7 @@ DUPES=/tmp/sansa_script_fdupes
 count_dupes()
 {
     echo -n checkdupes...
-    fdupes -q -f $MOUNT/$DIR > $DUPES || yes
+    fdupes -q -f $MOUNT/$STICKDIR > $DUPES || yes
     echo OK
     DUPECOUNT=$(wc -l $DUPES | cut -d \  -f 1)
 }
