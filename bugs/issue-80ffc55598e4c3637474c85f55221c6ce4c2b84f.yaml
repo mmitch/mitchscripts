@@ -1,0 +1,18 @@
+--- !ditz.rubyforge.org,2008-03-06/issue 
+title: keep filenames on rename
+desc: rename to aaaaaaab.OLDFILE.mp3 instead of just aaaaaaab.mp3
+type: :feature
+component: sansa
+release: 
+reporter: Christian Garbs <mitch@cgarbs.de>
+status: :unstarted
+disposition: 
+creation_time: 2009-05-03 14:54:58.891764 Z
+references: []
+
+id: 80ffc55598e4c3637474c85f55221c6ce4c2b84f
+log_events: 
+- - 2009-05-03 14:54:59.439903 Z
+  - Christian Garbs <mitch@cgarbs.de>
+  - created
+  - ""
