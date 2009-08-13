@@ -14,7 +14,7 @@ alias sbemail.exe='mutt'
 alias rls='ls -rt'
 
 # copy EXIF timestamps to file timestamps
-alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate .'
+alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate'
 
 # never start irssi without screen again
 alias irssi='screen -d -R -S irssi -t irssi irssi'
