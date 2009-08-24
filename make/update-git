@@ -10,7 +10,7 @@ update:
 			if [ -d "$$DIR/.git/svn" ] ; then \
 				( cd "$$DIR" ; git-svn rebase ) ; \
 			else \
-				( cd "$$DIR" ; git pull --rebase ) ; \
+				( cd "$$DIR" ; git pull ) ; \
 			fi ; \
 		fi ; \
 	done
