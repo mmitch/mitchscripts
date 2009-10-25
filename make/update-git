@@ -1,0 +1,26 @@
+# Makefile to automatically update all git directories
+# rename to Makefile, put it eg. $HOME/git and run periodically
+#
+# automatically handles git-svn repos
+
+update:
+	for DIR in *; do \
+		if [ -d "$$DIR/.git" ] ; then \
+			echo Updating $$DIR ; \
+			if [ -d "$$DIR/.git/svn" ] ; then \
+				( cd "$$DIR" ; git-svn rebase ) ; \
+			else \
+				( cd "$$DIR" ; git pull ) ; \
+			fi ; \
+		fi ; \
+	done
+
+gc:
+	du -sh .
+	for DIR in *; do \
+		if [ -d "$$DIR/.git" ] ; then \
+			echo Garbagecollecting $$DIR ; \
+			( cd "$$DIR" ; git gc ) ; \
+		fi ; \
+	done
+	du -sh .

@@ -6,10 +6,10 @@
 # licensed under the GNU GPL v2 and no later versions
 #
 # needs
-# - backgrounder.pl from www.cgarbs.de
-# - dcraw
-# - convert from imagemagick
-# - exiftool
+# - backgrounder.pl from http://www.cgarbs.de/backgrounder.en.html
+# - dcraw           from http://www.cybercom.net/~dcoffin/dcraw/
+# - convert         from http://www.imagemagick.org/
+# - exiftool        from http://www.sno.phy.queensu.ca/~phil/exiftool/
 
 # default values
 FORMAT=1
@@ -30,9 +30,9 @@ EOF
 fi
 
 [ "$1" = '-j' ] && FORMAT=1  && shift
-[ "$1" = '-J' ] && FORMAT=1  && shift
-[ "$1" = '-t' ] && FORMAT=2  && shift
-[ "$1" = '-T' ] && FORMAT=3  && shift
+[ "$1" = '-J' ] && FORMAT=2  && shift
+[ "$1" = '-t' ] && FORMAT=3  && shift
+[ "$1" = '-T' ] && FORMAT=4  && shift
 [ "$1" = '-a' ] && FORMAT=10 && shift
 
 FILES="${@}"
@@ -51,14 +51,33 @@ CHECK_FOR convert
 CHECK_FOR dcraw
 CHECK_FOR exiftool
 
+# generate badpixels file
+CREATE_BADPIXELS()
+{
+    cat <<EOF
+# ~/.badpixels file for my Pentax *istDL
+# dcraw will use this file if run in the same directory, or in any
+# subdirectory.
+# Always use "dcraw -d -j -t 0" when locating bad pixels!!
+# Format is: pixel column, pixel row, UNIX time of death
+# 2008/05/01
+1023	587	1209592800
+53	1187	1209592800
+EOF
+}
+
 
 # run how many parallel conversions?
 CPUS=$(grep ^processor /proc/cpuinfo | wc -l)
 
+# backup old .badpixels if present
+[ -e .badpixels ] && mv .badpixels .badpixels.$$
+CREATE_BADPIXELS > .badpixels
+
 # read all files
 for FILE in $FILES; do
 
-    if [ "$FILES" = '*.pef' ] ; then
+    if [ "$FILE" = '*.pef' ] ; then
 	echo "no input files (*.pef) found" 1>&2
 	exit 1
     fi
@@ -126,3 +145,7 @@ for FILE in $FILES; do
 	
 done \
 | backgrounder.pl $CPUS -
+
+# restore old .badpixels
+#rm -f .badpixels
+#[ -e .badpixels.$$ ] && mv .badpixels.$$ .badpixels 

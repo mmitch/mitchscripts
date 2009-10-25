@@ -22,6 +22,7 @@ while ($line=<>) {
 	# add
 	my $key = $entry->{Package};
 	$packages->{$key}->{text} = $entry->{text};
+	$packages->{$key}->{description} = $entry->{Description};
 	$packages->{$key}->{source} = exists $entry->{Source} ? $entry->{Source} : $key;
 	push @{$packages->{$key}->{arch}}, $entry->{Architecture};
 	$entry->{Filename} =~ s:^.*/::;
@@ -52,13 +53,13 @@ if ($line and $line =~ /^~~~START~SOURCES~~~$/) {
 	    
 	    # add
 	    my $key = $entry->{Package};
-	    $sources->{$key}->{files} = $entry->{files};
+	    $sources->{$key}->{files} = [ keys %{$entry->{files}} ];
 	    
 	    $entry = {};
 	    
 	} elsif ($line =~ /^\s\S+\s\d+\s(\S+)$/) {
 	    
-	    push @{$entry->{files}}, $1;
+	    $entry->{files}->{$1}++;
 
 	} else {
 
@@ -158,10 +159,12 @@ module because this module is needed by <i>p0rn-comfort</i>.</li>
 
 </ul>
 
-<p>Currently, all packages should be packaged for Etch.  They might
-also work under testing/unstable, if not, try to build them from
-source.  If this fails, please <a
-href="mailto:debian\@cgarbs.de">contact me</a>.</p>
+<p>Currently, I'm in a transition phase.  Some packages are already
+packaged for Lenny, others are still packaged for Etch.  When a
+package is officially available only from Lenny, I'll try to keep the
+Etch version around.  The packages might also work under
+testing/unstable, if not, try to build them from source.  If this
+fails, please <a href="mailto:debian\@cgarbs.de">contact me</a>.</p>
 
 <p align="right">--January 2008</p>
 
@@ -179,7 +182,8 @@ print <<EOF;
 EOF
     ;
 foreach my $package (sort keys %{$packages}) {
-    print "<h2><a name=\"$package\">$package</a></h2><ul>";
+    print "<h2><a name=\"$package\">$package</a></h2>\n";
+    print "<p>$packages->{$package}->{description}</p><ul>";
     foreach my $file (sort @{$packages->{$package}->{file}}) {
 	print "<li><a href=\"http://www.cgarbs.de/stuff/$file\">$file</a></li>\n";
     }

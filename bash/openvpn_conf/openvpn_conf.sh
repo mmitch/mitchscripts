@@ -1,7 +1,7 @@
 #!/bin/bash
 # $Id: openvpn_conf.sh,v 1.10 2007-05-13 10:24:01 mitch Exp $
 
-# 2005 (c) by Christian Garbs <mitch@cgarbs.de>
+# 2005,2007-2008 (c) by Christian Garbs <mitch@cgarbs.de>
 
 # Generate a one time CA, server and client keys plus OpenVPN
 # configuration.  This gets you everything you need to set up a
@@ -248,14 +248,20 @@ install -m 755 downscript  $HOST_CLT/etc/openvpn/downscript
 
 echo up-/downscripts distributed
 
+##### Ergebnisse einpacken
+
+echo building archives
+
+tar -czf ${HOST_SRV}.tar.gz $HOST_SRV
+tar -czf ${HOST_CLT}.tar.gz $HOST_CLT
+
+echo archives built
+
 ##### aufräumen
 
-rm -r $TMPDIR
+echo cleaning
 
-##### HInweis
+rm -r $TMPDIR $HOST_SRV $HOST_CLT
 
-echo
-echo REMEMBER TO CORRECTLY SET THE REAL GLOBAL IP IN UP/DOWNSCRIPT
-echo "(only relevant for the first time, the next tunnel can then"
-echo " use the existing script)"
-echo 
+echo clean
+

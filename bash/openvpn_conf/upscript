@@ -3,7 +3,6 @@
 # Params are:
 # tun_dev tun_mtu link_mtu ifconfig_local_ip ifconfig_remote_ip [init | restart]   
 
-real_local_ip=192.168.0.104
 tun_dev="$1"
 tun_mtu="$2"
 link_mtu="$3"
@@ -17,7 +16,6 @@ mss=$(($tun_mtu - 40))
 echo "$0: $@"
 
 ip -4 addr add "$local_ip" scope link peer "$remote_ip" dev "$tun_dev"
-ip -4 addr add "$real_local_ip" dev "$tun_dev"
 ip link set "$tun_dev" up
 
 # moved here from firewall.sh

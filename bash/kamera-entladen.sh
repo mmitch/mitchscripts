@@ -7,10 +7,17 @@ set -e
 
 if [ "$1" == '-h' ] ; then
     cat <<'EOF'
-kamera-entladen.sh [-h] [mountpoint target]
+kamera-entladen.sh [-h|-t] [mountpoint target]
   -h  prints this help
+  -t  generate thumbnails
 EOF
     exit 0;
+fi
+
+if [ "$1" == '-t' ] ; then
+    THUMBNAILS=yes
+else
+    THUMBNAILS=no
 fi
 
 USBPATH=/mnt/pentax
@@ -74,12 +81,12 @@ if [ $PICCOUNT -ge 1 ] ; then
 
 	# autogenerate thumbnails from RAWs
 
-	if [[ $FILENAME == *.pef ]] ; then
+	if [[ ( "$THUMBNAILS" = 'yes' ) && ( "$FILENAME" == *.pef) ]] ; then
 	    wait
 	    (
 		cd "$SAVEPATH/"
 		FILENAME=${FILENAME%%.pef}
-		dcraw -q 0 -h -c -T $FILENAME.pef | convert -scale 50% - ${FILENAME}_thumb.jpg
+		dcraw -q 0 -h -c -T $FILENAME.pef | convert -scale 50% - ${FILENAME}_thumb.jpg && \
 		exiftool -q -overwrite_original -TagsFromFile $FILENAME.pef -PreviewImage= -ThumbnailImage= -makernotes:all= ${FILENAME}_thumb.jpg
 	    ) &
 	fi
@@ -97,6 +104,21 @@ umount $USBPATH || pumount $USBPATH
 eject $USBPATH || true
 
 echo unmounted
+
+cat <<'EOF'
+ _  __                              
+| |/ /__ _ _ __ ___   ___ _ __ __ _ 
+| ' // _` | '_ ` _ \ / _ \ '__/ _` |
+| . \ (_| | | | | | |  __/ | | (_| |
+|_|\_\__,_|_| |_| |_|\___|_|  \__,_|
+                                    
+                                      _                _ 
+  __ _ _   _ ___ _ __ ___   __ _  ___| |__   ___ _ __ | |
+ / _` | | | / __| '_ ` _ \ / _` |/ __| '_ \ / _ \ '_ \| |
+| (_| | |_| \__ \ | | | | | (_| | (__| | | |  __/ | | |_|
+ \__,_|\__,_|___/_| |_| |_|\__,_|\___|_| |_|\___|_| |_(_)
+
+EOF
 
 wait
 echo finished

@@ -1,5 +1,9 @@
 # to be sourced from ~/.alias
 
+# no localized manpages
+LC_MESSAGES=C
+export LC_MESSAGES
+
 # tin singleton (avoid messing up read articles)
 alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else tin; fi'
 
@@ -9,26 +13,43 @@ alias sbemail.exe='mutt'
 # list newest files last
 alias rls='ls -rt'
 
+# copy EXIF timestamps to file timestamps
+alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate'
+
 # never start irssi without screen again
 alias irssi='screen -d -R -S irssi -t irssi irssi'
 
+# debsign all signable files
+alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'
+
 # default start page in (e)links
+# $1: URL (optional)
 links()
-{
-	if [ -z "$*" ]; then
-		/usr/bin/elinks http://www.mitch.h.shuttle.de/mediawiki/index.php/Hauptseite
-	else
-		/usr/bin/elinks "$*"
-	fi
+{	
+	(
+		if [ -z "$*" ]; then
+			/usr/bin/elinks http://www.mitch.h.shuttle.de/mediawiki/index.php/Hauptseite
+		else
+			/usr/bin/elinks "$*"
+		fi
+	)
 }
 
 # dump all links on a website
+# $1: URL
 dumpurls()
 {
 	lynx -dump "$@" | cut -c 7- | grep ^http:
 }
 
+# dump all pictures from an imageboard thread
+# $1: URL
+boardget() {
+        dumpurls "$1" | egrep '\.(jpg|png|gif)$' | sort | uniq | wget -i-
+}
+
 # enable Japanese input method
+# $1: command to execute
 JAP()
 {
 	(
@@ -61,6 +82,7 @@ JAP()
 }
 
 # quick www fetch (e.g. for sites that reject wget's useragent)
+# $1: URL
 CHAN()
 {
 	GET "$1" > "$(basename "$1")"
@@ -107,7 +129,8 @@ ssh()
 }
 
 # lookup inside WadokuJT
+# $1: word
 edict()
 {
-	grep -i "$@" /home/mitch/WadokuJT.txt | /home/mitch/perl/edictsort.pl | sensible-pager
+	grep -i "$@" /home/mitch/WadokuJT.txt | sensible-pager
 }
