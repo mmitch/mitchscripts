@@ -1,7 +1,6 @@
-# Makefile to automatically update all git directories
-# rename to Makefile, put it eg. $HOME/git and run periodically
+# Makefile to automatically update all git and git-svn directories
 #
-# automatically handles git-svn repos
+# rename to "Makefile", put it to eg. $HOME/git and run it periodically
 
 update:
 	for DIR in *; do \
