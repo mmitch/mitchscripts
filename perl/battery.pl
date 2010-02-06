@@ -28,7 +28,7 @@ my $procnetroute = '/proc/net/route';
 
 # defaults
 my $state  = 'AC';
-my $rate   = 0;
+my $rate   = undef;
 my $volt   = 0;
 my $remain = 0;
 my $max    = 0;
@@ -65,38 +65,43 @@ while (my $line = <PROCMAX>) {
 close PROCMAX
     or die "can't close `$procmax': $1";
 
-open PROCTEMP, '<', $proctemp
-    or die "can't open `$proctemp': $1";
-while (my $line = <PROCTEMP>) {
-    chomp $line;
-    if ($line =~ /^temperature:\s+(\d+) C/) {
-	$temp = $1;
-	last;
+if (open PROCTEMP, '<', $proctemp) {
+    while (my $line = <PROCTEMP>) {
+	chomp $line;
+	if ($line =~ /^temperature:\s+(\d+) C/) {
+	    $temp = $1;
+	    last;
+	}
     }
+    close PROCTEMP
+	or die "can't close `$proctemp': $1";
+} else {
+    $temp = undef;
 }
-close PROCTEMP
-    or die "can't close `$proctemp': $1";
 
-open CPUFREQ, '<', $procminf
-    or die "can't open `$procminf': $1";
-my $minfreq = <CPUFREQ>;
-chomp $minfreq;
-close CPUFREQ
-    or die "can't close `$procminf': $1";
+my $minfreq = undef;
+if (open CPUFREQ, '<', $procminf) {
+    $minfreq = <CPUFREQ>;
+    chomp $minfreq;
+    close CPUFREQ
+	or die "can't close `$procminf': $1";
+} 
 
-open CPUFREQ, '<', $procmaxf
-    or die "can't open `$procmaxf': $1";
-my $maxfreq = <CPUFREQ>;
-chomp $maxfreq;
-close CPUFREQ
-    or die "can't close `$procmaxf': $1";
-
-open CPUFREQ, '<', $proccurf
-    or die "can't open `$proccurf': $1";
-my $curfreq = <CPUFREQ>;
-chomp $curfreq;
-close CPUFREQ
-    or die "can't close `$proccurf': $1";
+my $maxfreq = undef;
+if (open CPUFREQ, '<', $procmaxf) {
+    $maxfreq = <CPUFREQ>;
+    chomp $maxfreq;
+    close CPUFREQ
+	or die "can't close `$procmaxf': $1";
+}
+ 
+my $curfreq = undef;
+if (open CPUFREQ, '<', $proccurf) {
+    $curfreq = <CPUFREQ>;
+    chomp $curfreq;
+    close CPUFREQ
+	or die "can't close `$proccurf': $1";
+}
 
 open ROUTE, '<', $procnetroute
     or die "can't open `$procnetroute': $1";
@@ -113,24 +118,23 @@ my $percent = $remain / $max;
 my $p = sprintf "%.0f", $percent*10;
 my $battery = '#' x $p . '.' x (10 - $p );
 my ($calc, $hours, $mins);
-if ($state eq 'DC') {
-    $calc = $remain / $rate;
-    $hours = int $calc;
-    $mins = sprintf '%02d', int (($calc - $hours) * 60);
-} elsif ($state eq 'AC') {
-    if ($rate > 0) {
+$hours = '-';
+$mins = '--';
+if (defined $rate and $rate > 0) {
+    if ($state eq 'DC') {
+	$calc = $remain / $rate;
+	$hours = int $calc;
+	$mins = sprintf '%02d', int (($calc - $hours) * 60);
+    } elsif ($state eq 'AC') {
 	$calc = ($max - $remain) / $rate;
 	$hours = int $calc;
 	$mins = sprintf '%02d', int (($calc - $hours) * 60);
-    } else {
-	$hours = '-';
-	$mins = '--';
     }
 }
 
 # print data
 if ($status) {
-    if ($rate > 0) {
+    if (defined $rate and $rate > 0) {
 	printf "%s:%sh%s [%s] %.1fW %d°C [%s] %s%s\n",
 	$hours,
 	$mins,
@@ -142,17 +146,28 @@ if ($status) {
 	$eth[0] ? '=' : '',
 	$eth[1] ? '~' : '';
     } else {
-	printf "%d°C [%s] %s%s\n",
-	$temp,
-	($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.',
-	$eth[0] ? '=' : '',
-	$eth[1] ? '~' : '';
+	if (defined $curfreq && defined $temp) {
+	    printf "%d°C [%s] %s%s\n",
+	    $temp,
+	    ($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.',
+	    $eth[0] ? '=' : '',
+	    $eth[1] ? '~' : '';
+	} else {
+	    printf "[%s] %s%s\n",
+	    $battery,
+	    $eth[0] ? '=' : '',
+	    $eth[1] ? '~' : '';
+	}
     }
 } else {
     printf "%s  %s:%sh left \n", $state, $hours, $mins;
-    printf "[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh  %2d°C\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000, $temp;
+    if (defined $temp and defined $rate) {
+	printf "[%s]  %4.1f%% \n%4.1fW  %4.1fV  %4.1fWh  %2d°C\n", $battery, $percent*100, $rate/1000, $volt/1000, $remain/1000, $temp;
+    } else {
+	printf "[%s]  %4.1f%% \n%4.1fV  %4.1fWh\n", $battery, $percent*100, $volt/1000, $remain/1000;
+    }
     printf "%s%s  cpu %s\n",
     $eth[0] ? 'cable ' : '',
     $eth[1] ? 'wlan ' : '',
-    ($curfreq == $minfreq) ? 'slow' : (($curfreq == $maxfreq) ? 'fast' : 'intermediate');
+    (defined $curfreq) ? (($curfreq == $minfreq) ? 'slow' : (($curfreq == $maxfreq) ? 'fast' : 'intermediate')) : '??';
 }
