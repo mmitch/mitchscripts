@@ -61,7 +61,25 @@ mount | grep " on $USBPATH " >/dev/null || mount $USBPATH
 
 PICPATH=$USBPATH/dcim/100pentx
 if [ ! -d $PICPATH ] ; then
+    PICPATH=$USBPATH/dcim/101pentx
+fi
+if [ ! -d $PICPATH ] ; then
+    PICPATH=$USBPATH/dcim/102pentx
+fi
+if [ ! -d $PICPATH ] ; then
+    PICPATH=$USBPATH/dcim/103pentx
+fi
+if [ ! -d $PICPATH ] ; then
     PICPATH=$USBPATH/DCIM/100PENTX
+fi
+if [ ! -d $PICPATH ] ; then
+    PICPATH=$USBPATH/DCIM/101PENTX
+fi
+if [ ! -d $PICPATH ] ; then
+    PICPATH=$USBPATH/DCIM/102PENTX
+fi
+if [ ! -d $PICPATH ] ; then
+    PICPATH=$USBPATH/DCIM/103PENTX
 fi
 
 PICCOUNT=$(find $PICPATH -type f | wc -l)
