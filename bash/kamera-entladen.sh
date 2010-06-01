@@ -91,6 +91,16 @@ if [ $PICCOUNT -ge 1 ] ; then
 	    ) &
 	fi
 
+	if [[ ( "$THUMBNAILS" = 'yes' ) && ( "$FILENAME" == *.cr2) ]] ; then
+	    wait
+	    (
+		cd "$SAVEPATH/"
+		FILENAME=${FILENAME%%.cr2}
+		dcraw -q 0 -h -c -T $FILENAME.cr2 | convert -scale 50% - ${FILENAME}_thumb.jpg && \
+		exiftool -q -overwrite_original -TagsFromFile $FILENAME.cr2 -PreviewImage= -ThumbnailImage= -makernotes:all= ${FILENAME}_thumb.jpg
+	    ) &
+	fi
+
     done
     echo
 else
