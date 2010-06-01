@@ -37,8 +37,8 @@ CHECK_FOR()
         exit 1
     fi
 }
-CHECK_FOR dcraw
-CHECK_FOR exiftool
+[ $THUMBNAILS = yes ] && CHECK_FOR dcraw
+[ $THUMBNAILS = yes ] && CHECK_FOR exiftool
 
 # always clean up possible empty path
 remove_empty_savepath()
