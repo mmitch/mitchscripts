@@ -3,16 +3,16 @@
 # screen layout and resolution chooser
 # map this script to a special Laptop key (Fn+F7 on my Thinkpad)
 
-CHOOSE=$( Xdialog --stdout --menu "choose display settings" 17 50 8 \
- DUALDVI  "dual internal + DVI" \
- DUALTV   "dual internal + TV" \
- LVDS     "only internal" \
- DVI      "only DVI" \
- VGA      "only VGA" \
- TV       "only TV" \
- CLONETV  "clone internal + TV" \
- CLONEVGA "clone internal + VGA" \
- CLONEDVI "clone internal + DVI"
+CHOOSE=$( zenity --list --column SHORT --column LONG --text "choose display settings" \
+DUALDVI  "dual internal + DVI" \
+DUALTV   "dual internal + TV" \
+LVDS     "only internal" \
+DVI      "only DVI" \
+VGA      "only VGA" \
+TV       "only TV" \
+CLONETV  "clone internal + TV" \
+CLONEVGA "clone internal + VGA" \
+CLONEDVI "clone internal + DVI"
 
 )
 
