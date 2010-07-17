@@ -2,7 +2,7 @@
 #
 # screen layout and resolution chooser
 # map this script to a special Laptop key (Fn+F7 on my Thinkpad)
-=
+
 CHOOSE=$( Xdialog --stdout --menu "choose display settings" 17 50 8 \
  DUALDVI  "dual internal + DVI" \
  DUALTV   "dual internal + TV" \
