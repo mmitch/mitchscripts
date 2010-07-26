@@ -134,3 +134,10 @@ edict()
 {
 	grep -i "$@" /home/mitch/WadokuJT.txt | sensible-pager
 }
+
+# lookup in Pokédex™
+# $1: search string
+pokedex()
+{
+	( cd ~/git/pokedex; ./pokedex "$1" )
+}
