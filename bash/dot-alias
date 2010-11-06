@@ -141,3 +141,30 @@ pokedex()
 {
 	( cd ~/git/pokedex; ./pokedex "$1" )
 }
+
+# play all my music sorted by album
+# 'q' to jump to next album, '^c' to quit
+albumplay()
+{
+	mount | grep -q /mnt/mp3 || mount /mnt/mp3
+	(
+		tty
+		(
+			find /mnt/mp3 -type d 2>/dev/null
+			echo ..find 1>&2
+		) | (
+			unsort
+			echo ..unsort 1>&2
+		) | (
+			sleep 2
+			echo ..sleep 1>&2
+			unsort
+			echo ..unsort 1>&2
+		)
+	) | (
+		read TTY
+		while read DIR; do
+			mplayer -shuffle "${DIR}"/* <$TTY
+		done
+	)
+}
