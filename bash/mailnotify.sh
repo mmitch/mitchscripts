@@ -3,8 +3,8 @@
 # simple X notification framework
 # process procmail mail logs and convert them to notify entries
 #
-# 2009 (C) by Christian Garbs <mitch@cgarbs.de>
-# licensed under GNU GPL v2
+# Copyright (C) 2009-2010  Christian Garbs <mitch@cgarbs.de>
+# Licensed under GNU GPL v3 or later.
 #
 
 tail -n 1 -f ~/Mail/from | ~/git/mitchscripts/perl/mimedecoder.pl | while read LINE; do
