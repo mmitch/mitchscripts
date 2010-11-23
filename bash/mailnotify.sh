@@ -7,7 +7,7 @@
 # licensed under GNU GPL v2
 #
 
-tail -n 1 -f ~/Mail/from | while read LINE; do
+tail -n 1 -f ~/Mail/from | ~/git/mitchscripts/perl/mimedecoder.pl | while read LINE; do
 
     if [[ "$LINE" =~ ^From ]] ; then
 	FROM="${LINE:5}"
