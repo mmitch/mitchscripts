@@ -23,7 +23,7 @@ alias irssi='screen -d -R -S irssi -t irssi irssi'
 alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'
 
 # show latest procmail sorted mails
-alias mailtail='tail -n 30 -f /home/mitch/Mail/from | /home/mitch/git/mitchscripts/perl/mimedecoder.pl'
+alias mailtail='tail -n 30 -f /home/mitch/Mail/from | /home/mitch/git/mitchscripts/perl/mimedecoder.pl | sed "s/^From/\nFrom/"'
 
 # default start page in (e)links
 # $1: URL (optional)
