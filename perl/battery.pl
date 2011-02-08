@@ -37,7 +37,7 @@ my @eth    = (0, 0);
 
 # read data
 open PROCBATTERY, '<', $procbattery
-    or die "can't open `$procbattery': $1";
+    or die "can't open `$procbattery': $!";
 while (my $line = <PROCBATTERY>) {
     chomp $line;
     if ($line =~ /^charging state:\s+discharg/) {
@@ -51,10 +51,10 @@ while (my $line = <PROCBATTERY>) {
     }
 }
 close PROCBATTERY
-    or die "can't close `$procbattery': $1";
+    or die "can't close `$procbattery': $!";
 
 open PROCMAX, '<', $procmax
-    or die "can't open `$procmax': $1";
+    or die "can't open `$procmax': $!";
 while (my $line = <PROCMAX>) {
     chomp $line;
     if ($line =~ /^last full capacity:\s+(\d+) m[AW]h/) {
@@ -63,7 +63,7 @@ while (my $line = <PROCMAX>) {
     }
 }
 close PROCMAX
-    or die "can't close `$procmax': $1";
+    or die "can't close `$procmax': $!";
 
 if (open PROCTEMP, '<', $proctemp) {
     while (my $line = <PROCTEMP>) {
@@ -74,7 +74,7 @@ if (open PROCTEMP, '<', $proctemp) {
 	}
     }
     close PROCTEMP
-	or die "can't close `$proctemp': $1";
+	or die "can't close `$proctemp': $!";
 } else {
     $temp = undef;
 }
@@ -84,7 +84,7 @@ if (open CPUFREQ, '<', $procminf) {
     $minfreq = <CPUFREQ>;
     chomp $minfreq;
     close CPUFREQ
-	or die "can't close `$procminf': $1";
+	or die "can't close `$procminf': $!";
 } 
 
 my $maxfreq = undef;
@@ -92,7 +92,7 @@ if (open CPUFREQ, '<', $procmaxf) {
     $maxfreq = <CPUFREQ>;
     chomp $maxfreq;
     close CPUFREQ
-	or die "can't close `$procmaxf': $1";
+	or die "can't close `$procmaxf': $!";
 }
  
 my $curfreq = undef;
@@ -100,18 +100,18 @@ if (open CPUFREQ, '<', $proccurf) {
     $curfreq = <CPUFREQ>;
     chomp $curfreq;
     close CPUFREQ
-	or die "can't close `$proccurf': $1";
+	or die "can't close `$proccurf': $!";
 }
 
 open ROUTE, '<', $procnetroute
-    or die "can't open `$procnetroute': $1";
+    or die "can't open `$procnetroute': $!";
 while (<ROUTE>) {
     if (/^eth([01])/) {
 	$eth[$1]++;
     }
 };
 close ROUTE
-    or die "can't close `$procnetroute': $1";
+    or die "can't close `$procnetroute': $!";
 
 # compute data
 my $percent = $remain / $max;
