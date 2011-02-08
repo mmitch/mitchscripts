@@ -36,34 +36,34 @@ my $temp   = 0;
 my @eth    = (0, 0);
 
 # read data
-open PROCBATTERY, '<', $procbattery
-    or die "can't open `$procbattery': $!";
-while (my $line = <PROCBATTERY>) {
-    chomp $line;
-    if ($line =~ /^charging state:\s+discharg/) {
-	$state = 'DC';
-    } elsif ($line =~ /^present rate:\s+(\d+) m[AW]/) {
-	$rate = $1;
-    } elsif ($line =~ /^remaining capacity:\s+(\d+) m[AW]h/) {
-	$remain = $1;
-    } elsif ($line =~ /^present voltage:\s+(\d+) mV/) {
-	$volt = $1;
+if (open PROCBATTERY, '<', $procbattery) {
+    while (my $line = <PROCBATTERY>) {
+	chomp $line;
+	if ($line =~ /^charging state:\s+discharg/) {
+	    $state = 'DC';
+	} elsif ($line =~ /^present rate:\s+(\d+) m[AW]/) {
+	    $rate = $1;
+	} elsif ($line =~ /^remaining capacity:\s+(\d+) m[AW]h/) {
+	    $remain = $1;
+	} elsif ($line =~ /^present voltage:\s+(\d+) mV/) {
+	    $volt = $1;
+	}
     }
+    close PROCBATTERY
+	or die "can't close `$procbattery': $!";
 }
-close PROCBATTERY
-    or die "can't close `$procbattery': $!";
 
-open PROCMAX, '<', $procmax
-    or die "can't open `$procmax': $!";
-while (my $line = <PROCMAX>) {
-    chomp $line;
-    if ($line =~ /^last full capacity:\s+(\d+) m[AW]h/) {
-	$max = $1;
-	last;
+if (open PROCMAX, '<', $procmax) {
+    while (my $line = <PROCMAX>) {
+	chomp $line;
+	if ($line =~ /^last full capacity:\s+(\d+) m[AW]h/) {
+	    $max = $1;
+	    last;
+	}
     }
+    close PROCMAX
+	or die "can't close `$procmax': $!";
 }
-close PROCMAX
-    or die "can't close `$procmax': $!";
 
 if (open PROCTEMP, '<', $proctemp) {
     while (my $line = <PROCTEMP>) {
@@ -114,7 +114,7 @@ close ROUTE
     or die "can't close `$procnetroute': $!";
 
 # compute data
-my $percent = $remain / $max;
+my $percent = $max ? $remain / $max : 0;
 my $p = sprintf "%.0f", $percent*10;
 my $battery = '#' x $p . '.' x (10 - $p );
 my ($calc, $hours, $mins);
