@@ -22,6 +22,9 @@ alias irssi='screen -d -R -S irssi -t irssi irssi'
 # debsign all signable files
 alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'
 
+# show latest procmail sorted mails
+alias mailtail='tail -n 30 -f /home/mitch/Mail/from | /home/mitch/git/mitchscripts/perl/mimedecoder.pl | sed "s/^From/\nFrom/"'
+
 # default start page in (e)links
 # $1: URL (optional)
 links()
@@ -133,4 +136,38 @@ ssh()
 edict()
 {
 	grep -i "$@" /home/mitch/WadokuJT.txt | sensible-pager
+}
+
+# lookup in Pokédex™
+# $1: search string
+pokedex()
+{
+	( cd ~/git/pokedex; ./pokedex "$1" )
+}
+
+# play all my music sorted by album
+# 'q' to jump to next album, '^c' to quit
+albumplay()
+{
+	mount | grep -q /mnt/mp3 || mount /mnt/mp3
+	(
+		tty
+		(
+			find /mnt/mp3 -type d 2>/dev/null
+			echo ..find 1>&2
+		) | (
+			unsort
+			echo ..unsort 1>&2
+		) | (
+			sleep 2
+			echo ..sleep 1>&2
+			unsort
+			echo ..unsort 1>&2
+		)
+	) | (
+		read TTY
+		while read DIR; do
+			mplayer -shuffle "${DIR}"/* <$TTY
+		done
+	)
 }

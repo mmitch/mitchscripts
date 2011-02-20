@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# 2007-2008 (c) by Christian Garbs <mitch@cgarbs.de>
+# Copyright (C) 2007,2008,2010  Christian Garbs <mitch@cgarbs.de>
 # licensed under the GNU GPL v2 and no later versions
 
 set -e
@@ -37,8 +37,8 @@ CHECK_FOR()
         exit 1
     fi
 }
-CHECK_FOR dcraw
-CHECK_FOR exiftool
+[ $THUMBNAILS = yes ] && CHECK_FOR dcraw
+[ $THUMBNAILS = yes ] && CHECK_FOR exiftool
 
 # always clean up possible empty path
 remove_empty_savepath()
@@ -57,36 +57,18 @@ trap remove_empty_savepath EXIT
 
 
 echo saving at $SAVEPATH
-mount | grep " on $USBPATH " >/dev/null || mount $USBPATH 
+mount | grep " on $USBPATH " >/dev/null || mount $USBPATH || gphotofs $USBPATH
 
-PICPATH=$USBPATH/dcim/100pentx
-if [ ! -d $PICPATH ] ; then
-    PICPATH=$USBPATH/dcim/101pentx
-fi
-if [ ! -d $PICPATH ] ; then
-    PICPATH=$USBPATH/dcim/102pentx
-fi
-if [ ! -d $PICPATH ] ; then
-    PICPATH=$USBPATH/dcim/103pentx
-fi
-if [ ! -d $PICPATH ] ; then
-    PICPATH=$USBPATH/DCIM/100PENTX
-fi
-if [ ! -d $PICPATH ] ; then
-    PICPATH=$USBPATH/DCIM/101PENTX
-fi
-if [ ! -d $PICPATH ] ; then
-    PICPATH=$USBPATH/DCIM/102PENTX
-fi
-if [ ! -d $PICPATH ] ; then
-    PICPATH=$USBPATH/DCIM/103PENTX
-fi
+PICPATH=$USBPATH/dcim/
+[ ! -d $PICPATH ] && PICPATH=$USBPATH/DCIM/
+[ ! -d $PICPATH ] && PICPATH=$USBPATH/store_*/dcim/
+[ ! -d $PICPATH ] && PICPATH=$USBPATH/store_*/DCIM/
 
 PICCOUNT=$(find $PICPATH -type f | wc -l)
 if [ $PICCOUNT -ge 1 ] ; then
     echo "$PICCOUNT pictures to copy"
     COUNT=0
-    for FILE in $PICPATH/* ; do
+    find $PICPATH -type f | while read FILE; do
 	FILENAME=$(echo ${FILE##*/}|tr A-Z a-z)
 	mv $FILE "$SAVEPATH/$FILENAME"
 	chmod -x "$SAVEPATH/$FILENAME"
@@ -109,6 +91,16 @@ if [ $PICCOUNT -ge 1 ] ; then
 	    ) &
 	fi
 
+	if [[ ( "$THUMBNAILS" = 'yes' ) && ( "$FILENAME" == *.cr2) ]] ; then
+	    wait
+	    (
+		cd "$SAVEPATH/"
+		FILENAME=${FILENAME%%.cr2}
+		dcraw -q 0 -h -c -T $FILENAME.cr2 | convert -scale 50% - ${FILENAME}_thumb.jpg && \
+		exiftool -q -overwrite_original -TagsFromFile $FILENAME.cr2 -PreviewImage= -ThumbnailImage= -makernotes:all= ${FILENAME}_thumb.jpg
+	    ) &
+	fi
+
     done
     echo
 else
@@ -118,7 +110,7 @@ fi
 echo copied
 
 sync
-umount $USBPATH || pumount $USBPATH
+umount $USBPATH || pumount $USBPATH || fusermount -u $USBPATH
 eject $USBPATH || true
 
 echo unmounted

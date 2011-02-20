@@ -1,0 +1,84 @@
+#!/bin/sh
+#
+# screen layout and resolution chooser
+# map this script to a special Laptop key (Fn+F7 on my Thinkpad)
+
+CHOOSE=$( zenity --list --column SHORT --column LONG --text "choose display settings" \
+DUALDVI  "dual internal + DVI" \
+DUALTV   "dual internal + TV" \
+LVDS     "only internal" \
+DVI      "only DVI" \
+VGA      "only VGA" \
+TV       "only TV" \
+CLONETV  "clone internal + TV" \
+CLONEVGA "clone internal + VGA" \
+CLONEDVI "clone internal + DVI"
+
+)
+
+case $CHOOSE in
+
+    DUALDVI)
+	xrandr --output LVDS    --auto --pos 0x0 \
+	       --output DVI-0   --auto --pos 1024x0 \
+               --output VGA-0   --off \
+               --output S-video --off
+	;;
+
+    DUALTV)
+	xrandr --output LVDS    --auto --pos 0x640 \
+	       --output DVI-0   --off \
+               --output VGA-0   --off \
+               --output S-video --mode 640x480 --pos 0x0
+	;;
+
+    LVDS)
+	xrandr --output LVDS    --auto \
+	       --output DVI-0   --off \
+               --output VGA-0   --off \
+               --output S-video --off
+	;;
+
+    DVI)
+	xrandr --output LVDS    --off \
+	       --output DVI-0   --auto \
+               --output VGA-0   --off \
+               --output S-video --off
+	;;
+
+    VGA)
+	xrandr --output LVDS    --off \
+	       --output DVI-0   --off \
+               --output VGA-0   --auto \
+               --output S-video --off
+	;;
+
+    TV)
+	xrandr --output LVDS    --off \
+	       --output DVI-0   --off \
+               --output VGA-0   --off \
+               --output S-video --auto
+	;;
+
+    CLONEDVI)
+	xrandr --output LVDS    --auto \
+	       --output DVI-0   --mode 1024x768 \
+               --output VGA-0   --off \
+               --output S-video --off
+	;;
+
+    CLONEVGA)
+	xrandr --output LVDS    --auto \
+	       --output DVI-0   --off \
+               --output VGA-0   --mode 1024x768 \
+               --output S-video --off
+	;;
+
+    CLONETV)
+	xrandr --output LVDS    --mode 640x480 \
+	       --output DVI-0   --off \
+               --output VGA-0   --off \
+               --output S-video --mode 640x480
+	;;
+
+esac
