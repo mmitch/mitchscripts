@@ -1,10 +1,18 @@
 #!/bin/bash
 #
-# 2007 (c) by Christian Garbs <mitch@cgarbs.de>
-# Licensed under GNU GPL 
+# check_raid.sh - checks a RAID for errors
 #
-# checks a RAID for errors
-# see http://gentoo-wiki.com/HOWTO_Gentoo_Install_on_Software_RAID#Data_Scrubbing
+# Copyright (C) 2007,2011  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPL v2 or later
+#
+# Based on information from
+# http://gentoo-wiki.com/HOWTO_Gentoo_Install_on_Software_RAID#Data_Scrubbing
+#
+# This script will start data scrubbing for the given device and send a
+# mail to root when errors are found.  Swap files are umounted before the
+# check as the check won't work otherwise.  You should run this regularly,
+# e.g. from cron(8).
+#
 #
 # usage: check_raid.sh <mdX>
 #
