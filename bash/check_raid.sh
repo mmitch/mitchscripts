@@ -17,35 +17,42 @@
 # usage: check_raid.sh <mdX>
 #
 
-MD=$1
-
+# error-exit routine
 abend()
 {
 	echo "$@" 1>&2
 	exit 1
 }
 
+# check commandline parameters
+MD=$1
 [ "$MD" ] || abend "usage: check_raid.sh <mdX>"
 [ -d /sys/block/$MD ] || abend "RAID device $MD does not exist"
 
+# umount swap if available and retain swap priority
 SWAPPRIO=$(grep ^/dev/$MD /proc/swaps | awk '{print $5}')
-
 [ $SWAPPRIO ] && swapoff /dev/$MD
 
+# read old error count
 read CURCOUNT < /sys/block/$MD/md/mismatch_cnt
 
+# start the check
 echo check >> /sys/block/$MD/md/sync_action
 
+# check every 60 seconds for end of check
 STATUS=just_started
 while [ "$STATUS" != "idle" ] ; do
 	sleep 60
 	read STATUS < /sys/block/$MD/md/sync_action
 done
 
+# read new error count
 read ERRORS < /sys/block/$MD/md/mismatch_cnt
 
+# re-enable swap if needed
 [ $SWAPPRIO ] && swapon -p $SWAPPRIO /dev/$MD
 
+# mail errors to root
 if [ "$ERRORS" -ne 0 ] ; then
 	(
 		date
