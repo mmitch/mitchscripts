@@ -5,7 +5,7 @@ LC_MESSAGES=C
 export LC_MESSAGES
 
 # tin singleton (avoid messing up read articles)
-alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else tin; fi'
+alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else /home/mitch/git/mitchscripts/bash/procrastinator.sh 1800 usenet; tin; fi'
 
 # Trogdor!
 alias sbemail.exe='mutt'
@@ -17,13 +17,13 @@ alias rls='ls -rt'
 alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate'
 
 # never start irssi without screen again
-alias irssi='screen -d -R -S irssi -t irssi irssi'
+alias irssi='/home/mitch/git/mitchscripts/bash/procrastinator.sh 300 irc; screen -d -R -S irssi -t irssi irssi'
 
 # debsign all signable files
 alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'
 
 # show latest procmail sorted mails
-alias mailtail='tail -n 30 -f /home/mitch/Mail/from | /home/mitch/git/mitchscripts/perl/mimedecoder.pl | sed "s/^From/\nFrom/"'
+alias mailtail='/home/mitch/git/mitchscripts/bash/procrastinator.sh 1800 mailtail; tail -n 30 -f /home/mitch/Mail/from | /home/mitch/git/mitchscripts/perl/mimedecoder.pl | sed "s/^From/\nFrom/"'
 
 # default start page in (e)links
 # $1: URL (optional)
