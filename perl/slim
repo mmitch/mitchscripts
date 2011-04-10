@@ -26,13 +26,43 @@ my $playerid = '00%3A04%3A20%3A05%3A90%3Ab4';
 
 my ($reader, $writer);
 my %actions = (
-	       info  =>	['title ?','artist ?','album ?', 'path ?'],
-	       next  => ['playlist index +1'],
-	       pause => ['pause'],
-	       play  => ['play'],
-	       prev  => ['playlist index -1'],
-	       stop  => ['stop'],
-	       );
+    info     => [
+	'title ?',
+	'artist ?',
+	'album ?',
+	'path ?'
+    ],
+    next     => [
+	'playlist index +1'
+    ],
+    pause    => [
+	'pause'
+    ],
+    play     => [
+	'play'
+    ],
+    prev     => [
+	'playlist index -1'
+    ],
+    stop     => [
+	'stop'
+    ],
+    webradio => [
+	'playlist clear',
+	'playlist add http://195.24.224.77:8086/bitjam.ogg.m3u',
+	'playlist add http://demovibes.de:8000/necta192.mp3.m3u',
+	'playlist add http://kohina.radio.ethz.ch:8000/kohina.ogg.m3u',
+	'playlist add http://ormgas.rainwave.cc/tunein.php',
+	'playlist add http://www.radioseven.se/128.pls',
+	'playlist add http://cast6.serverhostingcenter.com/tunein.php/jotaylor/playlist.pls',
+	'playlist add http://www.slayradio.org/tune_in.php/128kbps/listen.m3u',
+	'playlist add http://somafm.com/startstream=secretagent.pls',
+	'playlist add http://somafm.com/startstream=indiepop.pls',
+	'playlist add http://listen.trancebase.fm/aacplus.pls',
+	'playlist add http://trance.techno.fm',
+	'playlist shuffle 1'
+    ],
+    );
 
 
 sub abend($)
