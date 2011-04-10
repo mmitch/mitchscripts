@@ -59,7 +59,7 @@ $cmd = 'prev'  if $cmd =~ /^pr/;
 $cmd = 'stop'  if $cmd =~ /^s/;
 abend "command `$cmd' not recognized or unique" unless exists $actions{$cmd};
 
-open2($reader, $writer, 'nc','localhost','9090') or die "can't open2: $!\n";
+open2($reader, $writer, 'nc','yggdrasil','9090') or die "can't open2: $!\n";
 
 foreach my $send ( @{$actions{$cmd}} ) {
     my $in = shift;
