@@ -1,0 +1,63 @@
+#!/usr/bin/perl -w
+# $Id: slim,v 1.6 2007/07/13 20:02:22 mitch Exp $
+#
+# small slimserver command line interface
+# 2005-6 (C) by Christian Garbs <mitch@cgarbs.de>
+#
+use strict;
+use FileHandle;
+use IPC::Open2;
+
+my $playerid = '00%3A04%3A20%3A05%3A90%3Ab4';
+
+my ($reader, $writer);
+my %actions = (
+	       info  =>	['title ?','artist ?','album ?', 'path ?'],
+	       next  => ['playlist index +1'],
+	       pause => ['pause'],
+	       play  => ['play'],
+	       prev  => ['playlist index -1'],
+	       stop  => ['stop'],
+	       );
+
+
+sub abend($)
+{
+    print STDERR "$_[0]\n";
+    print << "EOF";
+available commands are:
+info next pause play prev stop
+EOF
+;
+    exit 1;
+}
+
+
+
+abend "no command given" unless defined $ARGV[0];
+my $cmd = lc $ARGV[0];
+# expand commands
+$cmd = 'info'  if $cmd =~ /^i/;
+$cmd = 'next'  if $cmd =~ /^n/;
+$cmd = 'pause' if $cmd =~ /^pa/;
+$cmd = 'play'  if $cmd =~ /^pl/;
+$cmd = 'prev'  if $cmd =~ /^pr/;
+$cmd = 'stop'  if $cmd =~ /^s/;
+abend "command `$cmd' not recognized or unique" unless exists $actions{$cmd};
+
+open2($reader, $writer, 'nc','localhost','9090') or die "can't open2: $!\n";
+
+foreach my $send ( @{$actions{$cmd}} ) {
+    my $in = shift;
+    print $writer "$playerid $send\n";
+    my $reply = <$reader>;
+    $reply = (split /\s/, $reply, 2)[1];
+    $reply =~ s/ /\t/;
+    $reply =~ s/%([A-Fa-f\d]{2})/chr hex $1/eg;
+    print $reply;
+}
+
+print $writer "exit\n";
+
+close $writer or die "can't close writer: $!\n";
+close $reader or die "can't close reader: $!\n";
