@@ -22,10 +22,25 @@ use warnings;
 use FileHandle;
 use IPC::Open2;
 
+# expand filenames if there are any
+my @files;
+if (@ARGV > 1) {
+    my $keep = shift @ARGV;
+    foreach my $file (@ARGV) {
+	die "file `$file' is outside /mnt/mp3!\n" unless $file =~ s,/mnt/mp3,playlist add /mnt/mp3,;
+	push @files, $file;
+    }
+    @ARGV = ( $keep );
+}
+
 my $playerid = '00%3A04%3A20%3A05%3A90%3Ab4';
 
 my ($reader, $writer);
 my %actions = (
+    'add'      => [ # add given files/paths unter /mnt/mp3 to playlist
+		    @files,
+		    'playlist shuffle 1'
+    ],
     'info'     => [ # print song information
 		    'title ?',
 		    'artist ?',
@@ -43,6 +58,11 @@ my %actions = (
     ],
     'prev'     => [ # skip to previous song in playlist
 		    'playlist index -1'
+    ],
+    'set'      => [ # clean playlist and add given files/paths unter /mnt/mp3
+		    'playlist clear',
+		    @files,
+		    'playlist shuffle 1'
     ],
     'stop'     => [ # stop playing
 		    'stop'
@@ -78,12 +98,14 @@ sub abend($)
 abend "no command given" unless defined $ARGV[0];
 my $cmd = lc $ARGV[0];
 # expand commands
+$cmd = 'add'      if $cmd =~ /^a/;
 $cmd = 'info'     if $cmd =~ /^i/;
 $cmd = 'next'     if $cmd =~ /^n/;
 $cmd = 'pause'    if $cmd =~ /^pa/;
 $cmd = 'play'     if $cmd =~ /^pl/;
 $cmd = 'prev'     if $cmd =~ /^pr/;
-$cmd = 'stop'     if $cmd =~ /^s/;
+$cmd = 'set'      if $cmd =~ /^se/;
+$cmd = 'stop'     if $cmd =~ /^st/;
 $cmd = 'webradio' if $cmd =~ /^w/;
 abend "command `$cmd' not recognized or unique" unless exists $actions{$cmd};
 
