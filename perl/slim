@@ -78,12 +78,13 @@ sub abend($)
 abend "no command given" unless defined $ARGV[0];
 my $cmd = lc $ARGV[0];
 # expand commands
-$cmd = 'info'  if $cmd =~ /^i/;
-$cmd = 'next'  if $cmd =~ /^n/;
-$cmd = 'pause' if $cmd =~ /^pa/;
-$cmd = 'play'  if $cmd =~ /^pl/;
-$cmd = 'prev'  if $cmd =~ /^pr/;
-$cmd = 'stop'  if $cmd =~ /^s/;
+$cmd = 'info'     if $cmd =~ /^i/;
+$cmd = 'next'     if $cmd =~ /^n/;
+$cmd = 'pause'    if $cmd =~ /^pa/;
+$cmd = 'play'     if $cmd =~ /^pl/;
+$cmd = 'prev'     if $cmd =~ /^pr/;
+$cmd = 'stop'     if $cmd =~ /^s/;
+$cmd = 'webradio' if $cmd =~ /^w/;
 abend "command `$cmd' not recognized or unique" unless exists $actions{$cmd};
 
 open2($reader, $writer, 'nc','yggdrasil','9090') or die "can't open2: $!\n";
