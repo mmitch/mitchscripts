@@ -68,11 +68,8 @@ my %actions = (
 sub abend($)
 {
     print STDERR "$_[0]\n";
-    print << "EOF";
-available commands are:
-info next pause play prev stop
-EOF
-;
+    print "available commands are:\n";
+    print join(' ', sort keys %actions) . "\n";
     exit 1;
 }
 
