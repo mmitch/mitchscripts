@@ -20,13 +20,13 @@ echo "server hostname? [e.g. ranmachan.dyndns.org]"
 read HOST_SRV
 echo "server ip? [e.g. 169.254.65.1] (taken from BGP=65001)"
 read IP_SRV
-echo "server tun? [e.g. tun2]"
+echo "server tun? [e.g. tun2, tun_foo]"
 read TUN_SRV
-echo "client hostname?"
+echo "client hostname? [e.g. ranmachan.is-a-geek.org]"
 read HOST_CLT
-echo "client ip?"
+echo "client ip? [e.g. 169.254.65.4] (taken from BGP=65004)"
 read IP_CLT
-echo "client tun?"
+echo "client tun? [e.g. tun4, tun_bar]"
 read TUN_CLT
 
 echo
@@ -47,7 +47,7 @@ mkdir -p $CONFDIR_SRV $CONFDIR_CLT
 
 < /etc/ssl/openssl.cnf \
 sed \
--e 's/default_bits.*=.*$/default_bits = 2048/' \
+-e 's/default_bits.*=.*$/default_bits = 4096/' \
 -e 's/private_key.*=.*$/private_key = ca.key/' \
 -e 's/certificate.*=.*/certificate = ca.crt/' \
 -e 's/new_certs_dir.*=.*/new_certs_dir = ./' \
@@ -66,7 +66,7 @@ echo creating CA...
 
     cd $TMPDIR
 
-    openssl req -new -x509 -nodes -keyout ca.key -out ca.crt -days $DAYS 3650 -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -new -x509 -nodes -keyout ca.key -out ca.crt -days 3650 -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -94,8 +94,8 @@ echo CA created
 
 echo creating DH...
 
-openssl dhparam -out $CONFDIR_SRV/dh1024.pem 1024
-chmod 600 $CONFDIR_SRV/dh1024.pem
+openssl dhparam -out $CONFDIR_SRV/dh2048.pem 2048
+chmod 600 $CONFDIR_SRV/dh2048.pem
 
 echo DH created
 
@@ -184,7 +184,7 @@ cat > $CONF_SRV <<EOF
 ca      $COMBINED/ca.crt
 cert    $COMBINED/$HOST_SRV.crt
 key     $COMBINED/$HOST_SRV.key
-dh      $COMBINED/dh1024.pem
+dh      $COMBINED/dh2048.pem
 dev $TUN_SRV
 float
 ifconfig $IP_SRV $IP_CLT
@@ -231,6 +231,7 @@ remote $HOST_SRV
 tls-client
 tun-mtu 1427
 verb 3
+script-security 2
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
