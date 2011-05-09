@@ -1,4 +1,4 @@
-# Makefile to automatically update all git and git-svn directories
+# Makefile to automatically update all git and git svn directories
 #
 # rename to "Makefile", put it to eg. $HOME/git and run it periodically
 
@@ -7,7 +7,7 @@ update:
 		if [ -d "$$DIR/.git" ] ; then \
 			echo Updating $$DIR ; \
 			if [ -d "$$DIR/.git/svn" ] ; then \
-				( cd "$$DIR" ; git-svn rebase ) ; \
+				( cd "$$DIR" ; git svn rebase ) ; \
 			else \
 				( cd "$$DIR" ; git pull ) ; \
 			fi ; \
