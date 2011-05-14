@@ -66,7 +66,7 @@ echo creating CA...
 
     cd $TMPDIR
 
-    openssl req -new -x509 -nodes -keyout ca.key -out ca.crt -days $DAYS 3650 -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -new -x509 -nodes -keyout ca.key -out ca.crt -days 3650 -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
