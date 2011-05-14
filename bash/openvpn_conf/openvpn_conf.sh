@@ -203,7 +203,7 @@ tls-server
 tun-mtu 1427
 verb 3
 script-security 2
-remote-cert-tls client
+#remote-cert-tls client
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
@@ -235,7 +235,7 @@ tls-client
 tun-mtu 1427
 verb 3
 script-security 2
-remote-cert-tls server
+#remote-cert-tls server
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
