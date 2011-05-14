@@ -109,7 +109,7 @@ echo building server key
     cd $TMPDIR
 
     # -extensions server 
-    openssl req -days 3650 -nodes -new -keyout $HOST_SRV.key -out $HOST_SRV.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -days 3650 -nodes -new -keyout $HOST_SRV.key -out $HOST_SRV.csr -addtrust serverAuth -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -122,7 +122,7 @@ root@$HOST_SRV
 EOF
 
     # -extensions server
-    openssl ca -days 3650 -out $HOST_SRV.crt -in $HOST_SRV.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl ca -days 3650 -out $HOST_SRV.crt -in $HOST_SRV.csr -addtrust serverAuth -config openssl.cnf 2>/dev/null <<EOF
 y
 y
 EOF
@@ -146,7 +146,7 @@ echo building client key
     cd $TMPDIR
 
     # -extensions client 
-    openssl req -days 3650 -nodes -new -keyout $HOST_CLT.key -out $HOST_CLT.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -days 3650 -nodes -new -keyout $HOST_CLT.key -out $HOST_CLT.csr --addtrust clientAuth -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -159,7 +159,7 @@ root@$HOST_CLT
 EOF
 
     # -extensions client
-    openssl ca -days 3650 -out $HOST_CLT.crt -in $HOST_CLT.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl ca -days 3650 -out $HOST_CLT.crt -in $HOST_CLT.csr -addtrust clientAuth -config openssl.cnf 2>/dev/null <<EOF
 y
 y
 EOF
@@ -201,6 +201,8 @@ resolv-retry infinite
 tls-server
 tun-mtu 1427
 verb 3
+script-security 2
+remote-cert-tls client
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
@@ -232,6 +234,7 @@ tls-client
 tun-mtu 1427
 verb 3
 script-security 2
+remote-cert-tls server
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
