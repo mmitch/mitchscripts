@@ -23,9 +23,13 @@ for ON in accept_redirects accept_source_route; do
     FILE=/proc/sys/net/ipv4/conf/${tun_dev}/${ON}
     [ -e ${FILE} ] && echo 1 > ${FILE}
 done
-for OFF in rp_filter log_martians; do
+for OFF in log_martians; do          
     FILE=/proc/sys/net/ipv4/conf/${tun_dev}/${OFF}
     [ -e ${FILE} ] && echo 0 > ${FILE}
 done
+for LOOSE_MODE in rp_filter; do
+    FILE=/proc/sys/net/ipv4/conf/${tun_dev}/${LOOSE_MODE}
+    [ -e ${FILE} ] && echo 2 > ${FILE}    
+done        
 
 exit 0
