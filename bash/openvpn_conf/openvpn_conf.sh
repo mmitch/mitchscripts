@@ -11,7 +11,8 @@
 set +e
 
 TMPDIR=$(mktemp -d)
-
+DH_SIZE=2048
+KEY_SIZE=4096
 ##### Parameter abfragen
 
 echo "port? [e.g. 1195]"
@@ -47,7 +48,7 @@ mkdir -p $CONFDIR_SRV $CONFDIR_CLT
 
 < /etc/ssl/openssl.cnf \
 sed \
--e 's/default_bits.*=.*$/default_bits = 4096/' \
+-e "s/default_bits.*=.*$/default_bits = $KEY_SIZE/" \
 -e 's/private_key.*=.*$/private_key = ca.key/' \
 -e 's/certificate.*=.*/certificate = ca.crt/' \
 -e 's/new_certs_dir.*=.*/new_certs_dir = ./' \
@@ -57,7 +58,7 @@ sed \
 
 ##### eigene CA bauen
 
-CA_PASSWORD='fest_weil_sowieso_wieder_geloescht'
+CA_PASSWORD='fEST_Weil_sow1eso,wIeder_gel0escht!'
 
 echo creating CA...
 
@@ -94,8 +95,8 @@ echo CA created
 
 echo creating DH...
 
-openssl dhparam -out $CONFDIR_SRV/dh2048.pem 2048
-chmod 600 $CONFDIR_SRV/dh2048.pem
+openssl dhparam -out $CONFDIR_SRV/dh$DH_SIZE.pem $DH_SIZE
+chmod 600 $CONFDIR_SRV/dh$DH_SIZE.pem
 
 echo DH created
 
@@ -109,7 +110,7 @@ echo building server key
     cd $TMPDIR
 
     # -extensions server 
-    openssl req -days 3650 -nodes -new -keyout $HOST_SRV.key -out $HOST_SRV.csr -addtrust serverAuth -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -days 3650 -nodes -new -keyout $HOST_SRV.key -out $HOST_SRV.csr -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -122,7 +123,7 @@ root@$HOST_SRV
 EOF
 
     # -extensions server
-    openssl ca -days 3650 -out $HOST_SRV.crt -in $HOST_SRV.csr -addtrust serverAuth -config openssl.cnf 2>/dev/null <<EOF
+    openssl ca -days 3650 -out $HOST_SRV.crt -in $HOST_SRV.csr -config openssl.cnf 2>/dev/null <<EOF
 y
 y
 EOF
@@ -146,7 +147,7 @@ echo building client key
     cd $TMPDIR
 
     # -extensions client 
-    openssl req -days 3650 -nodes -new -keyout $HOST_CLT.key -out $HOST_CLT.csr --addtrust clientAuth -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -days 3650 -nodes -new -keyout $HOST_CLT.key -out $HOST_CLT.csr -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -159,7 +160,7 @@ root@$HOST_CLT
 EOF
 
     # -extensions client
-    openssl ca -days 3650 -out $HOST_CLT.crt -in $HOST_CLT.csr -addtrust clientAuth -config openssl.cnf 2>/dev/null <<EOF
+    openssl  ca -days 3650 -out $HOST_CLT.crt -in $HOST_CLT.csr -config openssl.cnf 2>/dev/null <<EOF
 y
 y
 EOF
@@ -184,7 +185,7 @@ cat > $CONF_SRV <<EOF
 ca      $COMBINED/ca.crt
 cert    $COMBINED/$HOST_SRV.crt
 key     $COMBINED/$HOST_SRV.key
-dh      $COMBINED/dh2048.pem
+dh      $COMBINED/dh$DH_SIZE.pem
 dev $TUN_SRV
 float
 ifconfig $IP_SRV $IP_CLT
