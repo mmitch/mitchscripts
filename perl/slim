@@ -63,7 +63,8 @@ my %actions = (
     'set'      => [ # clean playlist and add given files/paths unter /mnt/mp3
 		    'playlist clear',
 		    @files,
-		    'playlist shuffle 1'
+		    'playlist shuffle 1',
+		    'play'
     ],
     'stop'     => [ # stop playing
 		    'stop'
