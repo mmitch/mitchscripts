@@ -27,6 +27,7 @@ my @files;
 if (@ARGV > 1) {
     my $keep = shift @ARGV;
     foreach my $file (@ARGV) {
+	$file =~ s|([^A-Za-z0-9\-_./])| sprintf "%%%0x", ord $1 |eg;
 	die "file `$file' is outside /mnt/mp3!\n" unless $file =~ s,/mnt/mp3,playlist add /mnt/mp3,;
 	push @files, $file;
     }
