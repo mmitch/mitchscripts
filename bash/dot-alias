@@ -171,3 +171,19 @@ albumplay()
 		done
 	)
 }
+
+# quick way to renice and ionice a given process or everything maching a
+# string
+mynice()
+{
+    if [[ "$1" =~ ^[0-9]+$ ]] ; then
+	renice 20 $1
+	ionice -c 3 -p $1
+    else
+	PIDS="$(pidof "$1")"
+	renice 20 $PIDS
+	for PID in $PIDS ; do
+	    ionice -c 3 -p $PID
+	done
+    fi
+}
