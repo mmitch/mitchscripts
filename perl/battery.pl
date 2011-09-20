@@ -12,8 +12,7 @@ if (defined $ARGV[0] and $ARGV[0] eq '-s') {
 }
 
 # battery location
-my $procbattery  = '/proc/acpi/battery/BAT0/state';
-my $procmax      = '/proc/acpi/battery/BAT0/info';
+my $sysbattery   = '/sys/class/power_supply/BAT0/';
 
 # temperature information
 my $proctemp     = '/proc/acpi/thermal_zone/THM0/temperature';
@@ -36,33 +35,36 @@ my $temp   = 0;
 my @eth    = (0, 0);
 
 # read data
-if (open PROCBATTERY, '<', $procbattery) {
-    while (my $line = <PROCBATTERY>) {
-	chomp $line;
-	if ($line =~ /^charging state:\s+discharg/) {
-	    $state = 'DC';
-	} elsif ($line =~ /^present rate:\s+(\d+) m[AW]/) {
-	    $rate = $1;
-	} elsif ($line =~ /^remaining capacity:\s+(\d+) m[AW]h/) {
-	    $remain = $1;
-	} elsif ($line =~ /^present voltage:\s+(\d+) mV/) {
-	    $volt = $1;
-	}
+if (open SYSBAT, '<', $sysbattery . 'status') {
+    if ( <SYSBAT> =~ /disch/i ) {
+	$state = 'DC';
     }
-    close PROCBATTERY
-	or die "can't close `$procbattery': $!";
+    close SYSBAT
+	or die "can't close battery status: $!";
 }
 
-if (open PROCMAX, '<', $procmax) {
-    while (my $line = <PROCMAX>) {
-	chomp $line;
-	if ($line =~ /^last full capacity:\s+(\d+) m[AW]h/) {
-	    $max = $1;
-	    last;
-	}
-    }
-    close PROCMAX
-	or die "can't close `$procmax': $!";
+if (open SYSBAT, '<', $sysbattery . 'current_now') {
+    $rate = <SYSBAT> / 1000;
+    close SYSBAT
+	or die "can't close battery current_now: $!";
+}
+
+if (open SYSBAT, '<', $sysbattery . 'energy_now') {
+    $remain = <SYSBAT> / 1000;
+    close SYSBAT
+	or die "can't close battery energy_now: $!";
+}
+
+if (open SYSBAT, '<', $sysbattery . 'energy_full') {
+    $max = <SYSBAT> / 1000;
+    close SYSBAT
+	or die "can't close battery energy_full: $!";
+}
+
+if (open SYSBAT, '<', $sysbattery . 'voltage_now') {
+    $volt = <SYSBAT> / 1000;
+    close SYSBAT
+	or die "can't close battery voltage_now: $!";
 }
 
 if (open PROCTEMP, '<', $proctemp) {

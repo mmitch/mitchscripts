@@ -187,3 +187,33 @@ mynice()
 	done
     fi
 }
+
+# one-shot-fileserving
+# $1: file to serve
+#
+# poor man's webserver ignoring any RFC there is
+# works with netcat-openbsd, for netcat-traditional use "nc -l -p $PORT -q 1" instead
+share_file_once()
+{
+    
+    local FILE="$1"
+    if [ ! -r "$FILE" ] ; then
+	echo "can't read file $FILE" >2
+	return 1
+    fi
+
+    local PORT=$(( 60000 + ( $RANDOM % 1000 ) ))
+    local HOSTNAME=$(hostname -f)
+    local MIME=$(file -b --mime-type "$FILE")
+
+    echo "serving file on http://$HOSTNAME:$PORT/foo"
+
+    if (echo -en "HTTP/1.1 200 OK\nContent-Type: $MIME\n\n"; cat "$FILE") | nc -l $PORT ; then
+	echo "file transmitted, ok."
+    else
+	echo "something went wrong." >2
+	return 2
+    fi
+    return 0
+    
+}
