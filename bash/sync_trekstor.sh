@@ -43,7 +43,6 @@ rsync \
     --ignore-existing \
     --delete \
     --size-only \
-    --progress \
     $LOCALDIR/ \
     $TREKDIR/
 
