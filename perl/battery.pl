@@ -134,6 +134,22 @@ if (defined $rate and $rate > 0) {
     }
 }
 
+# additional WLAN info
+my $wlan = $status ? '~' : 'wlan ';
+if ($eth[1]) {
+    if (open IWCONFIG, 'LOCALE=C /sbin/iwconfig eth1|') {
+	while (my $line = <IWCONFIG>) {
+	    if ($line =~ /SSID:"([^"]+)"/) {
+		$wlan .= $1;
+	    }
+	    if ($line =~ m,Link Quality=(\d+)/100,) {
+		$wlan = $status ? $1.'%'.$wlan : $wlan.' '.$1.'%';
+	    }
+	}
+	close IWCONFIG;
+    }
+}
+
 # print data
 if ($status) {
     if (defined $rate and $rate > 0) {
@@ -146,19 +162,19 @@ if ($status) {
 	$temp,
 	($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.',
 	$eth[0] ? '=' : '',
-	$eth[1] ? '~' : '';
+	$eth[1] ? $wlan : '';
     } else {
 	if (defined $curfreq && defined $temp) {
 	    printf "%d°C [%s] %s%s\n",
 	    $temp,
 	    ($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.',
 	    $eth[0] ? '=' : '',
-	    $eth[1] ? '~' : '';
+	    $eth[1] ? $wlan : '';
 	} else {
 	    printf "[%s] %s%s\n",
 	    $battery,
 	    $eth[0] ? '=' : '',
-	    $eth[1] ? '~' : '';
+	    $eth[1] ? $wlan : '';
 	}
     }
 } else {
@@ -170,6 +186,6 @@ if ($status) {
     }
     printf "%s%s  cpu %s\n",
     $eth[0] ? 'cable ' : '',
-    $eth[1] ? 'wlan ' : '',
+    $eth[1] ? $wlan : '',
     (defined $curfreq) ? (($curfreq == $minfreq) ? 'slow' : (($curfreq == $maxfreq) ? 'fast' : 'intermediate')) : '??';
 }
