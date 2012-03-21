@@ -7,7 +7,7 @@
 
 ### configuration
 
-TREKDIR=/mnt/usb_part
+TREKDIR=/mnt/usb_part_sync
 LOCALDIR=/home/mitch/TREKSTOR
 
 ### checks + setup
@@ -43,6 +43,7 @@ rsync \
     --ignore-existing \
     --delete \
     --size-only \
+    --progress \
     $LOCALDIR/ \
     $TREKDIR/
 
