@@ -35,7 +35,7 @@ while (my $url = <>) {
 	    warn "dir= and/or img= missing";
 	}
 
-	print "\n    END  $parm{dir}…\n\n";
+	print "\n    END  $parm{dir}\n\n";
 
     } else {
 	warn "unrecognized url";
