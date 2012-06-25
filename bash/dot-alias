@@ -16,6 +16,9 @@ alias rls='ls -rt'
 # copy EXIF timestamps to file timestamps
 alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate'
 
+# set EXIF/IPTC/XMP/… metatags with Copyright information
+alias exifaddcopyright='exiftool -mwg:copyright="Copyright Christian Garbs - http://www.cgarbs.de" -mwg:creator="Christian Garbs <mitch@cgarbs.de>"'
+
 # never start irssi without screen again
 alias irssi='/home/mitch/git/mitchscripts/bash/procrastinator.sh 300 irc; screen -d -R -S irssi -t irssi irssi'
 
