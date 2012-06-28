@@ -85,7 +85,10 @@ my %actions = (
 		    'playlist add http://www.nubreaks.com/modules/mod_internetradio/makeplaylist.php?ip=server4.myshoutcast.de&port=9004&format=PLS',
 		    'playlist shuffle 1',
 		    'play',
-		    'path ?'
+		    'path ?',
+		    'title ?',
+		    'artist ?',
+		    'album ?'
     ],
     );
 
