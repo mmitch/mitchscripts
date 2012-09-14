@@ -10,7 +10,6 @@
 #   if no sink is given, the default sink is used
 #
 #
-#
 # rationale:
 #   pacmd can only mute or unmute but can't toggle
 #   amixer can toggle, but unmuting pulseaudio via alsa is broken
@@ -24,7 +23,7 @@ export LANG=C
 
 # find sink
 if [ -z "$1" ]; then
-    SINK="$( pacmd info | fgrep 'Default sink name' | awk '{print $4}' )"
+    SINK="$( pacmd info | awk '/Default sink name/ {print $4}' )"
 else
     SINK="$1"
 fi
