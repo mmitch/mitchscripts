@@ -204,7 +204,7 @@ tun-mtu 1427
 verb 3
 script-security 2
 #remote-cert-tls client
-log-append /var/log/openvpn_$HOST_SRV.log
+log-append /var/log/openvpn_$HOST_CLT.log
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
@@ -237,7 +237,7 @@ tun-mtu 1427
 verb 3
 script-security 2
 #remote-cert-tls server
-log-append /var/log/openvpn_$HOST_CLT.log
+log-append /var/log/openvpn_$HOST_SRV.log
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
