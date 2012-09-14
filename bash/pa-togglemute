@@ -29,8 +29,20 @@ else
 fi
 
 # extract current mute status
-STATUS="$( pacmd list-sinks | egrep '^\s+(name|muted): ' | fgrep -A1 "$SINK" | tail -1 | awk '{print $2}' )"
-
+STATUS="$( pacmd list-sinks |\
+    while read KEY VALUE UNDEF; do
+        if [ "$KEY" = 'name:' -a "$VALUE" = "<$SINK>" ]; then
+            while read KEY VALUE undef; do
+                if [ "$KEY" = 'name:' ]; then
+                    echo 'no muted property found'; exit 1
+                fi
+                if [ "$KEY" = 'muted:' ]; then
+                    echo "$VALUE"; exit 1
+                fi
+            done
+        fi
+    done && echo 'sink not found')"
+ 
 # toggle mute
 case "$STATUS" in
 
