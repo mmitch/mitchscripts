@@ -80,6 +80,7 @@ my %actions = (
 		    'playlist add http://www.slayradio.org/tune_in.php/128kbps/listen.m3u',
 		    'playlist add http://somafm.com/startstream=secretagent.pls',
 		    'playlist add http://somafm.com/startstream=indiepop.pls',
+		    'playlist add http://somafm.com/startstream=tags.pls',
 		    'playlist add http://listen.trancebase.fm/aacplus.pls',
 		    'playlist add http://trance.techno.fm',
 		    'playlist add http://www.nubreaks.com/modules/mod_internetradio/makeplaylist.php?ip=server4.myshoutcast.de&port=9004&format=PLS',
