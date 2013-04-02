@@ -1,0 +1,200 @@
+<html>
+<head>
+<title>WTFcounter</title>
+<!-- Copyright (C) 2013 by  Christian Garbs <mitch@cgarbs.de> -->
+<meta http-equiv="expires" content="0">
+</head>
+<body>
+<p>
+<script type="text/javascript">
+
+var verbose = 0;
+
+function showHelpText() {
+    document.write(
+	'<big>WTFcounter</big> - count days left</p>' +
+	    '<p>Parameters are passed as part of the URL after the # sign.</p>' +
+	    '<p>The parameters are a list of dates.  WTFcounter counts how many of these dates are in the future and displays the sum of future dates as &quot;days left&quot;</p>' +
+	    '<p>Valid parameters are:<ul>' +
+	    '<li><pre>v</pre> verbose: acivates verbose mode and prints the expanded list of dates for reference</li>' +
+	    '<li><pre>yNNNN</pre> year: sets the year of following dates to NNNN</li>' +
+	    '<li><pre>mNN</pre> month: sets the year of following dates to NN</li>' +
+	    '<li><pre>dNN</pre> day: adds a date consisting of the given day number, the previously specified month and the previously specified year to the list of dates to count</li>' +
+	    '<li><pre>dNN-NN</pre> day range: adds multiple days consisting of the expandes dates, the previously specified month and the previously specified year to the list of dates to count</li>' +
+	    '</ul></p>' +
+	    '<p>Adding no parameters at all will show this help page.</p>' +
+	    '<p>Examples:<ul>' +
+	    '<li><a href="#y2020m1d1">#y2020m1d1</a> will tell you if Januar 1st 2020 has already been reached.</li>' +
+	    '<li><a href="#y2015m3d1-10d20m5d1-5v">#y2015m3d1-10d20m5d1-5v</a> will count the days 2015/03/01 until 2015/03/10 plus 2015/03/20 plus 2015/05/01 until 2015/05/05.  Verbose output will show the expanded date list for easier reference.</li></ul>' +
+	    '<p>Known bugs:<ul>' +
+	    '<li>a forced page reload after every parameter change is necessary</li></ul>'
+    );
+}
+
+function error( text, params, pos ) {
+    var errortext = 'error</p><p>' + text.italics() + '</p><p>at position ' + pos + '</p><p>' + (params.substr(0, pos) + params.charAt(pos).bold() + params.substr(pos+1)).fixed().big();
+    document.write( errortext );
+    throw new Error( errortext );
+}
+
+function makeDate( year, month, date ) {
+
+    var tmp = '0000' + year;
+    var dateString = tmp.substr( tmp.length - 4 );
+    
+    tmp = '00' + month;
+    dateString += tmp.substr( tmp.length - 2 );
+
+    tmp = '00' + date;
+    dateString += tmp.substr( tmp.length - 2 );
+
+    return dateString;
+}
+
+function parseParams( params ) {
+    params = params.substr(1);    // remove #
+
+    var dates = new Array();
+
+    // scan string
+    var pos = 0;
+    var year = '';
+    var month = '';
+    while ( pos < params.length ) {
+
+	switch (params.charAt(pos)) {
+	    
+	case "v":
+	    verbose = 1;
+	    pos++;
+	    break;
+	    
+	case "y":
+	    year = '';
+	    var start = pos;
+	    pos++;
+	    while (params.charAt(pos).match(/[0-9]/)) {
+		year += params.charAt(pos);
+		pos++;
+	    }
+	    if (year.length < 1) {
+		error('no year given', params, start);
+	    }
+	    if (year < 2000) {
+		error('year ' + year + ' out of range [2000...]', params, start);
+	    }
+	    break;
+	    
+	case "m":
+	    month = '';
+	    var start = pos;
+	    pos++;
+	    while (params.charAt(pos).match(/[0-9]/)) {
+		month += params.charAt(pos);
+		pos++;
+	    }
+	    if (month.length < 1) {
+		error('no month given', params, start);
+	    }
+	    if (month < 1 || month > 12) {
+		error('month ' + month + ' out of range [1..12]', params, start);
+	    }
+	    break;
+	    
+	case "d":
+	    var start = pos;
+	    pos++;
+
+	    var from = '';
+	    var to;
+
+	    while (params.charAt(pos).match(/[0-9]/)) {
+		from += params.charAt(pos);
+		pos++;
+	    }
+
+	    if (params.charAt(pos) == '-') {
+		
+		to = '';
+		pos++;
+		while (params.charAt(pos).match(/[0-9]/)) {
+		    to += params.charAt(pos);
+		    pos++;
+		}
+		
+		if ( parseInt(to) < parseInt(from) ) {
+		    error('range end smaller than range start', params, start);
+		}
+		
+	    } else {
+		to = from;
+	    }
+	    
+	    for (day = from; day <= to; day++) {
+		
+		if (day.length < 1) {
+		    error('no day given', params, start);
+		}
+		if (day < 1 || day > 31) {
+		    error('day ' + day + ' out of range [1..31]', params, start);
+		}
+		if (year.length < 1) {
+		    error('year not yet specified', params, start);
+		}
+		if (month.length < 1) {
+		    error('month not yet specified', params, start);
+		}
+		dates.push( makeDate(year, month, day) );
+	    }
+	    
+	    break;
+	    
+	default:
+	    error('unknown character', params, pos);
+	    break;
+	}
+
+    }
+
+    return dates;
+}
+
+function printDates( dates ) {
+    document.write('verbose mode activated:</p><table>');
+    for ( var i = 0; i < dates.length; i++ ) {
+	document.write('<tr><td>'+i+'</td><td>'+dates[i]+'</td></tr>');
+    }
+    document.write('</table><p>');
+}
+
+function printCalculation( dates ) {
+    var count = 0;
+    var nowDate = new Date();
+    var now = makeDate( nowDate.getFullYear(), nowDate.getMonth() + 1, nowDate.getDate() );
+    for ( var i = 0; i < dates.length; i++ ) {
+	if (now < dates[i]) {
+	    count++;
+	}
+    }
+    document.write(count + ' days left');
+}
+
+var params = window.location.hash;
+
+if ( typeof params == 'undefined' || params == '' || params == '#' ) {
+
+    showHelpText();
+
+} else {
+
+    var data = parseParams( params );
+    if ( verbose == 1 ) {
+	printDates( data );
+    }
+    printCalculation( data );
+
+}
+
+</script>
+</p>
+</body>
