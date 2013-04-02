@@ -22,6 +22,19 @@ use warnings;
 use FileHandle;
 use IPC::Open2;
 
+# map addlist/setlist to other commands
+if (@ARGV == 2 and $ARGV[0] =~ /^(add|set)list$/) {
+    my $command = $1;
+    my @files;
+    open LIST, '<', $ARGV[1] or die "can't open `$ARGV[1]': $!\n";
+    while (my $line = <LIST>) {
+	chomp $line;
+	push @files, $line;
+    }
+    close LIST or die "can't close `$ARGV[1]': $!\n";    
+    @ARGV = ( $command, @files );
+}
+
 # expand filenames if there are any
 my @files;
 if (@ARGV > 1) {
@@ -41,6 +54,8 @@ my %actions = (
     'add'      => [ # add given files/paths unter /mnt/mp3 to playlist
 		    @files,
 		    'playlist shuffle 1'
+    ],
+    'addlist'  => [ # use file's contents for add command
     ],
     'info'     => [ # print song information
 		    'title ?',
@@ -66,6 +81,8 @@ my %actions = (
 		    'playlist shuffle 1',
 		    'play'
     ],
+    'setlist'  => [ # use file's contents for set command
+    ],
     'stop'     => [ # stop playing
 		    'stop'
     ],
@@ -80,6 +97,7 @@ my %actions = (
 		    'playlist add http://www.slayradio.org/tune_in.php/128kbps/listen.m3u',
 		    'playlist add http://somafm.com/startstream=secretagent.pls',
 		    'playlist add http://somafm.com/startstream=indiepop.pls',
+		    'playlist add http://somafm.com/startstream=tags.pls',
 		    'playlist add http://listen.trancebase.fm/aacplus.pls',
 		    'playlist add http://trance.techno.fm',
 		    'playlist add http://www.nubreaks.com/modules/mod_internetradio/makeplaylist.php?ip=server4.myshoutcast.de&port=9004&format=PLS',
