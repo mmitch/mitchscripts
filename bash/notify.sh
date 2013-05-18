@@ -8,7 +8,7 @@
 # needs dzen2 from http://gotmor.googlepages.com/dzen
 #
 
-DZEN_BIN=/home/mitch/svn/dzen/dzen2
+DZEN_BIN=dzen2
 DZEN_FONT='-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*'
 DZEN_FG='#ccc'
 DZEN_BG='#222'
