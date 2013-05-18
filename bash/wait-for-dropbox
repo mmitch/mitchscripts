@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# wait until dropbox is idle
+#
+# optionally needs dzen2 and zenity
+
+LANG=C
+LANGUAGE=C
+LC_MESSAGES=C
+export LANG
+export LANGUAGE
+export LC_MESSAGES
+
+# is there a dropbox?
+if [ "$(dropbox status)" = "Dropbox isn't running!" ] ; then
+    # warn
+    echo "Dropbox isn't running!" >&2
+    zenity --warning --text="Dropbox isn't running!" 2>/dev/null ||  true
+    # we're finished, nothing to do :)
+    exit 1
+fi
+
+TIMER=2
+
+# wait until idle
+if [ "$(dropbox status)" != 'Idle' ]; then
+
+    if [ -x "$(which dzen2)" -a "$DISPLAY" ]; then
+
+        # graphical
+
+	(
+	    echo '^tw()Waiting for dropbox to settle...'
+	    while [ "$(dropbox status)" != 'Idle' ]; do
+		echo "$(dropbox status)"
+		sleep $TIMER
+		echo '^cs()'
+	    done
+	) | dzen2 -bg darkred -fg grey80 -fn fixed -l 2 -e 'onstart=uncollapse;enterslave=collapse;entertitle=uncollapse' -ta left
+
+    else
+
+        # text only
+
+	echo -n 'Waiting for dropbox to settle...'
+	while [ "$(dropbox status)" != 'Idle' ]; do
+	    sleep $TIMER
+	    echo -n .
+	done
+	echo
+	echo
+
+    fi
+
+fi
