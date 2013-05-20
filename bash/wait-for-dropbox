@@ -34,7 +34,7 @@ if [ "$(dropbox status)" != 'Idle' ]; then
 	    while [ "$(dropbox status)" != 'Idle' ]; do
 		echo "$(dropbox status)"
 		sleep $TIMER
-		echo
+#		echo
 	    done
 	) | dzen2 -bg darkred -fg grey80 -fn fixed -l 2 -e 'onstart=uncollapse;enterslave=collapse;entertitle=uncollapse' -ta left
 
