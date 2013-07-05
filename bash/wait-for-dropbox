@@ -36,7 +36,7 @@ if [ "$(dropbox status)" != 'Idle' ]; then
 		sleep $TIMER
 #		echo
 	    done
-	) | dzen2 -bg darkred -fg grey80 -fn fixed -l 2 -e 'onstart=uncollapse;enterslave=collapse;entertitle=uncollapse' -ta left
+	) | dzen2 -bg darkred -fg grey80 -fn fixed -l 2 -e 'button1=exec:killall wait-for-dropbox;onstart=uncollapse;enterslave=collapse;entertitle=uncollapse' -ta left
 
     else
 
