@@ -23,6 +23,8 @@ DZEN_FG_OK='#000'
 DZEN_BG_OK='#0f0'
 DZEN_TIMEOUT_OK=10
 
+DZEN_EVENTS='button1=exit:0' # kill on left click
+
 MSGFILE=~/.notify
 MSGWAIT=5
 
@@ -57,7 +59,7 @@ while sleep "$MSGWAIT"; do
 		    TIMEOUT="$DZEN_TIMEOUT"
 		    ;;
 	    esac
-	    echo "$LINE" | "$DZEN_BIN" -fg "$FG" -bg "$BG" -fn "$DZEN_FONT" -p "$TIMEOUT" -ta "$DZEN_JUSTIFY"
+	    echo "$LINE" | "$DZEN_BIN" -fg "$FG" -bg "$BG" -fn "$DZEN_FONT" -p "$TIMEOUT" -ta "$DZEN_JUSTIFY" -e "$DZEN_EVENTS"
 	done < "$WORKFILE"
 	rm "$WORKFILE"
 
