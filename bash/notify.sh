@@ -2,8 +2,8 @@
 #
 # simple X notification framework
 #
-# 2009 (C) by Christian Garbs <mitch@cgarbs.de>
-# licensed under GNU GPL v2
+# Copyright (C) 2009, 2013  Christian Garbs <mitch@cgarbs.de>
+# Licensed under GNU GPL v3 or later.
 #
 # needs dzen2 from http://gotmor.googlepages.com/dzen
 #
