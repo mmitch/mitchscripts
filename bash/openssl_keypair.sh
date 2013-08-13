@@ -109,8 +109,8 @@ echo CA created
 
 echo creating DH...
 
-openssl dhparam -out dh1024.pem 1024
-chmod 600 dh1024.pem
+openssl dhparam -out dh2048.pem 2048
+chmod 600 dh2048.pem
 
 echo DH created
 
@@ -136,7 +136,7 @@ echo pems built
 
 echo cleaning up
 
-rm two.* one.* index.* ca.* serial* ????????????????.pem openssl.cnf dh1024.pem
+rm two.* one.* index.* ca.* serial* ????????????????.pem openssl.cnf dh2048.pem
 
 echo up cleant #sic! :-)
 
