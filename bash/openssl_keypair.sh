@@ -1,18 +1,20 @@
 #!/bin/bash
 
-# 2007 (c) by Christian Garbs <mitch@cgarbs.de>
+# 2007,2013 (c) by Christian Garbs <mitch@cgarbs.de>
 
 # Generate a one time CA and some signed keys
 # OpenSSL keyhandling is a hassle o_O
 
 set +e
 
+VALID_DAYS=3650   # 10 years
+
 ## baut eine CA und signiert sie mit sich selbst
 buildca()
 {
     set +e
 
-    openssl req -new -x509 -nodes -keyout $1.key -out $1.crt -days 3650 -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -new -x509 -nodes -keyout $1.key -out $1.crt -days ${VALID_DAYS} -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -39,7 +41,7 @@ buildkey()
     
     # -extensions server/client??
     # generate private key + certificate signing request
-    openssl req -days 3650 -nodes -new -keyout $1.key -out $1.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -days ${VALID_DAYS} -nodes -new -keyout $1.key -out $1.csr -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -53,7 +55,7 @@ EOF
 
     # -extensions server/client??
     # sign request by CA
-    openssl ca -days 3650 -out $1.crt -in $1.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl ca -days ${VALID_DAYS} -out $1.crt -in $1.csr -config openssl.cnf 2>/dev/null <<EOF
 y
 y
 EOF
