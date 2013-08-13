@@ -77,6 +77,9 @@ buildpem()
     cat $1.key $1-public.pem > $1-private.pem
     chmod 600 $1-private.pem
 
+    # DH-Parameter anhängen
+    openssl dhparam 2048 >> $1-private.pem
+
 }
     
 
@@ -105,15 +108,6 @@ buildca ca
 
 echo CA created
 
-##### DH bauen
-
-echo creating DH...
-
-openssl dhparam -out dh2048.pem 2048
-chmod 600 dh2048.pem
-
-echo DH created
-
 ##### Keys bauen
 
 echo building keys
@@ -136,7 +130,7 @@ echo pems built
 
 echo cleaning up
 
-rm two.* one.* index.* ca.* serial* ????????????????.pem openssl.cnf dh2048.pem
+rm two.* one.* index.* ca.* serial* ????????????????.pem openssl.cnf
 
 echo up cleant #sic! :-)
 
