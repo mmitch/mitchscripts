@@ -2,8 +2,8 @@
 #
 # simple X notification framework
 #
-# 2009 (C) by Christian Garbs <mitch@cgarbs.de>
-# licensed under GNU GPL v2
+# Copyright (C) 2009, 2013  Christian Garbs <mitch@cgarbs.de>
+# Licensed under GNU GPL v3 or later.
 #
 # needs dzen2 from http://gotmor.googlepages.com/dzen
 #
@@ -22,6 +22,8 @@ DZEN_TIMEOUT_ERR=15
 DZEN_FG_OK='#000'
 DZEN_BG_OK='#0f0'
 DZEN_TIMEOUT_OK=10
+
+DZEN_EVENTS='button1=exit:0' # kill on left click
 
 MSGFILE=~/.notify
 MSGWAIT=5
@@ -57,7 +59,7 @@ while sleep "$MSGWAIT"; do
 		    TIMEOUT="$DZEN_TIMEOUT"
 		    ;;
 	    esac
-	    echo "$LINE" | "$DZEN_BIN" -fg "$FG" -bg "$BG" -fn "$DZEN_FONT" -p "$TIMEOUT" -ta "$DZEN_JUSTIFY"
+	    echo "$LINE" | "$DZEN_BIN" -fg "$FG" -bg "$BG" -fn "$DZEN_FONT" -p "$TIMEOUT" -ta "$DZEN_JUSTIFY" -e "$DZEN_EVENTS"
 	done < "$WORKFILE"
 	rm "$WORKFILE"
 
