@@ -12,7 +12,7 @@ CHECK_FOR()
 	exit 1
     fi
 }
-CHECK_FOR chbg
+CHECK_FOR feh
 CHECK_FOR jpegtran
 CHECK_FOR dmenu
 
@@ -20,7 +20,7 @@ set -e
 
 set_bg()
 {
-   chbg -once -mode smart -max_grow 100 -max_size 100 -scenario /home/mitch/download/xxx/pic/SORT/NAMED/.scenario "$1"
+   feh --no-fehbg --bg-fill "$1"
 }
 
 rotate()
