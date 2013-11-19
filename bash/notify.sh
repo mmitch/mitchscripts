@@ -32,16 +32,33 @@ while sleep "$MSGWAIT"; do
 	mv "$MSGFILE" "$WORKFILE"
 	while read LINE; do
 	    case "$LINE" in
+
+		# urgent non-mail messages
 		OK:*)
 		    FG="#000"
 		    BG="#0f0"
 		    TIMEOUT=10
 		    ;;
+
 		ERR:*)
 		    FG="#fff"
 		    BG="#f00"
 		    TIMEOUT=15
 		    ;;
+
+		# Check_MK status mails:
+		*Check_MK:*FLAPPINGSTART|*Check_MK:*PROBLEM)
+		    FG="#ba6"
+		    BG="#311"
+		    TIMEOUT=5
+		    ;;
+		*Check_MK:*FLAPPINGSTOP|*Check_MK:*RECOVERY)
+		    FG="#b94"
+		    BG="#131"
+		    TIMEOUT=5
+		    ;;
+
+		# plain default
 		*)
 		    FG="#ccc"
 		    BG="#222"
