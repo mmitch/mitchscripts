@@ -17,6 +17,10 @@ update:
 			echo "Updating $$DIR (svn)"; \
 			( cd "$$DIR" ; svn update ) ; \
 		fi ; \
+		if [ -d "$$DIR/_darcs" ] ; then \
+			echo "Updating $$DIR (darcs)"; \
+			( cd "$$DIR" ; darcs pull ) ; \
+		fi ; \
 		if [ -d "$$DIR/CVS" ] ; then \
 			echo "Updating $$DIR (cvs)"; \
 			( cd "$$DIR" ; cvs update -d ) ; \
