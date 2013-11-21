@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# toggle mute/unmute under pulseaudio
+#
+# Copyright (C) 2012  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPLv3 or later
+#
+# 
+# usage: pa-togglemute [<sink>]
+#   if no sink is given, the default sink is used
+#
+#
+# rationale:
+#   pacmd can only mute or unmute but can't toggle
+#   amixer can toggle, but unmuting pulseaudio via alsa is broken
+#
+#   so the need for this script
+#
+
+
+# sanitize command outputs
+export LANG=C
+
+# find sink
+if [ -z "$1" ]; then
+    SINK="$( pacmd info | awk '/Default sink name/ {print $4}' )"
+else
+    SINK="$1"
+fi
+
+# extract current mute status
+STATUS="$( pacmd list-sinks |\
+    while read KEY VALUE UNDEF; do
+        if [ "$KEY" = 'name:' -a "$VALUE" = "<$SINK>" ]; then
+            while read KEY VALUE undef; do
+                if [ "$KEY" = 'name:' ]; then
+                    echo 'no muted property found'; exit 1
+                fi
+                if [ "$KEY" = 'muted:' ]; then
+                    echo "$VALUE"; exit 1
+                fi
+            done
+        fi
+    done && echo 'sink not found')"
+ 
+# toggle mute
+case "$STATUS" in
+
+    no)
+	pacmd set-sink-mute "$SINK" yes > /dev/null
+	;;
+
+    yes)
+	pacmd set-sink-mute "$SINK" no > /dev/null
+	;;
+
+    *)
+	echo "could not parse current mute status \`$STATUS'" >&2
+	exit 1
+	;;
+esac

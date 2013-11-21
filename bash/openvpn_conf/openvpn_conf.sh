@@ -11,7 +11,8 @@
 set +e
 
 TMPDIR=$(mktemp -d)
-
+DH_SIZE=2048
+KEY_SIZE=4096
 ##### Parameter abfragen
 
 echo "port? [e.g. 1195]"
@@ -20,13 +21,13 @@ echo "server hostname? [e.g. ranmachan.dyndns.org]"
 read HOST_SRV
 echo "server ip? [e.g. 169.254.65.1] (taken from BGP=65001)"
 read IP_SRV
-echo "server tun? [e.g. tun2]"
+echo "server tun? [e.g. tun2, tun_foo]"
 read TUN_SRV
-echo "client hostname?"
+echo "client hostname? [e.g. ranmachan.is-a-geek.org]"
 read HOST_CLT
-echo "client ip?"
+echo "client ip? [e.g. 169.254.65.4] (taken from BGP=65004)"
 read IP_CLT
-echo "client tun?"
+echo "client tun? [e.g. tun4, tun_bar]"
 read TUN_CLT
 
 echo
@@ -47,7 +48,7 @@ mkdir -p $CONFDIR_SRV $CONFDIR_CLT
 
 < /etc/ssl/openssl.cnf \
 sed \
--e 's/default_bits.*=.*$/default_bits = 2048/' \
+-e "s/default_bits.*=.*$/default_bits = $KEY_SIZE/" \
 -e 's/private_key.*=.*$/private_key = ca.key/' \
 -e 's/certificate.*=.*/certificate = ca.crt/' \
 -e 's/new_certs_dir.*=.*/new_certs_dir = ./' \
@@ -57,7 +58,7 @@ sed \
 
 ##### eigene CA bauen
 
-CA_PASSWORD='fest_weil_sowieso_wieder_geloescht'
+CA_PASSWORD='fEST_Weil_sow1eso,wIeder_gel0escht!'
 
 echo creating CA...
 
@@ -66,7 +67,7 @@ echo creating CA...
 
     cd $TMPDIR
 
-    openssl req -new -x509 -nodes -keyout ca.key -out ca.crt -days $DAYS 3650 -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -new -x509 -nodes -keyout ca.key -out ca.crt -days 3650 -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -94,8 +95,8 @@ echo CA created
 
 echo creating DH...
 
-openssl dhparam -out $CONFDIR_SRV/dh1024.pem 1024
-chmod 600 $CONFDIR_SRV/dh1024.pem
+openssl dhparam -out $CONFDIR_SRV/dh$DH_SIZE.pem $DH_SIZE
+chmod 600 $CONFDIR_SRV/dh$DH_SIZE.pem
 
 echo DH created
 
@@ -159,7 +160,7 @@ root@$HOST_CLT
 EOF
 
     # -extensions client
-    openssl ca -days 3650 -out $HOST_CLT.crt -in $HOST_CLT.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl  ca -days 3650 -out $HOST_CLT.crt -in $HOST_CLT.csr -config openssl.cnf 2>/dev/null <<EOF
 y
 y
 EOF
@@ -184,7 +185,7 @@ cat > $CONF_SRV <<EOF
 ca      $COMBINED/ca.crt
 cert    $COMBINED/$HOST_SRV.crt
 key     $COMBINED/$HOST_SRV.key
-dh      $COMBINED/dh1024.pem
+dh      $COMBINED/dh$DH_SIZE.pem
 dev $TUN_SRV
 float
 ifconfig $IP_SRV $IP_CLT
@@ -201,6 +202,9 @@ resolv-retry infinite
 tls-server
 tun-mtu 1427
 verb 3
+script-security 2
+#remote-cert-tls client
+log-append /var/log/openvpn_$HOST_CLT.log
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
@@ -231,6 +235,9 @@ remote $HOST_SRV
 tls-client
 tun-mtu 1427
 verb 3
+script-security 2
+#remote-cert-tls server
+log-append /var/log/openvpn_$HOST_SRV.log
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF

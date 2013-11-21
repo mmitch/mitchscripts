@@ -4,8 +4,11 @@
 LC_MESSAGES=C
 export LC_MESSAGES
 
+# can't remember this stupid command
+alias pulseaudio-DINGENS='echo "Du willst pavucontrol!"'
+
 # tin singleton (avoid messing up read articles)
-alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else tin; fi'
+alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else /home/mitch/git/mitchscripts/bash/procrastinator.sh 1800 usenet; tin; fi'
 
 # Trogdor!
 alias sbemail.exe='mutt'
@@ -16,14 +19,17 @@ alias rls='ls -rt'
 # copy EXIF timestamps to file timestamps
 alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate'
 
+# set EXIF/IPTC/XMP/… metatags with Copyright information
+alias exifaddcopyright='exiftool -mwg:copyright="Copyright $(date +%Y) Christian Garbs - http://www.cgarbs.de" -mwg:creator="Christian Garbs <mitch@cgarbs.de>"'
+
 # never start irssi without screen again
-alias irssi='screen -d -R -S irssi -t irssi irssi'
+alias irssi='/home/mitch/git/mitchscripts/bash/procrastinator.sh 300 irc; screen -d -R -S irssi -t irssi irssi'
 
 # debsign all signable files
 alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'
 
 # show latest procmail sorted mails
-alias mailtail='tail -n 30 -f /home/mitch/Mail/from | /home/mitch/git/mitchscripts/perl/mimedecoder.pl | sed "s/^From/\nFrom/"'
+alias mailtail='/home/mitch/git/mitchscripts/bash/procrastinator.sh 1800 mailtail; tail -n 300 -f /home/mitch/Mail/from | { IFS=""; read FROM; while [ ! "${FROM:0:5}" = "From " ] ; do read FROM; done; read SUBJECT; while read FOLDER; do if [ "${FOLDER:0:19}" != "  Folder: /dev/null" -a "${FOLDER:0:19}" != "  Folder: spam/new/" -a "${FOLDER:0:23}" != "  Folder: logfiles/new/" -a "${FOLDER:0:23}" != "  Folder: omdstats/new/" ] ; then echo "$FROM"; echo "$SUBJECT"; echo "$FOLDER"; fi; read FROM; read SUBJECT; done } | /home/mitch/git/mitchscripts/perl/mimedecoder.pl | sed -e "s/^From/\nFrom/" -e "s,^\(  Folder: \)\([^/]\),\1${HOME}/Mail/\2,"'
 
 # default start page in (e)links
 # $1: URL (optional)
@@ -171,3 +177,64 @@ albumplay()
 		done
 	)
 }
+
+# quick way to renice and ionice a given process or everything maching a
+# string
+mynice()
+{
+    if [[ "$1" =~ ^[0-9]+$ ]] ; then
+	renice 20 $1
+	ionice -c 3 -p $1
+    else
+	PIDS="$(pidof "$1")"
+	renice 20 $PIDS
+	for PID in $PIDS ; do
+	    ionice -c 3 -p $PID
+	done
+    fi
+}
+
+# one-shot-fileserving
+# $1: file to serve
+#
+# poor man's webserver ignoring any RFC there is
+# works with netcat-openbsd, for netcat-traditional use "nc -l -p $PORT -q 1" instead
+share_file_once()
+{
+    
+    local FILE="$1"
+    if [ ! -r "$FILE" ] ; then
+	echo "can't read file $FILE" >2
+	return 1
+    fi
+
+    local PORT=$(( 60000 + ( $RANDOM % 1000 ) ))
+    local HOSTNAME=$(hostname -f)
+    local MIME=$(file -b --mime-type "$FILE")
+
+    echo "serving file on http://$HOSTNAME:$PORT/foo"
+
+    if (echo -en "HTTP/1.1 200 OK\nContent-Type: $MIME\n\n"; cat "$FILE") | nc -l $PORT ; then
+	echo "file transmitted, ok."
+    else
+	echo "something went wrong." >2
+	return 2
+    fi
+    return 0
+    
+}
+
+# colored man
+# sauce: http://www.pcspinnt.de/2013/09/lazy-admins-using-the-shell-third-one/
+if [[ -e /usr/bin/less ]]; then
+	man() {
+		env LESS_TERMCAP_mb=$'\E[01;31m' \
+		LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+		LESS_TERMCAP_me=$'\E[0m' \
+		LESS_TERMCAP_se=$'\E[0m' \
+		LESS_TERMCAP_so=$'\E[38;5;246m' \
+		LESS_TERMCAP_ue=$'\E[0m' \
+		LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+		man "$@"
+	}
+fi

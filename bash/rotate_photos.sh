@@ -1,7 +1,8 @@
 #!/bin/bash
 #
-# 2006-2008 (c) by Christian Garbs <mitch@cgarbs.de>
-# licensed under the GNU GPL v2 and no later versions
+# rotate_photos.sh - simple picture preview and rotating tool
+# Copyright (C) 2006-2008,2013 Christian Garbs <mitch@cgarbs.de>
+# Licensed under the GNU GPL v3 or later
 
 # check for stuff we need
 CHECK_FOR()
@@ -11,7 +12,7 @@ CHECK_FOR()
 	exit 1
     fi
 }
-CHECK_FOR chbg
+CHECK_FOR feh
 CHECK_FOR jpegtran
 CHECK_FOR dmenu
 
@@ -19,7 +20,7 @@ set -e
 
 set_bg()
 {
-    chbg -once -mode smart -max_grow 100 -max_size 100 -scenario /home/mitch/download/xxx/pic/SORT/NAMED/.scenario "$1"
+   feh --no-fehbg --bg-fill "$1"
 }
 
 rotate()

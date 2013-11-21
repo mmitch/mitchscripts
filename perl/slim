@@ -1,0 +1,156 @@
+#!/usr/bin/perl
+#
+# slim  -  simple slimserver command line interface
+# Copyright (C) 2005, 2006, 2011, 2012  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPL v2 (or later)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+use strict;
+use warnings;
+use FileHandle;
+use IPC::Open2;
+
+# map addlist/setlist to other commands
+if (@ARGV == 2 and $ARGV[0] =~ /^(add|set)list$/) {
+    my $command = $1;
+    my @files;
+    open LIST, '<', $ARGV[1] or die "can't open `$ARGV[1]': $!\n";
+    while (my $line = <LIST>) {
+	chomp $line;
+	push @files, $line;
+    }
+    close LIST or die "can't close `$ARGV[1]': $!\n";    
+    @ARGV = ( $command, @files );
+}
+
+# expand filenames if there are any
+my @files;
+if (@ARGV > 1) {
+    my $keep = shift @ARGV;
+    foreach my $file (@ARGV) {
+	$file =~ s|([^A-Za-z0-9\-_./:])| sprintf "%%%0x", ord $1 |eg;
+	die "file `$file' is outside /mnt/mp3!\n" unless $file =~ s,(^/mnt/mp3|http:),playlist add $1,;
+	push @files, $file;
+    }
+    @ARGV = ( $keep );
+}
+
+my $playerid = '00%3A04%3A20%3A05%3A90%3Ab4';
+
+my ($reader, $writer);
+my %actions = (
+    'add'      => [ # add given files/paths unter /mnt/mp3 to playlist
+		    @files,
+		    'playlist shuffle 1'
+    ],
+    'addlist'  => [ # use file's contents for add command
+    ],
+    'info'     => [ # print song information
+		    'title ?',
+		    'artist ?',
+		    'album ?',
+		    'path ?'
+    ],
+    'next'     => [ # skip to next song in playlist
+		    'playlist index +1'
+    ],
+    'pause'    => [ # pause/unpause
+		    'pause'
+    ],
+    'play'     => [ # start playing
+		    'play'
+    ],
+    'prev'     => [ # skip to previous song in playlist
+		    'playlist index -1'
+    ],
+    'set'      => [ # clean playlist and add given files/paths unter /mnt/mp3
+		    'playlist clear',
+		    @files,
+		    'playlist shuffle 1',
+		    'play'
+    ],
+    'setlist'  => [ # use file's contents for set command
+    ],
+    'stop'     => [ # stop playing
+		    'stop'
+    ],
+    'webradio' => [ # wipe playlists and set webradios
+		    'playlist clear',
+		    'playlist add http://195.24.224.77:8086/bitjam.ogg.m3u',
+		    'playlist add http://demovibes.de:8000/necta192.mp3.m3u',
+		    'playlist add http://kohina.radio.ethz.ch:8000/kohina.ogg.m3u',
+		    'playlist add http://ormgas.rainwave.cc/tunein.php',
+		    'playlist add http://www.radioseven.se/128.pls',
+		    'playlist add http://cast6.serverhostingcenter.com/tunein.php/jotaylor/playlist.pls',
+		    'playlist add http://www.slayradio.org/tune_in.php/128kbps/listen.m3u',
+		    'playlist add http://somafm.com/startstream=secretagent.pls',
+		    'playlist add http://somafm.com/startstream=indiepop.pls',
+		    'playlist add http://somafm.com/startstream=tags.pls',
+		    'playlist add http://listen.trancebase.fm/aacplus.pls',
+		    'playlist add http://trance.techno.fm',
+		    'playlist add http://www.nubreaks.com/modules/mod_internetradio/makeplaylist.php?ip=server4.myshoutcast.de&port=9004&format=PLS',
+		    'playlist add http://edge.live.mp3.mdn.newmedia.nacamar.net/klassikradiolounge128/livestream.mp3',
+		    'playlist add http://edge.live.mp3.mdn.newmedia.nacamar.net/klassikradiomovie128/livestream.mp3',
+		    'playlist add http://edge.live.mp3.mdn.newmedia.nacamar.net/klassikradio128/livestream.mp3',
+		    'playlist shuffle 1',
+		    'play',
+		    'path ?',
+		    'title ?',
+		    'artist ?',
+		    'album ?'
+    ],
+    );
+
+
+sub abend($)
+{
+    print STDERR "$_[0]\n";
+    print "available commands are:\n";
+    print join(' ', sort keys %actions) . "\n";
+    exit 1;
+}
+
+
+
+abend "no command given" unless defined $ARGV[0];
+my $cmd = lc $ARGV[0];
+# expand commands
+$cmd = 'add'      if $cmd =~ /^a/;
+$cmd = 'info'     if $cmd =~ /^i/;
+$cmd = 'next'     if $cmd =~ /^n/;
+$cmd = 'pause'    if $cmd =~ /^pa/;
+$cmd = 'play'     if $cmd =~ /^pl/;
+$cmd = 'prev'     if $cmd =~ /^pr/;
+$cmd = 'set'      if $cmd =~ /^se/;
+$cmd = 'stop'     if $cmd =~ /^st/;
+$cmd = 'webradio' if $cmd =~ /^w/;
+abend "command `$cmd' not recognized or unique" unless exists $actions{$cmd};
+
+open2($reader, $writer, 'nc','yggdrasil','9090') or die "can't open2: $!\n";
+
+foreach my $send ( @{$actions{$cmd}} ) {
+    my $in = shift;
+    print $writer "$playerid $send\n";
+    my $reply = <$reader>;
+    $reply = (split /\s/, $reply, 2)[1];
+    $reply =~ s/ /\t/;
+    $reply =~ s/%([A-Fa-f\d]{2})/chr hex $1/eg;
+    print $reply;
+}
+
+print $writer "exit\n";
+
+close $writer or die "can't close writer: $!\n";
+close $reader or die "can't close reader: $!\n";
