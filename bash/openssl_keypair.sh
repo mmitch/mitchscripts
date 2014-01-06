@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 2007,2013 (c) by Christian Garbs <mitch@cgarbs.de>
+# 2007,2013,2014 (c) by Christian Garbs <mitch@cgarbs.de>
 
 # Generate a one time CA and some signed keys
 # OpenSSL keyhandling is a hassle o_O
@@ -92,7 +92,7 @@ cd $TMPDIR
 
 < /etc/ssl/openssl.cnf \
 sed \
--e 's/default_bits.*=.*$/default_bits = 2048/' \
+-e 's/default_bits.*=.*$/default_bits = 4096/' \
 -e 's/private_key.*=.*$/private_key = ca.key/' \
 -e 's/certificate.*=.*/certificate = ca.crt/' \
 -e 's/new_certs_dir.*=.*/new_certs_dir = ./' \
