@@ -104,6 +104,7 @@ my %actions = (
 		    'playlist add http://edge.live.mp3.mdn.newmedia.nacamar.net/klassikradiolounge128/livestream.mp3',
 		    'playlist add http://edge.live.mp3.mdn.newmedia.nacamar.net/klassikradiomovie128/livestream.mp3',
 		    'playlist add http://edge.live.mp3.mdn.newmedia.nacamar.net/klassikradio128/livestream.mp3',
+		    'playlist add http://detektor.fm/detektor_fm-musik.m3u',
 		    'playlist shuffle 1',
 		    'play',
 		    'path ?',
