@@ -238,3 +238,8 @@ if [[ -e /usr/bin/less ]]; then
 		man "$@"
 	}
 fi
+
+
+# conveniently grep irssi IRC logfiles
+# switch to log directory and run `ircgrep <REGEXP>`
+ircgrep () { zgrep -i -E -h -e '^--- Day changed' -e "$*" *.log* ; }
