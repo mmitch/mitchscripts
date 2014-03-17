@@ -141,7 +141,7 @@ ssh()
 # $1: word
 edict()
 {
-	grep -i "$@" /home/mitch/WadokuJT.txt | sensible-pager
+	grep -hi "$@" /home/mitch/WadokuJT.txt | sensible-pager
 }
 
 # lookup in Pokédex™
