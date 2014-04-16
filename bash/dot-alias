@@ -243,3 +243,24 @@ fi
 # conveniently grep irssi IRC logfiles
 # switch to log directory and run `ircgrep <REGEXP>`
 ircgrep () { zgrep -i -E -h -e '^--- Day changed' -e "$*" *.log* ; }
+
+# copy a file via uucp to node cg1003
+# $@: the file(s) to copy
+#
+# as the path could be source-dependent, this should be expanded for every source host
+# uucp syntax is a hassle!
+uucopy()
+{
+    case `hostname` in
+	zecora)
+	    TARGET='cg1003!mitch'
+	    ;;
+	*)
+	    echo unknown source host! 1>&2
+	    exit 1
+	    ;;
+    esac;
+	
+    # print log is successful
+    uucp -t -C -n mitch "$@" "$TARGET" && ( uulog | tail -n 5 )
+}
