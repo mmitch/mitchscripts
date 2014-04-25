@@ -23,7 +23,7 @@ fi
 TIMER=2
 
 # wait until idle
-if [ "$(dropbox status)" != 'Idle' ]; then
+if [ "$(dropbox status)" != 'Up to date' ]; then
 
     if [ -x "$(which dzen2)" -a "$DISPLAY" ]; then
 
