@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+
+# simple status script plus dropbox indicator for dwm-mitch
+
+if dropbox > /dev/null 2>&1; then
+    DROPBOX=yes
+else
+    DROPBOX=no
+fi
+
+DROPSTATE=/tmp/$USER.dropstate
+
+while true; do
+      
+    DROP=
+    TIME=$(/bin/date +%H:%M:%S)
+    LOAD=$(cut -d ' ' -f -3 /proc/loadavg)
+
+    if [ $DROPBOX = yes ] ; then
+	LANG=C dropbox status > $DROPSTATE 2>&1
+
+	if fgrep ownload $DROPSTATE; then
+	    DROP="$DROP[Dv] "
+	fi
+
+	if fgrep pload $DROPSTATE; then
+	    DROP="$DROP[D^] "
+	fi
+
+    fi
+
+    xsetroot -name "$DROP$TIME | $LOAD"
+
+    sleep 5
+done
