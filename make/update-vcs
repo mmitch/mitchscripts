@@ -28,11 +28,11 @@ update:
 	done
 
 gc:
-	du -sh .
+	-du -sh .
 	for DIR in *; do \
 		if [ -d "$$DIR/.git" ] ; then \
 			echo "Garbagecollecting $$DIR (git)"; \
 			( cd "$$DIR" ; git gc ) ; \
 		fi ; \
 	done
-	du -sh .
+	-du -sh .
