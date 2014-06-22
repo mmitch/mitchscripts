@@ -159,7 +159,7 @@ if ($status) {
 	($state eq 'AC') ? ($rate > 0 ? '+' : ' ' ) : '-',
 	$battery,
 	$rate/1000,
-	$temp,
+	(defined $temp ? $temp : 0),
 	($curfreq == $minfreq) ? '\\..' : ($curfreq == $maxfreq) ? '../' : '.|.',
 	$eth[0] ? '=' : '',
 	$eth[1] ? $wlan : '';
