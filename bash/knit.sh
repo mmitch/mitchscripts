@@ -22,8 +22,11 @@ REIHEN=34
 IMAGE_IN=image.png
 IMAGE_OUT=image.out.png
 
-# 256 is arbitratily chosen :)
-TOTAL_SCALE=256
+# value is arbitrarily chosen :)
+TOTAL_SCALE=512
+
+# number density in grid
+GRIDTEXTMOD=5
 
 ##### CONFIGURATION END
 
@@ -53,5 +56,28 @@ for (( Y=0 ; $Y <= $NEW_Y ; Y=Y+$SCALE_Y )) ; do
     DRAWSTR="${DRAWSTR} line 0,$Y $NEW_X,$Y"
 done
 
+# generate horizontal text commands
+MASCHE=0
+for (( X=0 ; $X <= $NEW_X ; X=X+$SCALE_X )) ; do
+    NR=$(( $SIZE_X - $MASCHE ))
+    if [ $(( $NR % $GRIDTEXTMOD )) = 0 ] ; then
+	TEXT="${TEXT} text $(($X + 2)),$(($NEW_Y - 2)) '$NR'"
+	TEXT="${TEXT} text $(($X + 2)),$(($SCALE_Y - 2)) '$NR'"
+    fi
+    ((MASCHE++))
+done
+
+# generate vertical text commands
+REIHE=-1
+for (( Y=0 ; $Y <= $NEW_Y ; Y=Y+$SCALE_Y )) ; do
+    NR=$(( $SIZE_Y - $REIHE ))
+    if [ $(( $NR % $GRIDTEXTMOD )) = 0 ] ; then
+	TEXT="${TEXT} text 2,$(($Y - 2)) '$NR'"
+	TEXT="${TEXT} text $(($NEW_X - $SCALE_X + 1)),$(($Y - 2)) '$NR'"
+    fi
+    ((REIHE++))
+done
+
+
 # run convert and generate image
-convert "${IMAGE_IN}" -scale "!${NEW_X}x${NEW_Y}" -draw "${DRAWSTR}" "${IMAGE_OUT}"
+convert "${IMAGE_IN}" -scale "!${NEW_X}x${NEW_Y}" -draw "${DRAWSTR}" -font fixed -fill black -draw "${TEXT}" "${IMAGE_OUT}"
