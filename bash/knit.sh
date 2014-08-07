@@ -25,7 +25,7 @@ IMAGE_OUT=image.out.png
 # value is arbitrarily chosen :)
 TOTAL_SCALE=512
 
-# number density in grid
+# number density in grid (also: thick lines)
 GRIDTEXTMOD=5
 
 ##### CONFIGURATION END
@@ -63,6 +63,7 @@ for (( X=0 ; $X <= $NEW_X ; X=X+$SCALE_X )) ; do
     if [ $(( $NR % $GRIDTEXTMOD )) = 0 ] ; then
 	TEXT="${TEXT} text $(($X + 2)),$(($NEW_Y - 2)) '$NR'"
 	TEXT="${TEXT} text $(($X + 2)),$(($SCALE_Y - 2)) '$NR'"
+	DRAWSTR="${DRAWSTR} line $((X + 1)),0 $((X + 1)),$NEW_Y"
     fi
     ((MASCHE++))
 done
@@ -74,6 +75,9 @@ for (( Y=0 ; $Y <= $NEW_Y ; Y=Y+$SCALE_Y )) ; do
     if [ $(( $NR % $GRIDTEXTMOD )) = 0 ] ; then
 	TEXT="${TEXT} text 2,$(($Y - 2)) '$NR'"
 	TEXT="${TEXT} text $(($NEW_X - $SCALE_X + 1)),$(($Y - 2)) '$NR'"
+    fi
+    if [ $(( $NR % $GRIDTEXTMOD )) = 1 ] ; then
+	DRAWSTR="${DRAWSTR} line 0,$((Y + 1)) $NEW_X,$((Y + 1))"
     fi
     ((REIHE++))
 done
