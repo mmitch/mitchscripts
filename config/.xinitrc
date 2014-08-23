@@ -15,7 +15,9 @@ export DMENU_COLORS="-fn fixed -nb black -nf white"
 # this breaks mouse centering in WoW
 # ( unclutter -idle 3 & ) &
 
+# fix Java GUI breakages (see dwm website)
 export AWT_TOOLKIT=MToolkit
+[ -x /usr/bin/wmname ] && /usr/bin/wmname LG3D
 
 # ask SSH password
 ssh-add < /dev/null
