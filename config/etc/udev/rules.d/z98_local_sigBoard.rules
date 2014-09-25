@@ -1,0 +1,2 @@
+#ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="05dc",  TEST=="/var/run/ConsoleKit/database", RUN+="udev-acl --action=$env{ACTION} --device=$env{DEVNAME}"
+ATTRS{idVendor}=="16c0", ATTRS{idProduct}=="05dc",  OWNER="1000", GROUP="1000", MODE="660"

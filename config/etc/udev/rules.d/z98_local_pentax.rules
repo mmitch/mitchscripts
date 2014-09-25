@@ -1,0 +1,1 @@
+SUBSYSTEM=="block", ATTRS{manufacturer}=="PENTAX*", ATTRS{product}=="K*", SYMLINK+="pentax%n", OWNER="1000", GROUP="1000", MODE="660"
