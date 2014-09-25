@@ -70,7 +70,7 @@ if [ $PICCOUNT -ge 1 ] ; then
     COUNT=0
     find $PICPATH -type f | while read FILE; do
 	FILENAME=$(echo ${FILE##*/}|tr A-Z a-z)
-	mv $FILE "$SAVEPATH/$FILENAME"
+	mv -i $FILE "$SAVEPATH/$FILENAME"
 	chmod -x "$SAVEPATH/$FILENAME"
 	if [ $(( $COUNT % 5 )) = 0 ]; then
 	    echo -n $COUNT
