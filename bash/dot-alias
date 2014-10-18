@@ -48,7 +48,7 @@ links()
 # $1: URL
 dumpurls()
 {
-	lynx -dump "$@" | cut -c 7- | grep ^http:
+	lynx -dump "$@" | cut -c 7- | grep -E '^https?:'
 }
 
 # dump all pictures from an imageboard thread
