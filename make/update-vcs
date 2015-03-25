@@ -2,6 +2,8 @@
 #
 # rename to "Makefile", put it to eg. $HOME/git and run it periodically
 
+FREE_BEFORE=$(shell du -sh .)
+
 update:
 	for DIR in *; do \
 		if [ -d "$$DIR/.git" ] ; then \
@@ -28,11 +30,15 @@ update:
 	done
 
 gc:
-	-du -sh .
 	for DIR in *; do \
 		if [ -d "$$DIR/.git" ] ; then \
 			echo "Garbagecollecting $$DIR (git)"; \
 			( cd "$$DIR" ; git gc ) ; \
 		fi ; \
 	done
-	-du -sh .
+	@echo
+	@echo free before:
+	@echo $(FREE_BEFORE)
+	@echo
+	@echo free now:
+	@echo $(shell du -sh .)
