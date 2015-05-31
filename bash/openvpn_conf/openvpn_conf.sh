@@ -17,13 +17,13 @@ KEY_SIZE=4096
 
 echo "port? [e.g. 1195]"
 read PORT
-echo "server hostname? [e.g. ranmachan.dyndns.org]"
+echo "server hostname? [e.g. somehost.dyndns.org]"
 read HOST_SRV
 echo "server ip? [e.g. 169.254.65.1] (taken from BGP=65001)"
 read IP_SRV
 echo "server tun? [e.g. tun2, tun_foo]"
 read TUN_SRV
-echo "client hostname? [e.g. ranmachan.is-a-geek.org]"
+echo "client hostname? [e.g. someotherhost.dyndns.org]"
 read HOST_CLT
 echo "client ip? [e.g. 169.254.65.4] (taken from BGP=65004)"
 read IP_CLT
