@@ -2,7 +2,7 @@
 #
 # rename to "Makefile", put it to eg. $HOME/git and run it periodically
 
-FREE_BEFORE=$(shell du -sh .)
+USAGE_BEFORE=$(shell du -sh .)
 
 update:
 	for DIR in *; do \
@@ -37,8 +37,8 @@ gc:
 		fi ; \
 	done
 	@echo
-	@echo free before:
-	@echo $(FREE_BEFORE)
+	@echo space needed before:
+	@echo $(USAGE_BEFORE)
 	@echo
-	@echo free now:
+	@echo space needed now:
 	@echo $(shell du -sh .)

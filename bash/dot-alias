@@ -23,7 +23,18 @@ alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate'
 alias exifaddcopyright='exiftool -mwg:copyright="Copyright $(date +%Y) Christian Garbs - http://www.cgarbs.de" -mwg:creator="Christian Garbs <mitch@cgarbs.de>"'
 
 # never start irssi without screen again
-alias irssi='/home/mitch/git/mitchscripts/bash/procrastinator.sh 300 irc; screen -d -R -S irssi -t irssi irssi'
+# fiddle with Perl HTTPS because of these bugs:
+# - https://github.com/zigdon/twirssi/issues/75
+# - https://rt.cpan.org/Public/Bug/Display.html?id=78920
+alias irssi='
+/home/mitch/git/mitchscripts/bash/procrastinator.sh 300 irc
+(
+  PERL_NET_HTTPS_SSL_SOCKET_CLASS=Net::SSL
+  PERL_LWP_SSL_VERIFY_HOSTNAME=0
+  export PERL_LWP_SSL_VERIFY_HOSTNAME PERL_NET_HTTPS_SSL_SOCKET_CLASS
+  screen -d -R -S irssi -t irssi irssi
+)
+'
 
 # debsign all signable files
 alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'

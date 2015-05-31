@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 #
 # slim  -  simple slimserver command line interface
-# Copyright (C) 2005, 2006, 2011, 2012  Christian Garbs <mitch@cgarbs.de>
+# Copyright (C) 2005, 2006, 2011-2015  Christian Garbs <mitch@cgarbs.de>
 # licensed under GNU GPL v2 (or later)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -98,6 +98,7 @@ my %actions = (
 		    'playlist add http://somafm.com/startstream=secretagent.pls',
 		    'playlist add http://somafm.com/startstream=indiepop.pls',
 		    'playlist add http://somafm.com/startstream=tags.pls',
+		    'playlist add http://somafm.com/startstream=dronezone.pls',
 		    'playlist add http://listen.trancebase.fm/aacplus.pls',
 		    'playlist add http://trance.techno.fm',
 		    'playlist add http://www.nubreaks.com/modules/mod_internetradio/makeplaylist.php?ip=server4.myshoutcast.de&port=9004&format=PLS',
@@ -106,6 +107,15 @@ my %actions = (
 		    'playlist add http://edge.live.mp3.mdn.newmedia.nacamar.net/klassikradio128/livestream.mp3',
 		    'playlist add http://detektor.fm/detektor_fm-musik.m3u',
 		    'playlist shuffle 1',
+		    'play',
+		    'path ?',
+		    'title ?',
+		    'artist ?',
+		    'album ?'
+    ],
+    'drone'    => [ # SomaFM DroneZone webradio
+		    'playlist clear',
+		    'playlist add http://somafm.com/startstream=dronezone.pls',
 		    'play',
 		    'path ?',
 		    'title ?',
