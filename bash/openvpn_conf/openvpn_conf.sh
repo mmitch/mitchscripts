@@ -120,6 +120,25 @@ chmod 0400 $CONFDIR_SRV/dh$DH_SIZE.pem
 
 echo DH created
 
+##### HMAC-Key für SSL/TLS-Handshake bauen
+
+echo building tls auth key...
+
+(
+    set +e
+
+    cd $TMPDIR
+
+    /usr/sbin/openvpn --genkey --secret ta.key
+
+    chmod 0400 ta.key
+)
+
+cp $TMPDIR/ta.key $CONFDIR_CLT
+cp $TMPDIR/ta.key $CONFDIR_SRV
+
+echo tls auth key built
+
 ##### Server-Key bauen
 
 echo building server key
@@ -164,7 +183,6 @@ echo building client key
     
     cd $TMPDIR
 
-    # -extensions client 
     openssl req -days 3650 -nodes -new -keyout $HOST_CLT.key -out $HOST_CLT.csr -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
@@ -177,7 +195,6 @@ root@$HOST_CLT
 .
 EOF
 
-    # -extensions client
     openssl  ca -days 3650 -out $HOST_CLT.crt -in $HOST_CLT.csr -config openssl.cnf 2>/dev/null <<EOF
 y
 y
@@ -200,10 +217,11 @@ cat > $CONF_SRV <<EOF
 #push "route $NET_SRV $MASK_SRV" 
 #route $NET_CLT $MASK_CLT
 #tun-ipv6
-ca      $COMBINED/ca.crt
-cert    $COMBINED/$HOST_SRV.crt
-key     $COMBINED/$HOST_SRV.key
-dh      $COMBINED/dh$DH_SIZE.pem
+ca       $COMBINED/ca.crt
+cert     $COMBINED/$HOST_SRV.crt
+key      $COMBINED/$HOST_SRV.key
+dh       $COMBINED/dh$DH_SIZE.pem
+tls-auth $COMBINED/ta.key 0
 dev $TUN_SRV
 float
 ifconfig $IP_SRV $IP_CLT
@@ -238,9 +256,10 @@ echo building client configuration
 cat > $CONF_CLT <<EOF
 #tun-ipv6
 #route $NET_SRV $MASK_SRV
-ca      $COMBINED/ca.crt
-cert    $COMBINED/$HOST_CLT.crt
-key     $COMBINED/$HOST_CLT.key
+ca       $COMBINED/ca.crt
+cert     $COMBINED/$HOST_CLT.crt
+key      $COMBINED/$HOST_CLT.key
+tls-auth $COMBINED/ta.key 1
 dev $TUN_CLT
 ifconfig $IP_CLT $IP_SRV
 ifconfig-noexec
