@@ -13,6 +13,9 @@ set +e
 TMPDIR=$(mktemp -d)
 DH_SIZE=2048
 KEY_SIZE=4096
+
+umask 0077
+
 ##### Parameter abfragen
 
 echo "port? [e.g. 1195]"
@@ -102,6 +105,7 @@ EOF
 
 )
 
+chmod 400 $TMPDIR/ca.crt
 cp $TMPDIR/ca.crt $CONFDIR_SRV
 cp $TMPDIR/ca.crt $CONFDIR_CLT
 
@@ -112,7 +116,7 @@ echo CA created
 echo creating DH...
 
 openssl dhparam -out $CONFDIR_SRV/dh$DH_SIZE.pem $DH_SIZE
-chmod 600 $CONFDIR_SRV/dh$DH_SIZE.pem
+chmod 0400 $CONFDIR_SRV/dh$DH_SIZE.pem
 
 echo DH created
 
@@ -141,9 +145,9 @@ EOF
 y
 y
 EOF
-    chmod 0600 $HOST_SRV.key
-    chmod 0600 $HOST_SRV.crt
-    chmod 0600 $HOST_SRV.csr
+    chmod 0400 $HOST_SRV.key
+    chmod 0400 $HOST_SRV.crt
+    chmod 0400 $HOST_SRV.csr
 )
 
 cp $TMPDIR/$HOST_SRV.key $CONFDIR_SRV
@@ -178,9 +182,9 @@ EOF
 y
 y
 EOF
-    chmod 0600 $HOST_CLT.key
-    chmod 0600 $HOST_CLT.crt
-    chmod 0600 $HOST_CLT.csr
+    chmod 0400 $HOST_CLT.key
+    chmod 0400 $HOST_CLT.crt
+    chmod 0400 $HOST_CLT.csr
 )
 
 cp $TMPDIR/$HOST_CLT.key $CONFDIR_CLT
@@ -223,6 +227,8 @@ up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
 
+chmod 0400 $CONF_SRV
+
 echo server configuration built
 
 ##### Client-Config bauen
@@ -257,16 +263,18 @@ up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
 
+chmod 0400 $CONF_CLT
+
 echo client configuration built
 
 ##### up/downscripts
 
 echo distributing up-/downscripts
 
-install -m 755 upscript    $HOST_SRV/etc/openvpn/upscript
-install -m 755 upscript    $HOST_CLT/etc/openvpn/upscript
-install -m 755 downscript  $HOST_SRV/etc/openvpn/downscript
-install -m 755 downscript  $HOST_CLT/etc/openvpn/downscript
+install -m 0500 upscript    $HOST_SRV/etc/openvpn/upscript
+install -m 0500 upscript    $HOST_CLT/etc/openvpn/upscript
+install -m 0500 downscript  $HOST_SRV/etc/openvpn/downscript
+install -m 0500 downscript  $HOST_CLT/etc/openvpn/downscript
 
 echo up-/downscripts distributed
 
