@@ -222,7 +222,7 @@ tun-mtu 1427
 verb 3
 script-security 2
 cipher AES-256-CBC
-log-append /var/log/openvpn-$TUN_SRV.log
+log-append /var/log/openvpn-${TUN_SRV/tun_}.log
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
@@ -258,7 +258,7 @@ verb 3
 script-security 2
 remote-cert-tls server
 cipher AES-256-CBC
-log-append /var/log/openvpn-$TUN_CLT.log
+log-append /var/log/openvpn-${TUN_CLT/tun_}.log
 up /etc/openvpn/upscript
 down /etc/openvpn/downscript
 EOF
