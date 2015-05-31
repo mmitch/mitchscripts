@@ -56,6 +56,22 @@ sed \
 -e 's/serial.*=.*/serial = serial/' \
 > $TMPDIR/openssl.cnf
 
+## -extension server definieren, aktuell fehlt die irgendwie?!
+
+cat >> $TMPDIR/openssl.cnf <<EOF
+
+[ server ]
+
+basicConstraints = CA:FALSE
+nsCertType = server
+nsComment = "openvpn_conf.sh Generated Server Certificate"
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer:always
+extendedKeyUsage = serverAuth
+keyUsage = digitalSignature, keyEncipherment
+
+EOF
+
 ##### eigene CA bauen
 
 CA_PASSWORD='fEST_Weil_sow1eso,wIeder_gel0escht!'
@@ -109,8 +125,7 @@ echo building server key
     
     cd $TMPDIR
 
-    # -extensions server 
-    openssl req -days 3650 -nodes -new -keyout $HOST_SRV.key -out $HOST_SRV.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl req -days 3650 -nodes -new -keyout $HOST_SRV.key -out $HOST_SRV.csr -extensions server -config openssl.cnf 2>/dev/null <<EOF
 DE
 n/a
 .
@@ -122,8 +137,7 @@ root@$HOST_SRV
 .
 EOF
 
-    # -extensions server
-    openssl ca -days 3650 -out $HOST_SRV.crt -in $HOST_SRV.csr -config openssl.cnf 2>/dev/null <<EOF
+    openssl ca -days 3650 -out $HOST_SRV.crt -in $HOST_SRV.csr -extensions server -config openssl.cnf 2>/dev/null <<EOF
 y
 y
 EOF
@@ -203,7 +217,6 @@ tls-server
 tun-mtu 1427
 verb 3
 script-security 2
-#remote-cert-tls client
 cipher AES-256-CBC
 log-append /var/log/openvpn_$HOST_CLT.log
 up /etc/openvpn/upscript
@@ -237,7 +250,7 @@ tls-client
 tun-mtu 1427
 verb 3
 script-security 2
-#remote-cert-tls server
+remote-cert-tls server
 cipher AES-256-CBC
 log-append /var/log/openvpn_$HOST_SRV.log
 up /etc/openvpn/upscript
