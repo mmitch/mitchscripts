@@ -2,14 +2,14 @@
 #
 # simple X notification framework
 #
-# Copyright (C) 2009, 2013  Christian Garbs <mitch@cgarbs.de>
+# Copyright (C) 2009, 2013, 2015  Christian Garbs <mitch@cgarbs.de>
 # Licensed under GNU GPL v3 or later.
 #
 # needs dzen2 from http://gotmor.googlepages.com/dzen
 #
 
 DZEN_BIN=dzen2
-DZEN_FONT='-misc-fixed-medium-r-normal-*-13-*-*-*-*-*-*-*'
+DZEN_FONT='fixed-11'
 DZEN_JUSTIFY=l
 
 DZEN_EVENTS='button1=exit:0' # kill on left click
