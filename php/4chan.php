@@ -1,5 +1,4 @@
-<?
-// $Id: 4chan.php,v 1.4 2007-05-17 13:07:48 mitch Exp $
+<?php
 // cookie handling
 //if (isset($comic) && isset($id) && isset($tag)) {
 //  setcookie("lastVisited[$tag]", $id, time()+( 3600 * 24 * 365 * 5));
@@ -15,7 +14,6 @@
   <body>
 
     <h1>Mitchs 4chanbrowser irssi plugin</h1>
-
     <table>
       <tr>
         <th>File</th>
@@ -26,7 +24,7 @@
         <th>Date</th>
       </tr>
 
-<?
+<?php
 
 $cachedir='/home/mitch/pub/4chan';
 
@@ -40,16 +38,22 @@ if ($find) {
       if ($idx) {
 	while (! feof($idx)) {
 	  $line = rtrim(fgets($idx, 8192)); // max 8k per line
-	  list($key, $value) = split("\t", $line);
-	  $entry[$key] = $value;
+	  $linearr = split("\t", $line);
+	  if (count($linearr) == 2) {
+	      $entry[$linearr[0]] = $linearr[1];
+	  }
 	}
 	fclose($idx);
       }
       if (!$entry['CHAN']) {
 	$entry['CHAN'] = '4chan';
       }
+      $filename = substr($entry['FILE'], 0, 32);
+      if (strlen($filename) != strlen($entry['FILE'])) {
+	$filename .= '…';
+      }
       echo "      <tr>\n";
-      echo "        <td><a href=\"/4chan/", rawurlencode($entry['FILE']), "\">{$entry['FILE']}</a> (<a href=\"{$entry['URL']}\">orig</a>)</td>\n";
+      echo "        <td>(<a href=\"{$entry['URL']}\">orig</a>) <a href=\"/4chan/", rawurlencode($entry['FILE']), "\">{$filename}</a></td>\n";
       echo "        <td>{$entry['CHAN']}</td>\n";
       echo "        <td>/{$entry['BOARD']}/</td>\n";
       echo "        <td>{$entry['NICK']}</td>\n";
@@ -62,8 +66,8 @@ if ($find) {
 }
 ?>
     </table>
-
     <hr>
-    <address><small>brought to you by <a href="http://www.cgarbs.de/cgi-bin/gitweb.cgi/mitchscripts.git?a=blob;f=php/4chan.php;hb=HEAD">4chan.php</a> and <a href="http://www.cgarbs.de/cgi-bin/gitweb.cgi/irssi-scripts.git?a=blob;f=4chan.pl;hb=HEAD">4chan.pl</a></small></address>
+    <address><a href="mailto:mitch@cgarbs.de">Christian Garbs [Master Mitch]</a></address>
+    <p><small>$Revision: 1.4 $<br>$Date: 2007-05-17 13:07:48 $</small></p>
   </body>
 </html>
