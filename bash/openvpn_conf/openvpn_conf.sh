@@ -310,7 +310,7 @@ echo archives built
 
 echo cleaning
 
-rm -r $TMPDIR $HOST_SRV $HOST_CLT
+rm -rf $TMPDIR $HOST_SRV $HOST_CLT
 
 echo clean
 
