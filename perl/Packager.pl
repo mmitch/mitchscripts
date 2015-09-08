@@ -126,7 +126,7 @@ You might try them, but don't expect them to be working as smoothly as
 those things that are listed on my <a
 href="http://www.cgarbs.de/download.en.html">homepage</a>.<br> Most of
 these packages live inside my <a
-href="http://www.cgarbs.de/cgi-bin/gitweb.cgi">git
+href="https://github.com/mmitch">git
 repository</a>.</li>
 
 
