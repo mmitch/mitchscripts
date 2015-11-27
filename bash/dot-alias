@@ -4,8 +4,9 @@
 LC_MESSAGES=C
 export LC_MESSAGES
 
-# can't remember this stupid command
+# can't remember these stupid commands
 alias pulseaudio-DINGENS='echo "Du willst pavucontrol!"'
+alias RemoteX11Thingie='echo "Du willst Xpra!"'
 
 # tin singleton (avoid messing up read articles)
 alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else /home/mitch/git/mitchscripts/bash/procrastinator.sh 1800 usenet; tin; fi'
