@@ -9,10 +9,10 @@ update:
 		if [ -d "$$DIR/.git" ] ; then \
 			if [ -d "$$DIR/.git/svn" ] ; then \
 				echo "Updating $$DIR (git-svn)"; \
-				( cd "$$DIR" ; git svn rebase ) ; \
+				( cd "$$DIR" ; git svn rebase ) 2>&1 | while read I; do echo "$$DIR: $$I"; done & \
 			else \
 				echo "Updating $$DIR (git)"; \
-				( cd "$$DIR" ; git pull ; git submodule update ) ; \
+				( cd "$$DIR" ; git pull ; git submodule update ) 2>&1 | while read I; do echo "$$DIR: $$I"; done & \
 			fi ; \
 		fi ; \
 		if [ -d "$$DIR/.svn" ] ; then \
