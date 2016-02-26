@@ -84,3 +84,22 @@ export VISUAL=$EDITOR
 
 # disable history expansion !
 set +H
+
+# add private dirs to $PATH
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+if [ -d "$HOME/Cryptbox/bin" ] ; then
+    PATH="$HOME/Cryptbox/bin:$PATH"
+fi
+
+# set more restrictive umask
+umask 022
+
+# set compression options
+export GZIP="-9v"
+export BZIP2="-9v"
+
+# enable globstar: ** matches dirs + files
+shopt -s globstar
