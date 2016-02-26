@@ -17,15 +17,20 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
 fi
 
 # boost colorfulness (experimental)
-if [ "$TERM" = xterm ]; then
-    TERM=xterm-256color
-    export TERM
-    export MC_SKIN=modarin256-defbg-thin.ini
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[00;34m\]\u@\h\[\033[30m\]:\[\033[38;5;103m\]\w\[\033[38;5;65m\]\$\[\033[00m\] '
-else
-    export MC_SKIN=~/git/mitchscripts/config/mitch-mc-skin.ini
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
+case "$TERM" in
+    xterm*)
+	# promote xterm to xterm-256color (and keep xterm-256color after that)
+	TERM=xterm-256color
+	export TERM
+	export MC_SKIN=modarin256-defbg-thin.ini
+	PS1='${debian_chroot:+($debian_chroot)}\[\033[00;34m\]\u@\h\[\033[30m\]:\[\033[38;5;103m\]\w\[\033[38;5;65m\]\$\[\033[00m\] '
+	;;
+
+    *)
+	export MC_SKIN=~/git/mitchscripts/config/mitch-mc-skin.ini
+	PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+	;;
+esac
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
