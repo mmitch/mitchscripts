@@ -23,12 +23,38 @@ case "$TERM" in
 	TERM=xterm-256color
 	export TERM
 	export MC_SKIN=modarin256-defbg-thin.ini
-	PS1='${debian_chroot:+($debian_chroot)}\[\033[00;34m\]\u@\h\[\033[30m\]:\[\033[38;5;103m\]\w\[\033[38;5;65m\]\$\[\033[00m\] '
+
+	case $HOSTNAME in
+	    zecora)
+		color=4
+		;;
+	    yggdrasil)
+		color=59
+		;;
+	    hasi)
+		color=23
+		;;
+	    merlin)
+		color=94
+		;;
+	    ks*)
+		color=95
+		;;
+	    # )
+	    # color=58
+	    # ;;
+	    *)
+		color=237
+		;;
+	esac
+
+	PS1="${debian_chroot:+($debian_chroot)}\[\033[00;38;5;${color}m\]\u@\h\[\033[30m\]:\[\033[38;5;103m\]\w\[\033[38;5;65m\]\$\[\033[00m\] "
+	unset color
 	;;
 
     *)
 	export MC_SKIN=~/git/mitchscripts/config/mitch-mc-skin.ini
-	PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+	PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w\$ "
 	;;
 esac
 
@@ -40,6 +66,8 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+unset debian_chroot
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
