@@ -32,7 +32,7 @@ case "$TERM" in
 		color=59
 		;;
 	    hasi)
-		color=23
+		color=22
 		;;
 	    merlin)
 		color=94
@@ -40,9 +40,11 @@ case "$TERM" in
 	    ks*)
 		color=95
 		;;
-	    # )
-	    # color=58
-	    # ;;
+	    fluttershy)
+		color=25
+		;;
+		# reserve colors:
+		# 23 33 26 32 77 58
 	    *)
 		color=237
 		;;
