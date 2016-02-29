@@ -272,3 +272,6 @@ uucopy()
     # print log is successful
     uucp -t -C -n mitch "$@" "$TARGET" && ( uulog | tail -n 5 )
 }
+
+# show/edit network synced TODO list
+TODO() { $EDITOR ~/Cryptbox/TODO ; }
