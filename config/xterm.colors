@@ -1,8 +1,0 @@
-! this mainly fixes the "unreadable dark blue on black" problem
-! activate via this line in ~/.Xresources:
-! #include "git/mitchscripts/config/xterm.colors"
-xterm*color4: rgb:50/50/a0
-xterm*color12: rgb:80/80/f0
-
-! cool pink:
-! xterm*color4: rgb:ff/60/e8
