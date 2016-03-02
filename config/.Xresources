@@ -1,0 +1,52 @@
+! unset entry from /etc/X11/Xresources/x11-common
+!#ifdef COLOR
+!*customization:
+!#endif
+
+! white on black please
+*.reverseVideo:on
+
+!XTerm*faceNameDoublesize: Sazanami Mincho-10
+
+xterm*utf8Title:	true
+
+XTerm*fontMenu*fontdefault*Label:       Default
+XTerm*font:     -efont-fixed-medium-r-normal-*-14-140-75-75-c-70-iso10646-1
+XTerm*wideFont: -efont-fixed-medium-r-normal-*-14-140-75-75-c-140-iso10646-1
+
+XTerm*font1.Label: efont 12 pixel
+XTerm*font1:     -efont-fixed-medium-r-normal-*-12-120-75-75-c-60-iso10646-1
+XTerm*wideFont1: -efont-fixed-medium-r-normal-*-12-120-75-75-c-120-iso10646-1
+XTerm*font2.Label: misc  13 pixel
+XTerm*font2:     -misc-fixed-medium-r-semicondensed-*-13-120-75-75-c-60-iso10646-1
+XTerm*wideFont2: -misc-fixed-medium-r-normal-*-13-120-75-75-c-120-iso10646-1
+XTerm*font3.Label: efont 14 pixel
+XTerm*font3:     -efont-fixed-medium-r-normal-*-14-140-75-75-c-70-iso10646-1
+XTerm*wideFont3: -efont-fixed-medium-r-normal-*-14-140-75-75-c-140-iso10646-1
+XTerm*font4.Label: efont 16 pixel
+XTerm*font4:     -efont-fixed-medium-r-normal-*-16-160-75-75-c-80-iso10646-1
+XTerm*wideFont4: -efont-fixed-medium-r-normal-*-16-160-75-75-c-160-iso10646-1
+XTerm*font5.Label: misc  18 pixel
+XTerm*font5:     -misc-fixed-medium-r-normal-*-18-120-100-100-c-90-iso10646-1
+XTerm*wideFont5: -misc-fixed-medium-r-normal-*-18-120-100-100-c-180-iso10646-1
+XTerm*font6.Label: efont 24 pixel
+XTerm*font6:     -efont-fixed-medium-r-normal-*-24-240-75-75-c-120-iso10646-1
+XTerm*wideFont6: -efont-fixed-medium-r-normal-*-24-240-75-75-c-240-iso10646-1
+
+*ScrollbarBackground:		black
+*ScrollbarForeground:		white
+*Scrollbar*background:		black
+*Scrollbar*foreground:		white
+*Scrollbar*shadowWidth:		0
+*Scrollbar*borderWidth:		2
+
+!emacs*menubar*Font:           -*-verdana-medium-r-*-*-*-90-*-*-*-*-iso8859-1
+!emacs.modeline*attributeFont: -*-verdana-medium-r-*-*-*-70-*-*-*-*-iso8859-1
+!emacs*popup*Font:             -*-verdana-medium-r-*-*-*-80-*-*-*-*-iso8859-1
+!emacs.reverseVideo:on
+emacs*font:-efont-fixed-medium-r-normal-*-14-*
+emacs*toolBar:0
+emacs*menuBar:0
+
+
+#include "git/mitchscripts/config/xterm.colors"
