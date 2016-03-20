@@ -4,8 +4,9 @@
 ;; don't show startup screen
 (setq inhibit-startup-screen t)
 
-;; don't show toolbar
-(tool-bar-mode -1)
+;; don't show toolbar (only relevant for grpahical emacs; emacs-nox b0rks on this!)
+(when (display-graphic-p)
+  (tool-bar-mode -1))
 
 ;; don't show menubar
 (menu-bar-mode -1)
