@@ -111,6 +111,8 @@
 			       :background nil))))
      `(diff-added ((t ,(list :foreground mitch-dark-fixup-green
 			     :background nil))))
+     ;; git-commit
+     `(log-edit-summary ((t ,(list :foreground mitch-dark-fixup-yellow))))
 
      ))
   )
