@@ -95,9 +95,6 @@
 	(mitch-dark-fixup-niagara   "#96a6c8")
 	(mitch-dark-fixup-wisteria  "#9e95c7")
 	)
-    (custom-theme-set-variables
-     'mitch-dark-fixup
-     '(frame-brackground-mode (quote dark)))
 
     (custom-theme-set-faces
      'mitch-dark-fixup
