@@ -33,6 +33,15 @@
 ;; black on white
 (invert-face 'default)
 
+;; automatic mode selections
+(setq auto-mode-alist
+      (append
+       '( (".*/mutt.*$" . auto-fill-mode)
+	  (".*letter.*$" . auto-fill-mode)
+	  (".*article.*$" . auto-fill-mode)
+	  )
+       auto-mode-alist))
+
 ;; build a unique "theme" just to fix some things in console mode
 ;; activate only in console mode
 (unless (display-graphic-p)
