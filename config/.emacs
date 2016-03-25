@@ -36,89 +36,24 @@
 ;; build a unique "theme" just to fix some things in console mode
 ;; activate only in console mode
 (unless (display-graphic-p)
-  ;;
-  ;; this is based on https://github.com/rexim/gruber-darker-theme/ with most things deleted
-  ;;; gruber-darker-theme.el --- Gruber Darker color theme for Emacs 24.
 
-  ;; Copyright (C) 2013 Alexey Kutepov a.k.a rexim
+  ;; this is a good base theme
+  (load-theme 'manoj-dark)
 
-  ;; Author: Alexey Kutepov <reximkut@gmail.com>
-  ;; URL: http://github.com/rexim/gruber-darker-theme
-  ;; Version: 0.6
+  (custom-theme-set-faces
+   'manoj-dark
 
-  ;; Permission is hereby granted, free of charge, to any person
-  ;; obtaining a copy of this software and associated documentation
-  ;; files (the "Software"), to deal in the Software without
-  ;; restriction, including without limitation the rights to use, copy,
-  ;; modify, merge, publish, distribute, sublicense, and/or sell copies
-  ;; of the Software, and to permit persons to whom the Software is
-  ;; furnished to do so, subject to the following conditions:
+   ;; bright bold red on medium gray is hard to read
+   `(mode-line-buffer-id ((t (:foreground "Wheat" :background "grey30"))))
+   ;; minor tweak
+   `(mode-line ((t (:foreground "grey90" :background "grey20"))))
 
-  ;; The above copyright notice and this permission notice shall be
-  ;; included in all copies or substantial portions of the Software.
+   ;; bright background is irritating
+   `(diff-header ((t (:background "grey10"))))
 
-  ;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-  ;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-  ;; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-  ;; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-  ;; BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-  ;; ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-  ;; CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  ;; SOFTWARE.
-
-;;; Commentary:
-  ;;
-  ;; Gruber Darker color theme for Emacs by Jason Blevins. A darker
-  ;; variant of the Gruber Dark theme for BBEdit by John Gruber. Adapted
-  ;; for deftheme and extended by Alexey Kutepov a.k.a. rexim.
-  ;;
-  ;; stripped and renamed to mitch-dark-fixup by Christian Garbs 
-
-  (deftheme mitch-dark-fixup
-    "mitch dark color fixup theme for Emacs 24")
-
-  ;; Please, install rainbow-mode.
-  ;; Colors with +x are lighter. Colors with -x are darker.
-  (let ((mitch-dark-fixup-fg        "#e4e4ef")
-	(mitch-dark-fixup-fg+1      "#f4f4ff")
-	(mitch-dark-fixup-fg+2      "#f5f5f5")
-	(mitch-dark-fixup-white     "#ffffff")
-	(mitch-dark-fixup-black     "#000000")
-	(mitch-dark-fixup-bg-1      "#101010")
-	(mitch-dark-fixup-bg        "#181818")
-	(mitch-dark-fixup-bg+1      "#282828")
-	(mitch-dark-fixup-bg+2      "#453d41")
-	(mitch-dark-fixup-bg+3      "#484848")
-	(mitch-dark-fixup-bg+4      "#52494e")
-	(mitch-dark-fixup-red-1     "#c73c3f")
-	(mitch-dark-fixup-red       "#f43841")
-	(mitch-dark-fixup-red+1     "#ff4f58")
-	(mitch-dark-fixup-green     "#73c936")
-	(mitch-dark-fixup-yellow    "#ffdd33")
-	(mitch-dark-fixup-brown     "#cc8c3c")
-	(mitch-dark-fixup-quartz    "#95a99f")
-	(mitch-dark-fixup-niagara-1 "#5f627f")
-	(mitch-dark-fixup-niagara   "#96a6c8")
-	(mitch-dark-fixup-wisteria  "#9e95c7")
-	)
-
-    (custom-theme-set-faces
-     'mitch-dark-fixup
-
-     ;; Basic Coloring (or Uncategorized)
-     `(minibuffer-prompt ((t (:foreground ,mitch-dark-fixup-niagara))))
-     `(region ((t (:background ,mitch-dark-fixup-bg+3 :foreground nil))))
-
-     ;; Diff
-     `(diff-removed ((t ,(list :foreground mitch-dark-fixup-red+1
-			       :background nil))))
-     `(diff-added ((t ,(list :foreground mitch-dark-fixup-green
-			     :background nil))))
-     ;; git-commit
-     `(log-edit-summary ((t ,(list :foreground mitch-dark-fixup-yellow))))
-
-     ))
+   )
   )
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
