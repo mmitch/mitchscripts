@@ -7,6 +7,10 @@ use Org::Parser;
 
 open my $fh, '<', "$ENV{HOME}/Cryptbox/blog/lisp.org" or die $!;
 
+my $METACHAR = "\x{1a}";
+
+my $article;
+
 my $doc = Org::Parser->new()->parse($fh);
 
 my %style_map = (
@@ -18,6 +22,7 @@ my %style_map = (
 sub add_geshi {
     my ($content, $lang) = (@_);
     $lang = 'text' unless defined $lang;
+    chomp $content;
 
     if ($lang eq 'text') {
 	# unchanged
@@ -29,7 +34,10 @@ sub add_geshi {
 	die "unknown geshi language <$lang>";
     }
 
-    return sprintf '[geshi lang=%s]%s[/geshi]', $lang, $content;
+    # escape empty lines, so they don't get </p><p>ed later
+    $content =~ s/^$/$METACHAR/gm;
+
+    return sprintf "</p>\n[geshi lang=%s]%s[/geshi]\n<p>", $lang, $content;
 }
 
 sub walker {
@@ -51,8 +59,10 @@ sub walker {
     elsif ($el->isa('Org::Element::Headline')) {
 	my $level = $el->level;
 	die "can't handle heading level <$level>" if $level < 1 or $level > 6;
-	$text .= sprintf '<h%d>%s</h%d>', $level, $el->title->as_string, $level;
-	
+	$text .= sprintf "</p>\n<h%d>%s</h%d>\n<p>", $level, $el->title->as_string, $level;
+
+	# remove heading so it does not pop up again while walking the tree -> STRANGE
+	$el->title(undef);
     }
     elsif ($el->isa('Org::Element::Link')) {
 	if (defined $el->description) {
@@ -80,10 +90,20 @@ sub walker {
 	die "don't know what to do with <$el>";
     }
 
-    print "$text";
-    return $text;
+    $article .= $text;
 }
 
-print $doc->walk(\&walker);
-print "\n";
+$doc->walk(\&walker);
+
+# brush up linebreaks
+chomp $article;
+$article = "<p>$article</p>";
+$article =~ s|\n{3,}|\n\n|gm;
+$article =~ s|\n{2}|</p><p>|gm;
+$article =~ s|<p>\n|\n<p>|gm;
+$article =~ s|<p></p>|\n|gm;
+$article =~ s|</p><p>|</p>\n\n<p>|gm;
+$article =~ s|\n{4,}|\n\n|gm;
+$article =~ s/$METACHAR//g;
+print "$article\n";
 
