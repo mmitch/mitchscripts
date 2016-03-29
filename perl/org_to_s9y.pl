@@ -66,7 +66,7 @@ sub walker {
     }
     elsif ($el->isa('Org::Element::Link')) {
 	if (defined $el->description) {
-	    $text .= sprintf '<a href="%s">%s</a>', $el->link, $el->description->walk(\&walker);
+	    $text .= sprintf '<a href="%s">%s</a>', $el->link, $el->description->as_string;
 	} else {
 	    $text .= sprintf '<a href="%s">%s</a>', $el->link, $el->link;
 	}
