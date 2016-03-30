@@ -102,7 +102,15 @@ sub walker {
 	$text .= add_geshi($el->raw_content, $el->args->[0]);
     }
     elsif ($el->isa('Org::Element::FixedWidthSection')) {
-	$text .= add_geshi($el->text);
+ 	# $text .= add_geshi($el->text);
+	
+	my $content = $el->text;
+	chomp $content;
+
+	# escape empty lines, so they don't get </p><p>ed later
+	$content =~ s/^$/$METACHAR/gm;
+
+	$text .= sprintf "</p><pre class=\"output-verbatim\">%s</pre>\n<p>", $content;
     }
     elsif ($el->isa('Org::Element::Comment')) {
 	# skip
