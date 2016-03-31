@@ -5,7 +5,10 @@ use utf8;
 
 use Org::Parser;
 
-open my $fh, '<', "$ENV{HOME}/Cryptbox/blog/lisp.org" or die $!;
+my $filename = $ARGV[0];
+$filename = '-' unless defined $filename;
+
+open my $fh, '<', $filename or die "can't open `$file': $!";
 
 my $METACHAR = "\x{1a}";
 
