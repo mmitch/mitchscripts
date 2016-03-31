@@ -68,7 +68,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/Cryptbox/TODO"))))
+ '(org-agenda-files (quote ("~/Cryptbox/TODO")))
+ '(org-babel-load-languages (quote ((emacs-lisp . t) (perl . t))))
+ '(org-confirm-babel-evaluate nil)
+ '(org-html-doctype "html5"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
