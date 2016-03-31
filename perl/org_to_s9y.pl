@@ -6,9 +6,9 @@ use utf8;
 use Org::Parser;
 
 my $filename = $ARGV[0];
-$filename = '-' unless defined $filename;
+die "no filename given" unless defined $filename;
 
-open my $fh, '<', $filename or die "can't open `$file': $!";
+open my $fh, '<', $filename or die "can't open `$filename': $!";
 
 my $METACHAR = "\x{1a}";
 
@@ -18,7 +18,9 @@ my $doc = Org::Parser->new()->parse($fh);
 
 my %style_map = (
     ''  => '',
+    'B' => 'b',
     'I' => 'em',
+    'U' => 'u',
     'C' => 'code'
     );
 
@@ -27,7 +29,7 @@ sub add_geshi {
     $lang = 'text' unless defined $lang;
     chomp $content;
 
-    if ($lang eq 'text') {
+    if ($lang =~ /^(text|css|smarty)$/) {
 	# unchanged
     }
     elsif ($lang eq 'emacs-lisp') {
@@ -43,8 +45,18 @@ sub add_geshi {
     return sprintf "</p>\n[geshi lang=%s]%s[/geshi]\n<p>", $lang, $content;
 }
 
+sub encode_html {
+    my ($text) = (@_);
+
+    $text =~ s/&/&amp;/g;
+    $text =~ s/</&lt;/g;
+    $text =~ s/>/&gt;/g;
+
+    return $text;
+}
+
 sub walker {
-    my ($el) = @_;
+    my ($el) = (@_);
 
     my $text = '';
 
@@ -53,26 +65,38 @@ sub walker {
 	die "unknown text style <".${el}->{style}.">" unless defined $tag;
 
 	if ($tag) {
-	    $text .= sprintf '<%s>%s</%s>', $tag, $el->text, $tag;
+	    $text .= sprintf '<%s>%s</%s>', $tag, encode_html($el->text), $tag;
 	}
 	else {
-	    $text .= $el->text;
+	    $text .= encode_html($el->text);
 	}
     }
     elsif ($el->isa('Org::Element::Headline')) {
 	my $level = $el->level;
 	die "can't handle heading level <$level>" if $level < 1 or $level > 6;
-	$text .= sprintf "</p>\n<h%d>%s</h%d>\n<p>", $level, $el->title->as_string, $level;
+	$text .= sprintf "</p>\n<h%d>%s</h%d>\n<p>", $level, encode_html($el->title->as_string), $level;
 
 	# remove heading so it does not pop up again while walking the tree -> STRANGE
 	$el->title(undef);
     }
     elsif ($el->isa('Org::Element::Link')) {
 	if (defined $el->description) {
-	    $text .= sprintf '<a href="%s">%s</a>', $el->link, $el->description->as_string;
+	    $text .= sprintf '<a href="%s">%s</a>', encode_html($el->link), encode_html($el->description->as_string);
 	} else {
-	    $text .= sprintf '<a href="%s">%s</a>', $el->link, $el->link;
+	    $text .= sprintf '<a href="%s">%s</a>', encode_html($el->link), encode_html($el->link);
 	}
+    }
+    elsif ($el->isa('Org::Element::List')) {
+	my $type = $el->type();
+	if ($type eq 'U') {
+	    $text .= sprintf '<ul>%s</ul>', encode_html($el->as_string);
+	}
+	else {
+	    die "unknown list type <$type>";
+	}
+    }
+    elsif ($el->isa('Org::Element::ListItem')) {
+	# FIXME TODO
     }
     elsif ($el->isa('Org::Element::Block')) {
 	$text .= add_geshi($el->raw_content, $el->args->[0]);
