@@ -197,16 +197,12 @@ my $article = parse_element($doc);
 # brush up linebreaks
 chomp $article;
 $article = "<p>$article</p>";
-$article =~ s|\n{3,}|\n\n|gm;
-#$article =~ s|\n{2}|</p><p>|gm;
-#$article =~ s|<p>\n|\n<p>|gm;
 $article =~ s|<p> |<p>|gm;
 $article =~ s| </p>|</p>|gm;
 $article =~ s|<p></p>|\n|gm;
 $article =~ s|</p><p>|</p>\n<p>|gm;
 $article =~ s|<p>|\n<p>|gm;
-#$article =~ s|</p><p>|</p>\n\n<p>|gm;
-#$article =~ s|\n{4,}|\n\n|gm;
+$article =~ s|\n{3,}|\n\n|gm;
 $article =~ s/$METACHAR//g;
 print "$article\n";
 
