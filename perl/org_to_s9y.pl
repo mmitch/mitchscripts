@@ -12,8 +12,6 @@ open my $fh, '<', $filename or die "can't open `$filename': $!";
 
 my $METACHAR = "\x{1a}";
 
-my $article;
-
 my $doc = Org::Parser->new()->parse($fh);
 
 my %style_map = (
@@ -96,7 +94,7 @@ sub convert_link {
     }
 }
 
-sub walker {
+sub parse_element {
     my ($el) = (@_);
 
     my $text = '';
@@ -105,20 +103,25 @@ sub walker {
 	my $tag = $style_map{$el->style};
 	die "unknown text style <".${el}->{style}.">" unless defined $tag;
 
+	my $eltext = encode_html($el->text);
+	$eltext =~ s|\n\n|</p><p>|g;
+	$eltext =~ s/\s+/ /g;
+
 	if ($tag) {
-	    $text .= sprintf '<%s>%s</%s>', $tag, encode_html($el->text), $tag;
+	    $text .= sprintf '<%s>%s</%s>', $tag, $eltext, $tag;
 	}
 	else {
-	    $text .= encode_html($el->text);
+	    $text .= $eltext;
 	}
+
     }
     elsif ($el->isa('Org::Element::Headline')) {
 	my $level = $el->level;
 	die "can't handle heading level <$level>" if $level < 1 or $level > 6;
-	$text .= sprintf "</p>\n<h%d>%s</h%d>\n<p>", $level, encode_html($el->title->as_string), $level;
+	$text .= sprintf "</p>\n<h%d>%s</h%d>\n<p>", $level, parse_element($el->title), $level;
 
-	# remove heading so it does not pop up again while walking the tree -> STRANGE
-	$el->title(undef);
+	# extra walkables seem to contain the headline again for closing tags on the way up - skip them!
+	$text .= parse_children_noextra($el);
     }
     elsif ($el->isa('Org::Element::Link')) {
 	$text .= convert_link($el);
@@ -126,14 +129,16 @@ sub walker {
     elsif ($el->isa('Org::Element::List')) {
 	my $type = $el->type();
 	if ($type eq 'U') {
-	    $text .= sprintf '<ul>%s</ul>', encode_html($el->as_string);
+	    $text .= sprintf '</p><ul>%s</ul><p>', parse_children($el);
 	}
 	else {
 	    die "unknown list type <$type>";
 	}
     }
     elsif ($el->isa('Org::Element::ListItem')) {
-	# FIXME TODO
+	my $childtext = parse_children($el);
+	$childtext =~ s|</p>\s*<p>$||s; # remove strange leftovers
+	$text .= sprintf "<li>%s</li>\n\n", $childtext;
     }
     elsif ($el->isa('Org::Element::Block')) {
 	$text .= add_geshi($el->raw_content, $el->args->[0]);
@@ -156,26 +161,52 @@ sub walker {
 	# skip
     }
     elsif ($el->isa('Org::Document')) {
-	# skip
+	$text .= parse_children($el);
     }
     else {
 	die "don't know what to do with <$el>";
     }
 
-    $article .= $text;
+    return $text;
 }
 
-$doc->walk(\&walker);
+sub parse_children_noextra {
+    my ($el) = (@_);
+
+    my $text = '';
+
+    if ($el->children) {
+	$text .= parse_element($_) for @{$el->children};
+    }
+
+    return $text;
+}
+
+sub parse_children {
+    my ($el) = (@_);
+
+    my $text = parse_children_noextra($el);
+
+    $text .= parse_element($_) for $el->extra_walkables;
+
+    return $text;
+}
+
+my $article = parse_element($doc);
 
 # brush up linebreaks
 chomp $article;
 $article = "<p>$article</p>";
 $article =~ s|\n{3,}|\n\n|gm;
-$article =~ s|\n{2}|</p><p>|gm;
-$article =~ s|<p>\n|\n<p>|gm;
+#$article =~ s|\n{2}|</p><p>|gm;
+#$article =~ s|<p>\n|\n<p>|gm;
+$article =~ s|<p> |<p>|gm;
+$article =~ s| </p>|</p>|gm;
 $article =~ s|<p></p>|\n|gm;
-$article =~ s|</p><p>|</p>\n\n<p>|gm;
-$article =~ s|\n{4,}|\n\n|gm;
+$article =~ s|</p><p>|</p>\n<p>|gm;
+$article =~ s|<p>|\n<p>|gm;
+#$article =~ s|</p><p>|</p>\n\n<p>|gm;
+#$article =~ s|\n{4,}|\n\n|gm;
 $article =~ s/$METACHAR//g;
 print "$article\n";
 
