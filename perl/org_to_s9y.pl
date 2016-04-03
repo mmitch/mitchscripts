@@ -19,7 +19,11 @@ my %style_map = (
     'B' => 'b',
     'I' => 'em',
     'U' => 'u',
-    'C' => 'code'
+    'C' => 'code',
+    );
+
+my %list_map = (
+    'U' => 'ul',
     );
 
 my %geshi_map = (
@@ -29,6 +33,8 @@ my %geshi_map = (
     'smarty' => 'smarty',
     'text' => 'text',
     );
+
+my @open_lists;
 
 sub add_geshi($$) {
     my ($content, $lang) = (@_);
@@ -128,8 +134,10 @@ sub parse_element {
     }
     elsif ($el->isa('Org::Element::List')) {
 	my $type = $el->type();
-	if ($type eq 'U') {
-	    $text .= sprintf '</p><ul>%s</ul><p>', parse_children($el);
+	push @open_lists, $type;
+	my $list_tag = $list_map{$type};
+	if (defined $list_tag) {
+	    $text .= sprintf '</p><%s>%s', $list_tag, parse_children($el); # FIXME: list parser issue: closing list tag missing
 	}
 	else {
 	    die "unknown list type <$type>";
@@ -138,7 +146,7 @@ sub parse_element {
     elsif ($el->isa('Org::Element::ListItem')) {
 	my $childtext = parse_children($el);
 	$childtext =~ s|</p>\s*<p>$||s; # remove strange leftovers
-	$text .= sprintf "<li>%s</li>\n\n", $childtext;
+	$text .= sprintf "</li>\n\n<li>%s", $childtext; # FIXME: list parser issue: <li></li> wrong order
     }
     elsif ($el->isa('Org::Element::Block')) {
 	$text .= add_geshi($el->raw_content, $el->args->[0]);
@@ -155,7 +163,13 @@ sub parse_element {
 	$text .= sprintf "</p><pre class=\"output-verbatim\">%s</pre>\n<p>", $content;
     }
     elsif ($el->isa('Org::Element::Comment')) {
-	# skip
+	if ($el->as_string eq "# LIST-END\n") {
+	    # FIXME: list parser issue: manually close a list
+	    $text .= sprintf '</li></%s><p>', $list_map{pop @open_lists};
+	}
+	else {
+	    # skip
+	}
     }
     elsif ($el->isa('Org::Element::Setting')) {
 	# skip
@@ -194,9 +208,13 @@ sub parse_children {
 
 my $article = parse_element($doc);
 
+die "there are ".scalar(@open_lists)." unclosed list elements - close manually with '# LIST-END'" if @open_lists;
+
 # brush up linebreaks
 chomp $article;
 $article = "<p>$article</p>";
+$article =~ s|<ul></li>|<ul>|gm; # FIXME: list parser issue: remove cruft
+$article =~ s|</p><p></li>|</li>|gm; # FIXME: list parser issue: remove cruft
 $article =~ s|<p> |<p>|gm;
 $article =~ s| </p>|</p>|gm;
 $article =~ s|<p></p>|\n|gm;
@@ -205,4 +223,3 @@ $article =~ s|<p>|\n<p>|gm;
 $article =~ s|\n{3,}|\n\n|gm;
 $article =~ s/$METACHAR//g;
 print "$article\n";
-
