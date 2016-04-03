@@ -8,6 +8,8 @@ use Org::Parser;
 my $filename = $ARGV[0];
 die "no filename given" unless defined $filename;
 
+my $html_body = (defined $ARGV[1] && $ARGV[1] eq '-h');
+
 open my $fh, '<', $filename or die "can't open `$filename': $!";
 
 my $METACHAR = "\x{1a}";
@@ -38,6 +40,11 @@ my @open_lists;
 
 sub add_geshi($$) {
     my ($content, $lang) = (@_);
+
+    if ($html_body) {
+	return add_verbatim($content);
+    }
+
     $lang = 'text' unless defined $lang;
     chomp $content;
 
@@ -51,6 +58,16 @@ sub add_geshi($$) {
     $content =~ s/^$/$METACHAR/gm;
 
     return sprintf "</p>\n[geshi lang=%s]%s[/geshi]\n<p>", $lang, $content;
+}
+
+sub add_verbatim {
+    my ($content) = (@_);
+    chomp $content;
+
+    # escape empty lines, so they don't get </p><p>ed later
+    $content =~ s/^$/$METACHAR/gm;
+
+    return sprintf "</p><pre class=\"output-verbatim\">%s</pre>\n<p>", encode_html($content);
 }
 
 sub encode_html($) {
@@ -153,14 +170,7 @@ sub parse_element {
     }
     elsif ($el->isa('Org::Element::FixedWidthSection')) {
  	# $text .= add_geshi($el->text);
-	
-	my $content = $el->text;
-	chomp $content;
-
-	# escape empty lines, so they don't get </p><p>ed later
-	$content =~ s/^$/$METACHAR/gm;
-
-	$text .= sprintf "</p><pre class=\"output-verbatim\">%s</pre>\n<p>", $content;
+	$text .= add_verbatim($el->text);
     }
     elsif ($el->isa('Org::Element::Comment')) {
 	if ($el->as_string eq "# LIST-END\n") {
@@ -222,4 +232,28 @@ $article =~ s|</p><p>|</p>\n<p>|gm;
 $article =~ s|<p>|\n<p>|gm;
 $article =~ s|\n{3,}|\n\n|gm;
 $article =~ s/$METACHAR//g;
+
+if ($html_body) {
+    print <<'EOF';
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>
+      none
+    </title>
+  </head>
+  <body>
+EOF
+    ;
+}
+
 print "$article\n";
+
+if ($html_body) {
+    print <<'EOF';
+  </body>
+</html>
+EOF
+    ;
+}
