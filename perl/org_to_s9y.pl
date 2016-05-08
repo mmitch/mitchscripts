@@ -60,7 +60,7 @@ sub add_geshi($$) {
     return sprintf "</p>\n[geshi lang=%s]%s[/geshi]\n<p>", $lang, $content;
 }
 
-sub add_verbatim {
+sub add_verbatim($) {
     my ($content) = (@_);
     chomp $content;
 
@@ -92,7 +92,7 @@ sub abbr_tag($$) {
     return sprintf '<abbr title="%s">%s</a>', encode_html($popup), encode_html($text);
 }
 
-sub convert_link {
+sub convert_link($) {
     my ($el) = (@_);
     my $link = $el->link;
 
@@ -117,7 +117,8 @@ sub convert_link {
     }
 }
 
-sub parse_element {
+sub parse_element($);
+sub parse_element($) {
     my ($el) = (@_);
 
     my $text = '';
@@ -194,7 +195,7 @@ sub parse_element {
     return $text;
 }
 
-sub parse_children_noextra {
+sub parse_children_noextra($) {
     my ($el) = (@_);
 
     my $text = '';
@@ -206,7 +207,7 @@ sub parse_children_noextra {
     return $text;
 }
 
-sub parse_children {
+sub parse_children($) {
     my ($el) = (@_);
 
     my $text = parse_children_noextra($el);
