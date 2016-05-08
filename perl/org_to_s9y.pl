@@ -35,6 +35,9 @@ sub add_geshi($$) {
     elsif ($lang eq 'emacs-lisp') {
 	$lang = 'lisp';
     }
+    elsif ($lang eq 'sh') {
+	$lang = 'bash';
+    }
     else {
 	die "unknown geshi language <$lang>";
     }
