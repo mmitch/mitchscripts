@@ -24,7 +24,7 @@ my %style_map = (
     'C' => 'code'
     );
 
-sub add_geshi {
+sub add_geshi($$) {
     my ($content, $lang) = (@_);
     $lang = 'text' unless defined $lang;
     chomp $content;
@@ -45,7 +45,7 @@ sub add_geshi {
     return sprintf "</p>\n[geshi lang=%s]%s[/geshi]\n<p>", $lang, $content;
 }
 
-sub encode_html {
+sub encode_html($) {
     my ($text) = (@_);
 
     $text =~ s/&/&amp;/g;
@@ -53,6 +53,43 @@ sub encode_html {
     $text =~ s/>/&gt;/g;
 
     return $text;
+}
+
+sub a_tag($$) {
+    my ($link, $description) = (@_);
+
+    return sprintf '<a href="%s">%s</a>', encode_html($link), encode_html($description);
+}
+
+sub abbr_tag($$) {
+    my ($text, $popup) = (@_);
+
+    return sprintf '<abbr title="%s">%s</a>', encode_html($popup), encode_html($text);
+}
+
+sub convert_link {
+    my ($el) = (@_);
+    my $link = $el->link;
+
+    if ($link =~ /^([^:]+):/) {
+	my $schema = $1;
+	if ($schema =~ /^(http|https)$/) {
+	    # continue
+	}
+	elsif ($schema eq 'todo') {
+	    die "todo: link without description" unless defined $el->description;
+	    return abbr_tag($el->description, 'Artikel folgt später');
+	}
+	else {
+	    die "unknown schema <$schema> in link <$link>";
+	}
+    }
+    
+    if (defined $el->description) {
+	return a_tag($link, $el->description->as_string);
+    } else {
+	return a_tag($link, $link);
+    }
 }
 
 sub walker {
@@ -80,11 +117,7 @@ sub walker {
 	$el->title(undef);
     }
     elsif ($el->isa('Org::Element::Link')) {
-	if (defined $el->description) {
-	    $text .= sprintf '<a href="%s">%s</a>', encode_html($el->link), encode_html($el->description->as_string);
-	} else {
-	    $text .= sprintf '<a href="%s">%s</a>', encode_html($el->link), encode_html($el->link);
-	}
+	$text .= convert_link($el);
     }
     elsif ($el->isa('Org::Element::List')) {
 	my $type = $el->type();
