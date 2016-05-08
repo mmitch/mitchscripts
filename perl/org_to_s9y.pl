@@ -24,21 +24,22 @@ my %style_map = (
     'C' => 'code'
     );
 
+my %geshi_map = (
+    'css' => 'css',
+    'emacs-lisp' => 'lisp',
+    'sh' => 'bash',
+    'smarty' => 'smarty',
+    'text' => 'text',
+    );
+
 sub add_geshi($$) {
     my ($content, $lang) = (@_);
     $lang = 'text' unless defined $lang;
     chomp $content;
 
-    if ($lang =~ /^(text|css|smarty)$/) {
-	# unchanged
-    }
-    elsif ($lang eq 'emacs-lisp') {
-	$lang = 'lisp';
-    }
-    elsif ($lang eq 'sh') {
-	$lang = 'bash';
-    }
-    else {
+    if (exists $geshi_map{$lang}) {
+	$lang = $geshi_map{$lang};
+    } else {
 	die "unknown geshi language <$lang>";
     }
 
