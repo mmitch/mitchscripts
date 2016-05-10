@@ -90,7 +90,7 @@ sub a_tag($$) {
 sub abbr_tag($$) {
     my ($text, $popup) = (@_);
 
-    return sprintf '<abbr title="%s">%s</a>', encode_html($popup), encode_html($text);
+    return sprintf '<abbr title="%s">%s</abbr>', encode_html($popup), encode_html($text);
 }
 
 sub convert_link($) {
@@ -104,7 +104,7 @@ sub convert_link($) {
 	}
 	elsif ($schema eq 'todo') {
 	    die "todo: link without description" unless defined $el->description;
-	    return abbr_tag($el->description, 'Artikel folgt später');
+	    return abbr_tag($el->description->as_string, 'Artikel folgt');
 	}
 	else {
 	    die "unknown schema <$schema> in link <$link>";
