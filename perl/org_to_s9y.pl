@@ -26,6 +26,7 @@ my %style_map = (
 
 my %list_map = (
     'U' => 'ul',
+    'D' => 'dl',
     );
 
 my %geshi_map = (
@@ -162,9 +163,15 @@ sub parse_element($) {
 	}
     }
     elsif ($el->isa('Org::Element::ListItem')) {
+	my $list_type = $open_lists[-1];
 	my $childtext = parse_children($el);
 	$childtext =~ s|</p>\s*<p>$||s; # remove strange leftovers
-	$text .= sprintf "</li>\n\n<li>%s", $childtext; # FIXME: list parser issue: <li></li> wrong order
+	if ($list_type eq 'D') {
+	    $childtext =~ s|^\s+||;
+	    $text .= sprintf "</dd>\n\n<dt>%s</dt><dd>%s", encode_html($el->desc_term->as_string), $childtext; # FIXME: list parser issue: <dd></dd> wrong order
+	} else {
+	    $text .= sprintf "</li>\n\n<li>%s", $childtext; # FIXME: list parser issue: <li></li> wrong order
+	}
     }
     elsif ($el->isa('Org::Element::Block')) {
 	$text .= add_geshi($el->raw_content, $el->args->[0]);
@@ -176,7 +183,11 @@ sub parse_element($) {
     elsif ($el->isa('Org::Element::Comment')) {
 	if ($el->as_string eq "# LIST-END\n") {
 	    # FIXME: list parser issue: manually close a list
-	    $text .= sprintf '</li></%s><p>', $list_map{pop @open_lists};
+	    if ($open_lists[-1] eq 'D') {
+		$text .= sprintf "</dd></%s>\n<p>", $list_map{pop @open_lists};
+	    } else {
+		$text .= sprintf '</li></%s><p>', $list_map{pop @open_lists};
+	    }
 	}
 	else {
 	    # skip
@@ -219,13 +230,18 @@ sub parse_children($) {
 
 my $article = parse_element($doc);
 
-die "there are ".scalar(@open_lists)." unclosed list elements - close manually with '# LIST-END'" if @open_lists;
+if (@open_lists) {
+    my $tags = join ", ", map { $list_map{$_} } @open_lists;
+    die "there are ".scalar(@open_lists)." unclosed list elements ($tags) - close manually with '# LIST-END'";
+}
 
 # brush up linebreaks
 chomp $article;
 $article = "<p>$article</p>";
 $article =~ s|<ul></li>|<ul>|gm; # FIXME: list parser issue: remove cruft
 $article =~ s|</p><p></li>|</li>|gm; # FIXME: list parser issue: remove cruft
+$article =~ s|<dl></dd>|<dl>|gm; # FIXME: list parser issue: remove cruft
+$article =~ s|</p><p></dd>|</dd>|gm; # FIXME: list parser issue: remove cruft
 $article =~ s|<p> |<p>|gm;
 $article =~ s| </p>|</p>|gm;
 $article =~ s|<p></p>|\n|gm;
