@@ -253,9 +253,11 @@ sub parse_children {
 sub tree_element {
     my ($el, $lvl) = (@_);
 
+    my $object = scalar $el;
+    $object =~ s/^Org::Element://;
     my $content = substr($el->as_string, 0, 20);
     $content =~ tr/\n//d;
-    my $text = sprintf "%s %s %s\n", '  ' x $lvl, $el, $content;
+    my $text = sprintf "%-40s %s\n", '  ' x $lvl . $object, $content;
     
     return $text;
 }
