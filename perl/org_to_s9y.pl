@@ -9,6 +9,7 @@ my $filename = $ARGV[0];
 die "no filename given" unless defined $filename;
 
 my $html_body = (defined $ARGV[1] && $ARGV[1] eq '-h');
+my $tree_debug = (defined $ARGV[1] && $ARGV[1] eq '-d');
 
 open my $fh, '<', $filename or die "can't open `$filename': $!";
 
@@ -226,6 +227,35 @@ sub parse_children {
     $text .= parse_element($_) for $el->extra_walkables;
 
     return $text;
+}
+
+sub tree_element {
+    my ($el, $lvl) = (@_);
+
+    my $content = substr($el->as_string, 0, 20);
+    $content =~ tr/\n//d;
+    my $text = sprintf "%s %s %s\n", '  ' x $lvl, $el, $content;
+    
+    return $text;
+}
+
+sub tree_children {
+    my ($el, $lvl) = (@_);
+
+    my $text = tree_element($el, $lvl);
+
+    if ($el->children) {
+	$text .= tree_children($_, $lvl + 1) for @{$el->children};
+    }
+
+    $text .= tree_element($_, $lvl + 1) for $el->extra_walkables;
+
+    return $text;
+}
+
+if ($tree_debug) {
+    print tree_element($doc, 0) . tree_children($doc, 0);
+    exit 0;
 }
 
 my $article = parse_element($doc);
