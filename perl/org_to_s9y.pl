@@ -40,7 +40,7 @@ my %geshi_map = (
 
 my @open_lists;
 
-sub add_geshi($$) {
+sub add_geshi {
     my ($content, $lang) = (@_);
 
     if ($html_body) {
@@ -62,7 +62,7 @@ sub add_geshi($$) {
     return sprintf "</p>\n[geshi lang=%s]%s[/geshi]\n<p>", $lang, $content;
 }
 
-sub add_verbatim($) {
+sub add_verbatim {
     my ($content) = (@_);
     chomp $content;
 
@@ -72,7 +72,7 @@ sub add_verbatim($) {
     return sprintf "</p><pre class=\"output-verbatim\">%s</pre>\n<p>", encode_html($content);
 }
 
-sub encode_html($) {
+sub encode_html {
     my ($text) = (@_);
 
     $text =~ s/&/&amp;/g;
@@ -82,19 +82,19 @@ sub encode_html($) {
     return $text;
 }
 
-sub a_tag($$) {
+sub a_tag {
     my ($link, $description) = (@_);
 
     return sprintf '<a href="%s">%s</a>', encode_html($link), encode_html($description);
 }
 
-sub abbr_tag($$) {
+sub abbr_tag {
     my ($text, $popup) = (@_);
 
     return sprintf '<abbr title="%s">%s</abbr>', encode_html($popup), encode_html($text);
 }
 
-sub convert_link($) {
+sub convert_link {
     my ($el) = (@_);
     my $link = $el->link;
 
@@ -119,8 +119,7 @@ sub convert_link($) {
     }
 }
 
-sub parse_element($);
-sub parse_element($) {
+sub parse_element {
     my ($el) = (@_);
 
     my $text = '';
@@ -207,7 +206,7 @@ sub parse_element($) {
     return $text;
 }
 
-sub parse_children_noextra($) {
+sub parse_children_noextra {
     my ($el) = (@_);
 
     my $text = '';
@@ -219,7 +218,7 @@ sub parse_children_noextra($) {
     return $text;
 }
 
-sub parse_children($) {
+sub parse_children {
     my ($el) = (@_);
 
     my $text = parse_children_noextra($el);
