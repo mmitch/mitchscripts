@@ -1,4 +1,21 @@
 #!/usr/bin/perl
+#
+# org_to_s9y.pl -- orgmode to serendipity converter
+#
+# This script converts an OrgMode file into HTML that is properly
+# formatted to be directly used as an entry in my s9y driven blog.
+#
+# see also:
+#
+#  - OrgMode (documentation format and more):
+#    http://orgmode.org/
+#  
+#  - s9y (Serendipity blog software): 
+#    http://www.s9y.org/
+#
+#  - Org::Parser (Perl parser for OrgMode files):
+#    https://metacpan.org/release/Org-Parser
+
 use strict;
 use warnings;
 use utf8;
