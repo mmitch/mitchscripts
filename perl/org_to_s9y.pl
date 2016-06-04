@@ -5,6 +5,9 @@
 # This script converts an OrgMode file into HTML that is properly
 # formatted to be directly used as an entry in my s9y driven blog.
 #
+#  Copyright (C) 2016  Christian Garbs <mitch@cgarbs.de>
+#  Licensed under GNU GPL v2 or later
+#
 # see also:
 #
 #  - OrgMode (documentation format and more):
@@ -15,6 +18,7 @@
 #
 #  - Org::Parser (Perl parser for OrgMode files):
 #    https://metacpan.org/release/Org-Parser
+#
 
 use strict;
 use warnings;
