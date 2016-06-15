@@ -17,8 +17,7 @@ has length  => ( is => 'lazy' );
 has _rule   => ( is => 'lazy' );
 
 sub command {
-    my $self = shift;
-    my $value = shift;
+    my ($self, $value) = (@_);
     return $self->_rule->[ $value ];
 }
 
@@ -30,6 +29,47 @@ sub _build_length {
 sub _build__rule {
     my $self = shift;
     return [ split//, $self->ruleset ];
+}
+
+package Field;
+
+use Moo;
+has rule   => ( is => 'ro', required => 1 );
+has width  => ( is => 'ro', required => 1 );
+has height => ( is => 'ro', required => 1 );
+has _cell  => ( is => 'lazy' );
+
+sub state {
+    my ($self, $x, $y) = (@_);
+    return $self->_cell->[$self->_index($x, $y)];
+}
+
+sub advance {
+    my ($self, $x, $y) = (@_);
+    my $state = $self->state($x, $y);
+    $state = ($state + 1) % $self->rule->length;
+    return $self->_put($x, $y, $state);
+}
+
+sub _put {
+    my ($self, $x, $y, $state) = (@_);
+    return $self->_cell->[$self->_index($x, $y)] = $state;
+}
+
+sub _index {
+    my ($self, $x, $y) = (@_);
+    return $y*$self->width+$x;
+}
+
+sub _build__cell {
+    my $self = shift;
+    my @cells;
+    foreach my $x (0 .. $self->width-1 ) {
+	foreach my $y ( 0 .. $self->height-1 ) {
+	    $cells[$self->_index($x, $y)] = 0;
+	}
+    }
+    return \@cells;
 }
 
 package main;
@@ -53,25 +93,17 @@ my $CLR = `tput clear`;
 my $rule = Rule->new( ruleset => (defined $ARGV[0] && $ARGV[0] ? $ARGV[0] : 'RL') );
 
 # init field
-my $w = 400;
-my $h = 300;
-my @f;
-foreach my $x (0 .. $w-1 ) {
-    foreach my $y ( 0 .. $h-1 ) {
-	$f[$y*$w+$x] = 0;
-    }
-}
+my $field = Field->new( rule => $rule, width => 400, height => 300 );
 
 # init ant
-my $x = $w/2;
-my $y = $h/2;
+my $x = $field->width/2;
+my $y = $field->height/2;
 my $d = 0;
 
 sub move_ant {
-    my $state = $f[$y*$w+$x];
-    $f[$y*$w+$x] = ($state + 1) % $rule->length;
+    my $state = $field->advance($x, $y);
 
-    draw( $x, $y, $f[$y*$w+$x] );
+    draw( $x, $y, $state);
     
     if ($rule->command($state) eq 'L') {
 	$d--;
@@ -82,28 +114,28 @@ sub move_ant {
     }
 
     if ($d == 0) {
-	$y = ($y + 1) % $h;
+	$y = ($y + 1) % $field->height;
     }
     elsif ($d == 1) {
-	$x = ($x + 1) % $w;
+	$x = ($x + 1) % $field->width;
     }
     elsif ($d == 2) {
 	$y--;
-	$y += $h while $y < 0;
+	$y += $field->height while $y < 0;
     }
     else {
 	$x--;
-	$x += $w while $x < 0;
+	$x += $field->width while $x < 0;
     }
 }
 
 sub print_screen {
     print $CLR;
-    foreach my $l ( 0 .. $h-1 ) {
+    foreach my $l ( 0 .. $field->height-1 ) {
 	next if $l % 2;
 	my $line = '';
-	foreach my $c (0 .. $w-1 ) {
-	    $line .= $G[ $f[($l+1)*$w+$c] * 2 + $f[$l*$w+$c] ];
+	foreach my $c (0 .. $field->width-1 ) {
+	    $line .= $G[ $field->state($c, $l+1) * 2 + $field->state($c, $l) ];
 	}
 	print "$line\n";
     }
@@ -176,7 +208,7 @@ $window->add($vbox);
 $vbox->show;
 
 $drawing = Gtk2::DrawingArea->new;
-$drawing->set_size_request($w*2, $h*2);
+$drawing->set_size_request($field->width*2, $field->height*2);
 $drawing->signal_connect(configure_event => \&configure_event);
 $drawing->signal_connect(expose_event => \&expose_event);
 $vbox->pack_start( $drawing, TRUE, TRUE, 0 );
