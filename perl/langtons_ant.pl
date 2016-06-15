@@ -72,6 +72,55 @@ sub _build__cell {
     return \@cells;
 }
 
+package Ant;
+
+use Moo;
+has field => ( is => 'ro', required => 1 );
+has x     => ( is => 'rwp', lazy => 1, builder => 1 );
+has y     => ( is => 'rwp', lazy => 1, builder => 1 );
+has dir   => ( is => 'rwp', default => 0 );
+
+use constant DIRECTIONS => 4; # TODO: make configurable (hex fields, triangles, ...)
+
+sub turn_left {
+    my $self = shift;
+    $self->_set_dir( $self->dir - 1 );
+    $self->_set_dir( $self->dir + DIRECTIONS ) while $self->dir < 0;
+}
+
+sub turn_right {
+    my $self = shift;
+    $self->_set_dir( ($self->dir + 1) % DIRECTIONS );
+}
+
+sub step_forward {
+    my $self = shift;
+    if ($self->dir == 0) {
+	$self->_set_y( ($self->y + 1) % $self->field->height );
+    }
+    elsif ($self->dir == 1) {
+	$self->_set_x( ($self->x + 1) % $self->field->width );
+    }
+    elsif ($self->dir == 2) {
+	$self->_set_y( $self->y - 1 );
+	$self->_set_y( $self->y + $self->field->height ) while $self->y < 0;
+    }
+    else {
+	$self->_set_x( $self->x - 1 );
+	$self->_set_x( $self->x + $self->field->width ) while $self->x < 0;
+    }
+}
+
+sub _build_x {
+    my $self = shift;
+    return $self->field->width / 2;
+}
+
+sub _build_y {
+    my $self = shift;
+    return $self->field->height / 2;
+}
+
 package main;
 
 use Glib qw/TRUE FALSE/;
@@ -96,37 +145,22 @@ my $rule = Rule->new( ruleset => (defined $ARGV[0] && $ARGV[0] ? $ARGV[0] : 'RL'
 my $field = Field->new( rule => $rule, width => 400, height => 300 );
 
 # init ant
-my $x = $field->width/2;
-my $y = $field->height/2;
-my $d = 0;
+my $ant = Ant->new( field => $field );
 
 sub move_ant {
+    my ($x, $y) = ($ant->x, $ant->y);
     my $state = $field->advance($x, $y);
 
-    draw( $x, $y, $state);
+    draw($x, $y, $state);
     
     if ($rule->command($state) eq 'L') {
-	$d--;
-	$d += 4 while $d < 0;
+	$ant->turn_left;
     }
     else {
-	$d = ($d + 1) % 4;
+	$ant->turn_right;
     }
 
-    if ($d == 0) {
-	$y = ($y + 1) % $field->height;
-    }
-    elsif ($d == 1) {
-	$x = ($x + 1) % $field->width;
-    }
-    elsif ($d == 2) {
-	$y--;
-	$y += $field->height while $y < 0;
-    }
-    else {
-	$x--;
-	$x += $field->width while $x < 0;
-    }
+    $ant->step_forward;
 }
 
 sub print_screen {
