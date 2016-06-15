@@ -121,47 +121,115 @@ sub _build_y {
     return $self->field->height / 2;
 }
 
+package Render::Text::Simple;
+
+use Moo;
+use Time::HiRes qw(usleep);
+
+has field    => ( is => 'ro', required => 1 );
+has langton  => ( is => 'ro', required => 1 );
+has _cls     => ( is => 'ro', default => `tput clear` );
+# charset for two pixels per character: [ empty, upper half, bottom half, both ]
+has _charset => ( is => 'ro', default => sub { [ ' ', "'", '.', ':' ] } ); 
+#has _charset => ( is => 'ro', default => sub { [ ' ', '"', 'o', '8' ] } );
+
+sub draw {
+    my ($self, $x, $y) = (@_);
+    my $charset = $self->_charset;
+    my $field = $self->field;
+    print $self->_cls;
+    foreach my $l ( 0 .. $field->height-1 ) {
+	next if $l % 2;
+	my $line = '';
+	foreach my $c (0 .. $field->width-1 ) {
+	    $line .= $charset->[ $field->state($c, $l+1) * 2 + $field->state($c, $l) ];
+	}
+	print "$line\n";
+    }
+}
+
+sub loop {
+    my $self = shift;
+    die "Render::Text::Simple only works with 2 colors (ruleset length 2)" unless $self->field->rule->length == 2;
+
+    my $langton = $self->langton;
+    while (1) {
+	$langton->step;
+	usleep 10000;
+    }
+}
+
+package Langton;
+
+use Moo;
+has ruleset => ( is => 'ro', required => 1 );
+has width   => ( is => 'ro', default => 400 );
+has height  => ( is => 'ro', default => 300 );
+has _rule   => ( is => 'lazy' );
+has _field  => ( is => 'lazy' );
+has _ant    => ( is => 'lazy' );
+has _render => ( is => 'lazy' );
+
+sub step {
+    my $self = shift;
+    
+    my ($x, $y) = ($self->_ant->x, $self->_ant->y);
+
+    # advance field state
+    my $state = $self->_field->advance($x, $y);
+
+    # update output
+    $self->_render->draw($x, $y, $state);
+
+    # move ant
+    if ($self->_rule->command($state) eq 'L') {
+	$self->_ant->turn_left;
+    }
+    else {
+	$self->_ant->turn_right;
+    }
+
+    $self->_ant->step_forward;
+}
+
+sub start {
+    my $self = shift;
+    $self->_render->loop;
+}
+
+sub _build__rule {
+    my $self = shift;
+    return Rule->new( ruleset => $self->ruleset );
+}
+
+sub _build__field {
+    my $self = shift;
+    return Field->new( rule => $self->_rule, width => $self->width, height => $self->height );
+}
+
+sub _build__ant {
+    my $self = shift;
+    return Ant->new( field => $self->_field );
+}
+
+sub _build__render {
+    my $self = shift;
+    return Render::Text::Simple->new( field => $self->_field, langton => $self );
+}
+
 package main;
 
 use Glib qw/TRUE FALSE/;
 use Gtk2 '-init';
 
-# init output:
-# 2 states in 1x2 grid -> 4 combinations
-# bits are placed like this:
-#  1
-#  0
-my @G = (
-    ' ', "'", '.', ':'
-#    ' ', '"', 'o', '8'
+my $langton = Langton->new(
+    ruleset => (defined $ARGV[0] && $ARGV[0] ? $ARGV[0] : 'RL'),
+    width => 80,
+    height => 40
     );
+$langton->start;
 
-my $CLR = `tput clear`;
-
-# init states
-my $rule = Rule->new( ruleset => (defined $ARGV[0] && $ARGV[0] ? $ARGV[0] : 'RL') );
-
-# init field
-my $field = Field->new( rule => $rule, width => 400, height => 300 );
-
-# init ant
-my $ant = Ant->new( field => $field );
-
-sub move_ant {
-    my ($x, $y) = ($ant->x, $ant->y);
-    my $state = $field->advance($x, $y);
-
-    draw($x, $y, $state);
-    
-    if ($rule->command($state) eq 'L') {
-	$ant->turn_left;
-    }
-    else {
-	$ant->turn_right;
-    }
-
-    $ant->step_forward;
-}
+__DATA__
 
 sub print_screen {
     print $CLR;
