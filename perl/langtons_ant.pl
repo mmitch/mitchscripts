@@ -9,6 +9,31 @@
 use strict;
 use warnings;
 
+package Rule;
+
+use Moo;
+has ruleset => ( is => 'ro', required => 1 );
+has length  => ( is => 'lazy' );
+has _rule   => ( is => 'lazy' );
+
+sub command {
+    my $self = shift;
+    my $value = shift;
+    return $self->_rule->[ $value ];
+}
+
+sub _build_length {
+    my $self = shift;
+    return length $self->ruleset;
+}
+
+sub _build__rule {
+    my $self = shift;
+    return [ split//, $self->ruleset ];
+}
+
+package main;
+
 use Glib qw/TRUE FALSE/;
 use Gtk2 '-init';
 
@@ -25,8 +50,7 @@ my @G = (
 my $CLR = `tput clear`;
 
 # init states
-my @M = split //, defined $ARGV[0] && $ARGV[0] ? $ARGV[0] : 'RL';
-my $S = scalar @M;
+my $rule = Rule->new( ruleset => (defined $ARGV[0] && $ARGV[0] ? $ARGV[0] : 'RL') );
 
 # init field
 my $w = 400;
@@ -45,11 +69,11 @@ my $d = 0;
 
 sub move_ant {
     my $state = $f[$y*$w+$x];
-    $f[$y*$w+$x] = ($state + 1) % $S;
+    $f[$y*$w+$x] = ($state + 1) % $rule->length;
 
     draw( $x, $y, $f[$y*$w+$x] );
     
-    if ($M[$state] eq 'L') {
+    if ($rule->command($state) eq 'L') {
 	$d--;
 	$d += 4 while $d < 0;
     }
@@ -91,8 +115,8 @@ my @GC;
 
 sub init_gc {
     my ($widget) = (@_);
-    foreach my $i ( 0 .. $S-1) {
-	my $v = $i * 255 / ( $S - 1 );
+    foreach my $i ( 0 .. $rule->length-1) {
+	my $v = $i * 255 / ( $rule->length - 1 );
 	my $rgb = $v << 16 | $v << 8 | $v;
 	my $gc = Gtk2::Gdk::GC->new( $widget );
 	$gc->set_rgb_foreground( $rgb );
