@@ -65,6 +65,10 @@ my @open_lists;
 sub add_geshi {
     my ($content, $lang) = (@_);
 
+    if (defined $lang and $lang eq 'quote') {
+	return add_blockquote($content);
+    }
+
     if ($html_body) {
 	return add_verbatim($content);
     }
@@ -82,6 +86,16 @@ sub add_geshi {
     $content =~ s/^$/$METACHAR/gm;
 
     return sprintf "</p>\n[geshi lang=%s]%s[/geshi]\n<p>", $lang, $content;
+}
+
+sub add_blockquote {
+    my ($content) = (@_);
+    chomp $content;
+
+    # escape empty lines, so they don't get </p><p>ed later
+    $content =~ s/^$/$METACHAR/gm;
+
+    return sprintf "</p><blockquote>%s</blockquote>\n<p>", encode_html($content);
 }
 
 sub add_verbatim {
