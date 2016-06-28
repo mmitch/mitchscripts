@@ -121,6 +121,8 @@ sub encode_html {
 sub a_tag {
     my ($link, $description) = (@_);
 
+    die "link <$link> with = encoded as %3D -> check!" if $link =~ /%3D/i;
+
     return sprintf '<a href="%s">%s</a>', encode_html($link), encode_html($description);
 }
 
