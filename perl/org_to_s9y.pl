@@ -48,6 +48,7 @@ my %style_map = (
     );
 
 my %list_map = (
+    'O' => 'ol',
     'U' => 'ul',
     'D' => 'dl',
     );
