@@ -94,11 +94,12 @@ print <<EOF;
 <h1><a name="1">Repository access</a></h1>
 <p>The repository is available under:</p>
 <pre>
-deb     http://www.cgarbs.de/stuff ./
-deb-src http://www.cgarbs.de/stuff ./
+deb     https://www.cgarbs.de/stuff ./
+deb-src https://www.cgarbs.de/stuff ./
 </pre>
 <p>Put these lines in your <tt>/etc/apt/sources.list</tt> and you are ready to go.<br>
 My repository key is available <a href="/gpg-key">here</a>.</p>
+<p>(As the repository is available via HTTPS only, be sure to have <tt>apt-transport-https</tt> installed.)</p>
 
 <h1><a name="2">Repository content</a></h1>
 
