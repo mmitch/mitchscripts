@@ -43,8 +43,11 @@ case "$TERM" in
 	    fluttershy)
 		color=25
 		;;
+	    ms1067a1)
+		color=77
+		;;
 		# reserve colors:
-		# 23 33 26 32 77 58
+		# 23 33 26 32 58
 	    *)
 		color=237
 		;;
