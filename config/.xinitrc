@@ -20,7 +20,7 @@ export AWT_TOOLKIT=MToolkit
 [ -x /usr/bin/wmname ] && /usr/bin/wmname LG3D
 
 # ask SSH password
-ssh-add < /dev/null
+$HOME/bin/ssh-addkeys < /dev/null
 
 # start notification if networked
 (ssh -X mitch "/home/mitch/git/mitchscripts/bash/start_notification.sh &" &) &
