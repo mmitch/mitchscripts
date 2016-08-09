@@ -23,7 +23,7 @@ export AWT_TOOLKIT=MToolkit
 ssh-add < /dev/null
 
 # start notification if networked
-(ssh -X mitch@mitch.mitch.h.shuttle.de "/home/mitch/git/mitchscripts/bash/start_notification.sh &" &) &
+(ssh -X mitch "/home/mitch/git/mitchscripts/bash/start_notification.sh &" &) &
 
 #( synergys & ) &
 
