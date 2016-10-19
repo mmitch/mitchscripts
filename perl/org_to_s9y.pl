@@ -56,6 +56,7 @@ my %list_map = (
 my %geshi_map = (
     'css' => 'css',
     'emacs-lisp' => 'lisp',
+    'java' => 'java5',
     'sh' => 'bash',
     'smarty' => 'smarty',
     'text' => 'text',

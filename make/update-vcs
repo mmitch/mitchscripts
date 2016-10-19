@@ -2,7 +2,7 @@
 #
 # rename to "Makefile", put it to eg. $HOME/git and run it periodically
 
-USAGE_BEFORE=$(shell du -sh .)
+USAGE_BEFORE:=$(shell du -sh .)
 
 update:
 	for DIR in *; do \
