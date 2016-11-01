@@ -1,0 +1,3 @@
+# (CAUTION: this only makes sense when mutt is only used to mail backups around, NOT for real mail usage!)
+# don't keep backups of sent mails
+set record=/dev/null
