@@ -6,11 +6,11 @@
 #
 # This script will check which of the given devices are currently
 # mounted and will issue a TRIM command for every one that is.
-# This script should be called daily or weeky from cron or anacron.
+# This script should be called daily or weekly from cron or anacron.
 # Trimming via script has advantages over auto-trim via the 'discard'
 # mount option, see http://blog.neutrino.es/2013/howto-properly-activate-trim-for-your-ssd-on-linux-fstrim-lvm-and-dmcrypt/
 #
-# BUGS: don't try devices or mount paths either whitespace or regexp special characters…
+# BUGS: don't call on devices or mount paths containing either whitespace or regexp special characters…
 
 set -e
 
