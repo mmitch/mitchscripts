@@ -14,17 +14,18 @@
 
 set -e
 
-for DEV in "${@}"; do
+declare -A MOUNTPOINTS
 
-    LANG=C mount | while read LINE; do
-	case "$LINE" in
-	    $DEV\ *)
-		LINE="${LINE#$DEV on }"
-		MOUNTPOINT="${LINE% type *}"
-		if [ "$MOUNTPOINT" ] ; then
-		    echo /sbin/fstrim "$MOUNTPOINT"
-		fi
-	    ;;
-	esac
-    done
+while IFS= read -r LINE; do
+    DEV="${LINE%% on *}"
+    LINE="${LINE#$DEV on }"
+    MOUNTPOINT="${LINE%% type *}"
+    MOUNTPOINTS[$DEV]="$MOUNTPOINT"
+done  < <(LANG=C mount)
+
+for DEV in "${@}"; do
+    MOUNTPOINT="${MOUNTPOINTS[$DEV]}"
+    if [ "$MOUNTPOINT" ] ; then
+	/sbin/fstrim "$MOUNTPOINT"
+    fi
 done
