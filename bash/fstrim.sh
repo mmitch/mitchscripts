@@ -10,13 +10,21 @@
 # Trimming via script has advantages over auto-trim via the 'discard'
 # mount option, see http://blog.neutrino.es/2013/howto-properly-activate-trim-for-your-ssd-on-linux-fstrim-lvm-and-dmcrypt/
 #
-# BUGS: don't call on devices or mount paths containing either whitespace or regexp special characters…
+# BUGS: don't call on devices or mount paths containing shell metacharacters or the string " type "…
 
 set -e
 
 for DEV in "${@}"; do
-    DIR="$(LANG=C mount | grep "^$DEV" | sed -e "s,^$DEV on /,/," -e 's, type .*$,,')"
-    if [ "$DIR" ] ; then
-	/sbin/fstrim $DIR
-    fi
+
+    LANG=C mount | while read LINE; do
+	case "$LINE" in
+	    $DEV\ *)
+		LINE="${LINE#$DEV on }"
+		MOUNTPOINT="${LINE% type *}"
+		if [ "$MOUNTPOINT" ] ; then
+		    echo /sbin/fstrim "$MOUNTPOINT"
+		fi
+	    ;;
+	esac
+    done
 done
