@@ -19,6 +19,9 @@ alias exifdate2filedate='exiftool -DateTimeOriginal\>FileModifyDate'
 # set EXIF/IPTC/XMP/… metatags with Copyright information
 alias exifaddcopyright='exiftool -mwg:copyright="Copyright $(date +%Y) Christian Garbs - http://www.cgarbs.de" -mwg:creator="Christian Garbs <mitch@cgarbs.de>"'
 
+# find stuck wine processes
+alias winegrep='ps aux | egrep "([w]ine|\.[e]xe)"'
+
 # never start irssi without screen again
 # fiddle with Perl HTTPS because of these bugs:
 # - https://github.com/zigdon/twirssi/issues/75
