@@ -20,6 +20,9 @@
 ;; auto-modeselect for Markdown documents
 (setq auto-mode-alist (cons '("\\.md\\'" . markdown-mode) auto-mode-alist))
 
+;; auto-modeselect for LaTeX documents
+(setq auto-mode-alist (cons '("\\.latex\\'" . latex-mode) auto-mode-alist))
+
 ;; try to find nice C identation/formatting
 (setq c-default-style "linux"
       c-basic-offset 4)
