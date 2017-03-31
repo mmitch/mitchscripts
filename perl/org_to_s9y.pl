@@ -167,8 +167,8 @@ sub convert_link {
 sub add_footnote {
     my ($text) = (@_);
 
-    my $idx = @footnotes;
     push @footnotes, $text;
+    my $idx = @footnotes;
     
     return sprintf('<a class="footnote" name="fn-from-%d" href="#fn-to-%d">[%d]</a>', $idx, $idx, $idx);
 }
@@ -360,7 +360,7 @@ print "$article\n";
 
 if (@footnotes) {
     print "<div id=\"footnotes\">\n";
-    my $idx = 0;
+    my $idx = 1;
     for my $footnote (@footnotes) {
 	printf(
 	    '  <div id="footnote"><a name="fn-to-%d" href="#fn-from-%d">[%d]</a>: %s</div>%s',
