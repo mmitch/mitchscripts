@@ -3,7 +3,7 @@
     icon_position = right
 
     # Paths to default icons. Make sure these exist on your system.
-    icon_folders = /usr/share/icons/gnome/32x32/status/:/usr/share/icons/gnome/32x32/devices/
+    icon_folders = /usr/share/icons/gnome/32x32/status/:/usr/share/icons/gnome/32x32/devices/:/usr/share/icons/hicolor/22x22/apps/
 
     font = Monospace 8
 
