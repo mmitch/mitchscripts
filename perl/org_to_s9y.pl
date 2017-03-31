@@ -45,6 +45,7 @@ my %style_map = (
     'U' => 'u',
     'C' => 'code',
     'S' => 'strike',
+    'V' => 'code',
     );
 
 my %list_map = (
