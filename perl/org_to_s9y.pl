@@ -120,6 +120,8 @@ sub encode_html {
     $text =~ s/</&lt;/g;
     $text =~ s/>/&gt;/g;
 
+    die "stray [fn: encountered, is there a footnote with a linebreak?" if $text =~ /\[fn:/;
+
     return $text;
 }
 
