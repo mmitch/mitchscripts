@@ -363,7 +363,7 @@ if (@footnotes) {
     my $idx = 1;
     for my $footnote (@footnotes) {
 	printf(
-	    '  <div id="footnote"><a name="fn-to-%d" href="#fn-from-%d">[%d]</a>: %s</div>%s',
+	    '  <div class="footnote"><a name="fn-to-%d" href="#fn-from-%d">[%d]</a>: %s</div>%s',
 	    $idx, $idx, $idx,
 	    parse_element($footnote),
 	    "\n"
