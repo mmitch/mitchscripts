@@ -170,7 +170,7 @@ sub add_footnote {
     push @footnotes, $text;
     my $idx = @footnotes;
     
-    return sprintf('<a class="footnote" name="fn-from-%d" href="#fn-to-%d">[%d]</a>', $idx, $idx, $idx);
+    return sprintf('<a class="footnote" id="fn-from-%d" href="#fn-to-%d">[%d]</a>', $idx, $idx, $idx);
 }
 
 sub parse_element {
@@ -363,7 +363,7 @@ if (@footnotes) {
     my $idx = 1;
     for my $footnote (@footnotes) {
 	printf(
-	    '  <div class="footnote"><a name="fn-to-%d" href="#fn-from-%d">[%d]</a>: %s</div>%s',
+	    '  <div class="footnote" id="fn-to-%d"><a href="#fn-from-%d">[%d]</a>: %s</div>%s',
 	    $idx, $idx, $idx,
 	    parse_element($footnote),
 	    "\n"
