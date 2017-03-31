@@ -65,6 +65,8 @@ my %geshi_map = (
 
 my @open_lists;
 
+my @footnotes;
+
 sub add_geshi {
     my ($content, $lang) = (@_);
 
@@ -160,6 +162,15 @@ sub convert_link {
     }
 }
 
+sub add_footnote {
+    my ($text) = (@_);
+
+    my $idx = @footnotes;
+    push @footnotes, $text;
+    
+    return sprintf('<a class="footnote" name="fn-from-%d" href="#fn-to-%d">[%d]</a>', $idx, $idx, $idx);
+}
+
 sub parse_element {
     my ($el) = (@_);
 
@@ -233,6 +244,12 @@ sub parse_element {
 	else {
 	    # skip
 	}
+    }
+    elsif ($el->isa('Org::Element::Footnote')) {
+	die "no support for named Footnotes yet" if ($el->name);
+	die "no support for non-ref Footnotes yet" unless ($el->is_ref);
+	die "no support for non-def Footnotes yet" unless ($el->def);
+	$text .= add_footnote($el->def);
     }
     elsif ($el->isa('Org::Element::Setting')) {
 	# skip
@@ -338,6 +355,21 @@ EOF
 }
 
 print "$article\n";
+
+if (@footnotes) {
+    print "<div id=\"footnotes\">\n";
+    my $idx = 0;
+    for my $footnote (@footnotes) {
+	printf(
+	    '  <div id="footnote"><a name="fn-to-%d" href="#fn-from-%d">[%d]</a>: %s</div>%s',
+	    $idx, $idx, $idx,
+	    parse_element($footnote),
+	    "\n"
+	    );
+	$idx++;
+    }
+    print "</div>\n";
+}
 
 if ($html_body) {
     print <<'EOF';
