@@ -58,6 +58,7 @@ my %geshi_map = (
     'css' => 'css',
     'emacs-lisp' => 'lisp',
     'java' => 'java5',
+    'latex' => 'latex',
     'sh' => 'bash',
     'smarty' => 'smarty',
     'text' => 'text',
