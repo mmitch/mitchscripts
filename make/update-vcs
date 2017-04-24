@@ -1,4 +1,4 @@
-# Makefile to automatically update all git/gitsvn, CVS and SVN directories
+# Makefile to automatically update all git/gitsvn, CVS and SVN subdirectories
 #
 # rename to "Makefile", put it to eg. $HOME/git and run it periodically
 
