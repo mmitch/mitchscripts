@@ -84,7 +84,7 @@ sub add_geshi {
     if (exists $geshi_map{$lang}) {
 	$lang = $geshi_map{$lang};
     } else {
-	die "unknown geshi language <$lang>";
+	die "unknown geshi language <$lang>.\nchoose from <" . join('>, <', keys %geshi_map) . ">\n ";
     }
 
     # escape empty lines, so they don't get </p><p>ed later
