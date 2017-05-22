@@ -16,6 +16,9 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+# prompt part for shell error code (show only when set)
+LOC_PROMPT_ERRORCODE="\$(printf '%.*s%.*s' \$? \$? \$? ' ')"
+
 # boost colorfulness (experimental)
 case "$TERM" in
     xterm*)
@@ -53,13 +56,13 @@ case "$TERM" in
 		;;
 	esac
 
-	PS1="${debian_chroot:+($debian_chroot)}\[\033[00;38;5;${color}m\]\u@\h\[\033[30m\]:\[\033[38;5;103m\]\w\[\033[38;5;65m\]\$\[\033[00m\] "
+	PS1="${LOC_PROMPT_ERRORCODE}${debian_chroot:+($debian_chroot)}\[\033[00;38;5;${color}m\]\u@\h\[\033[30m\]:\[\033[38;5;103m\]\w\[\033[38;5;65m\]\$\[\033[00m\] "
 	unset color
 	;;
 
     *)
 	export MC_SKIN=~/git/mitchscripts/config/mitch-mc-skin.ini
-	PS1="${debian_chroot:+($debian_chroot)}\u@\h:\w\$ "
+	PS1="${LOC_PROMPT_ERRORCODE}${debian_chroot:+($debian_chroot)}\u@\h:\w\$ "
 	;;
 esac
 
