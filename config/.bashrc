@@ -19,6 +19,19 @@ fi
 # prompt part for shell error code (show only when set)
 LOC_PROMPT_ERRORCODE="\$(printf '%.*s%.*s' \$? \$? \$? ' ')"
 
+# prompt part for git status
+if [ -r /usr/lib/git-core/git-sh-prompt ]; then
+    source /usr/lib/git-core/git-sh-prompt
+    export GIT_PS1_SHOWDIRTYSTATE=1
+    export GIT_PS1_SHOWSTASHSTATE=1
+    export GIT_PS1_SHOWUNTRACKEDFILES=1
+    export GIT_PS1_SHOWUPSTREAM='auto verbose git'
+    export GIT_PS1_SHOWCOLORHINTS=1
+    LOC_PROMPT_GIT='$(__git_ps1 " (%s) ")'
+else
+    LOC_PROMPT_GIT=''
+fi
+
 # boost colorfulness (experimental)
 case "$TERM" in
     xterm*)
@@ -56,13 +69,13 @@ case "$TERM" in
 		;;
 	esac
 
-	PS1="${LOC_PROMPT_ERRORCODE}${debian_chroot:+($debian_chroot)}\[\033[00;38;5;${color}m\]\u@\h\[\033[30m\]:\[\033[38;5;103m\]\w\[\033[38;5;65m\]\$\[\033[00m\] "
+	PS1="${LOC_PROMPT_ERRORCODE}${debian_chroot:+($debian_chroot)}\[\033[00;38;5;${color}m\]\u@\h\[\033[30m\]:\[\033[38;5;103m\]\w\[\033[38;5;108m\]${LOC_PROMPT_GIT}\[\033[38;5;65m\]\$\[\033[00m\] "
 	unset color
 	;;
 
     *)
 	export MC_SKIN=~/git/mitchscripts/config/mitch-mc-skin.ini
-	PS1="${LOC_PROMPT_ERRORCODE}${debian_chroot:+($debian_chroot)}\u@\h:\w\$ "
+	PS1="${LOC_PROMPT_ERRORCODE}${debian_chroot:+($debian_chroot)}\u@\h:\w${LOC_PROMPT_GIT}\$ "
 	;;
 esac
 
