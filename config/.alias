@@ -1,5 +1,11 @@
 # to be sourced from ~/.alias
 
+# finally start to use iproute2 over net-tools!
+alias arp='echo "use ip n (ip neighbour) instead"'
+alias ifconfig='echo "use ip a (ip addr), ip link, ip -s (ip-stats) instead"'
+alias netstat='echo "use ss, ip route (for netstat -r), ip -s link (for netstat -i), ip maddr (for netstat -g) instead"'
+alias route='echo "use ip r (ip route) instead"'
+
 # can't remember these stupid commands
 alias pulseaudio-DINGENS='echo "Du willst pavucontrol!"'
 alias RemoteX11Thingie='echo "Du willst Xpra!"'
