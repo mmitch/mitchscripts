@@ -7,10 +7,11 @@ exec 2> /tmp/xsession-stderr
 [ -r ~/.Xresources ] && xrdb -merge ~/.Xresources
 
 #export DMENU_COLORS="-fn fixed -nb #336 -nf #ccc -sb #669 -sf #eee"
-export DMENU_COLORS="-fn fixed -nb black -nf white"
+export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
 
-( floatbg -satmid 0.2 -satvar 0.15 -fase 0.1 -value 0.3 & ) &
-# feh --bg-center ~/iss2.png ~/iss1.png
+( sleep 2; cd Dropbox/backgrounds/; ./feh-random-bg ) &
+# ( floatbg -satmid 0.2 -satvar 0.15 -fase 0.1 -value 0.3 & ) &
+# feh --no-fehbg --bg-center ~/iss2.png ~/iss1.png
 
 # this breaks mouse centering in WoW
 # ( unclutter -idle 3 & ) &
@@ -25,13 +26,9 @@ $HOME/bin/ssh-addkeys < /dev/null
 # start notification if networked
 (ssh -X mitch "/home/mitch/git/mitchscripts/bash/start_notification.sh &" &) &
 
-#( synergys & ) &
-
 # Thinkpad blaue links-/rechts-Tasten im Cursorblock
 #xmodmap -e 'keycode 233 = F33'
 #xmodmap -e 'keycode 234 = F34'
-
-#~/perl/xtermcolorwrap.pl &
 
 # http://stereopsis.com/flux/
 ## ~/xflux -l 51.151786 -g 10.415039 -k 4500 # 36 is cool  2700 (3400) 4200
