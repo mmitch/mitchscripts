@@ -32,7 +32,7 @@ for CERT in "$@"; do
     DAYS_LEFT=$(( $SECONDS_LEFT / ( 60 * 60 * 24 ) ))
 
     if [ $MAX_DAYS -gt 0 -a $DAYS_LEFT -gt $MAX_DAYS ]; then
-	next
+	continue
     fi
     
     printf "%6d days - %s\n" $DAYS_LEFT "$CERT"
