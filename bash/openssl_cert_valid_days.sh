@@ -1,9 +1,6 @@
 #!/bin/bash
 #
 # show valid days left on SSL certificate
-#
-# usage:
-#   openssl_cert_valid_days.sh [ -max days ] cert-pem [ cert-pem [...] ]
 
 set -e
 
@@ -11,10 +8,19 @@ NOW=$(date +%s)
 
 MAX_DAYS=0
 
-if [ "$1" eq '-max' ]; then
-    MAX_DAYS=$2
-    shift 2
-fi
+while getopts 'hm:' opt; do
+    case $opt in
+	m)
+	    MAX_DAYS=$OPTARG
+	    ;;
+	*)
+	    echo "usage:"
+	    echo "    openssl_cert_valid_days.sh [ -m days ] cert-pem [ cert-pem [...] ]"
+	    exit 0
+	    ;;
+    esac
+done
+shift $((OPTIND-1))
 
 for CERT in "$@"; do
     
