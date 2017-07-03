@@ -15,7 +15,9 @@ while getopts 'hm:' opt; do
 	    ;;
 	*)
 	    echo "usage:"
-	    echo "    openssl_cert_valid_days.sh [ -m days ] cert-pem [ cert-pem [...] ]"
+	    echo "    openssl_cert_valid_days.sh [ -h ] [ -m days ] cert-pem [ cert-pem [...] ]"
+	    echo "        -h        show help (and do nothing else)"
+	    echo "        -m days   don't list certificates valid longer than given days"
 	    exit 0
 	    ;;
     esac
