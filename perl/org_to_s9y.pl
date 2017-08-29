@@ -220,6 +220,7 @@ sub parse_element {
     elsif ($el->isa('Org::Element::ListItem')) {
 	my $list_type = $open_lists[-1];
 	my $childtext = parse_children($el);
+	die "list underrun @ $childtext" unless defined $list_type;
 	$childtext =~ s|</p>\s*<p>$||s; # remove strange leftovers
 	if ($list_type eq 'D') {
 	    $childtext =~ s|^\s+||;
