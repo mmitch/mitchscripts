@@ -50,3 +50,21 @@ XTerm*wideFont6: -efont-fixed-medium-r-normal-*-24-240-75-75-c-240-iso10646-1
 emacs*font:-efont-fixed-medium-r-normal-*-14-*
 emacs*toolBar:0
 emacs*menuBar:0
+
+! ssh-askpass theme
+! source: /etc/X11/app-defaults/SshAskpass
+*Dialog.font:			-*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+*?.foreground:			rgb:af/af/af
+*?.background:			rgb:10/10/10
+*topShadowColor:		rgb:6f/6f/6f
+*bottomShadowColor:		rgb:4f/4f/4f
+*borderColor:			rgb:20/20/20
+*shadowThickness:		1
+*borderWidth:			1
+!*horizontalSpacing:		5
+!*verticalSpacing:		6
+*Button.font:			-*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+!*Button.shadowThickness:	2
+!*Button.borderWidth:		1
+!*Button.horizontalSpacing:	5
+!*Button.verticalSpacing:	2
