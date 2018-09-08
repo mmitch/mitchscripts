@@ -53,18 +53,20 @@ emacs*menuBar:0
 
 ! ssh-askpass theme
 ! source: /etc/X11/app-defaults/SshAskpass
-*Dialog.font:			-*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
-*?.foreground:			rgb:af/af/af
-*?.background:			rgb:10/10/10
-*topShadowColor:		rgb:6f/6f/6f
-*bottomShadowColor:		rgb:4f/4f/4f
-*borderColor:			rgb:20/20/20
-*shadowThickness:		1
-*borderWidth:			1
-!*horizontalSpacing:		5
-!*verticalSpacing:		6
-*Button.font:			-*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
-!*Button.shadowThickness:	2
-!*Button.borderWidth:		1
-!*Button.horizontalSpacing:	5
-!*Button.verticalSpacing:	2
+SshAskpass*Dialog.font:			-*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+SshAskpass*foreground:			rgb:af/af/af
+SshAskpass*background:			rgb:10/10/10
+SshAskpass*topShadowColor:		rgb:6f/6f/6f
+SshAskpass*bottomShadowColor:		rgb:4f/4f/4f
+SshAskpass*borderColor:			rgb:20/20/20
+SshAskpass*shadowThickness:		1
+SshAskpass*borderWidth:			1
+!SshAskpass*horizontalSpacing:		5
+!SshAskpass*verticalSpacing:		6
+SshAskpass*Button.font:			-*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+!SshAskpass*Button.shadowThickness:	2
+!SshAskpass*Button.borderWidth:		1
+!SshAskpass*Button.horizontalSpacing:	5
+!SshAskpass*Button.verticalSpacing:	2
+SshAskpass*Indicator.foreground:          rgb:80/00/00
+SshAskpass*Indicator.background:          rgb:00/00/80
