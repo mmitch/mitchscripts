@@ -61,10 +61,6 @@
 ;;; file modes
 ;;;
 
-;; try to find nice C identation/formatting
-(setq c-default-style "linux"
-      c-basic-offset 4)
-
 ;; automatic mode selections
 (setq auto-mode-alist
       (append
@@ -185,7 +181,9 @@ WINDOWED is t if running under X11"
 	   (quote ox-reveal))
      (eval require
 	   (quote ob-vala)))))
- '(scss-compile-at-save nil))
+ '(scss-compile-at-save nil)
+ '(c-default-style "bsd")
+ '(c-basic-offset 3))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
