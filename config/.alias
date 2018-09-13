@@ -283,7 +283,7 @@ uucopy()
 }
 
 # show/edit network synced TODO list
-TODO() { $EDITOR ~/Cryptbox/TODO ; }
+TODO() { wait-for-dropbox; $EDITOR ~/Cryptbox/TODO; wait-for-dropbox; }
 
 # clone a github repository (I always look up the syntax...)
 # set up pull to use public https: (no authentication) and push to use ssh (needing authentication)
