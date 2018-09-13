@@ -83,9 +83,10 @@
 ;;; use emacs to edit <textarea>s in Firefox
 ;;;
 
-(require 'atomic-chrome)
-(atomic-chrome-start-server)
-(setq atomic-chrome-buffer-open-style 'frame)
+;; skip when not installed
+(when (require 'atomic-chrome nil :noerror)
+  (atomic-chrome-start-server)
+  (setq atomic-chrome-buffer-open-style 'frame))
 
 ;;;
 ;;; org-mode
