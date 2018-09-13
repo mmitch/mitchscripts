@@ -81,8 +81,9 @@
 ;;; flycheck
 ;;;
 
-;; enable Flycheck
-(add-hook 'after-init-hook #'global-flycheck-mode)
+;; enable Flycheck when installed
+(when (require 'flycheck nil :noerror)
+  (add-hook 'after-init-hook #'global-flycheck-mode))
 
 ;;;
 ;;; use emacs to edit <textarea>s in Firefox
