@@ -58,19 +58,17 @@
 (show-paren-mode 1)
 
 ;;;
-;;; file modes
+;;; mutt + tin integration
 ;;;
 
-;; automatic mode selections
 (setq auto-mode-alist
       (append
-       '( (".*/mutt.*$" . auto-fill-mode)
-	  (".*letter.*$" . auto-fill-mode)
-	  (".*article.*$" . auto-fill-mode)
-	  ("\\.md$" . markdown-mode)
-	  ("\\.latex$" . latex-mode)
-	  )
+       '(("/mutt-" . mail-mode)
+	 ("/\\.letter\\." . mail-mode)
+	 ("/\\.article\\." . mail-mode))
        auto-mode-alist))
+
+(add-hook 'mail-mode-hook 'turn-on-auto-fill)
 
 ;;;
 ;;; flycheck
