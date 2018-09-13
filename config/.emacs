@@ -117,34 +117,34 @@ WINDOWED is t if running under X11"
 	
 	;; black on white
 	;; (invert-face 'default)
-	))
+	)
   
-  ;; set console theme
-  (if my:theme-console-loaded
-      ;; if theme is already defined, just use it
-      (enable-theme 'manoj-dark)
-    (progn
-      ;; build a unique "theme" just to fix some things in console mode
-      
-      ;; this is a good base theme
-      (load-theme 'manoj-dark)
-      
-      ;; add own customizations on top
-      (custom-theme-set-faces
-       'manoj-dark
-      
-       ;; bright bold red on medium gray is hard to read
-       `(mode-line-buffer-id ((t (:foreground "Wheat" :background "grey30"))))
-       ;; minor tweak
-       `(mode-line ((t (:foreground "grey90" :background "grey20"))))
-      
-       ;; bright background is irritating
-       `(diff-header ((t (:background "grey10"))))
-       )
-      
-      ;; remember this and only define the theme once
-      (setq my:theme-console-loaded t)
-      )))
+    ;; set console theme
+    (if my:theme-console-loaded
+	;; if theme is already defined, just use it
+	(enable-theme 'manoj-dark)
+      (progn
+	;; build a unique "theme" just to fix some things in console mode
+	
+	;; this is a good base theme
+	(load-theme 'manoj-dark)
+	
+	;; add own customizations on top
+	(custom-theme-set-faces
+	 'manoj-dark
+	 
+	 ;; bright bold red on medium gray is hard to read
+	 `(mode-line-buffer-id ((t (:foreground "Wheat" :background "grey30"))))
+	 ;; minor tweak
+	 `(mode-line ((t (:foreground "grey90" :background "grey20"))))
+	 
+	 ;; bright background is irritating
+	 `(diff-header ((t (:background "grey10"))))
+	 )
+	
+	;; remember this and only define the theme once
+	(setq my:theme-console-loaded t)
+	))))
 
 ;; apply theme correctly both standalone and with daemon/emacsclient
 (if (daemonp)
