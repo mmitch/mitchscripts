@@ -71,6 +71,13 @@
 (add-hook 'mail-mode-hook 'turn-on-auto-fill)
 
 ;;;
+;;; ido
+;;;
+
+(require 'ido)
+(ido-mode t)
+
+;;;
 ;;; flycheck
 ;;;
 
