@@ -57,3 +57,6 @@ xkbset -a
 
 # ein Terminal starten
 # ( sleep 2; x-terminal-emulator ) &
+
+# emacs vorstarten
+emacs --daemon &

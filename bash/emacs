@@ -1,0 +1,15 @@
+#!/bin/sh
+# run emacs as client/server
+
+# if we get here by being called as "emacs --daemon", delegate to the real emacs to avoid a loop (note that this script is also called 'emacs' and comes first in $PATH)
+if [ "$1" = '--daemon' ]; then
+    /usr/bin/emacs "$@"
+    exit
+fi
+
+if [ "$DISPLAY" ]; then
+    TARGET=--create-frame
+else
+    TARGET=--tty
+fi
+emacsclient $TARGET --alternate-editor='' "$@"
