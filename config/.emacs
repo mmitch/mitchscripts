@@ -54,7 +54,7 @@
 ;(global-hl-line-mode 1)
 ;(set-face-background 'hl-line "#033")
 
-;; hightlight matching parens
+;; highlight matching parens
 (show-paren-mode 1)
 
 ;;;
@@ -100,9 +100,6 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
-
-;; match parens
-(show-paren-mode 1)
 
 ;;;
 ;;; theme for both console and X11
