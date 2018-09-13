@@ -1,7 +1,14 @@
+;;; .emacs --- personal Emacs configuration
+
+;;; Commentary:
+;; none, but I want to keep flycheck happy
+
 ;; TODO:
 ;; - iterate through all faces and change weight normal -> light and bold -> normal
 ;; - set-face:: '(mode-line ((t (:background "orange4" :foreground "black" :box (:line-width -1 :style released-button)))))
 ;; - look for TODO below
+
+;;; Code:
 
 ;;;
 ;;; packages and repositores
@@ -189,3 +196,6 @@ WINDOWED is t if running under X11"
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(mode-line ((t (:background "orange4" :foreground "black" :box (:line-width -1 :style released-button))))))
+
+;;; .emacs ends here
+
