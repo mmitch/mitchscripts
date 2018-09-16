@@ -118,7 +118,7 @@ CHAN()
 SHOT()
 {
 	FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
-	xwd | convert - $FILE
+	import $FILE
 	echo $FILE
 }
 
@@ -126,7 +126,7 @@ SHOT()
 SHOT_ALL()
 {
 	FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
-	xwd -root | convert - $FILE
+	import -window root $FILE
 	echo $FILE
 }
 
