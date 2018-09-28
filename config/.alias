@@ -289,3 +289,8 @@ TODO() { wait-for-dropbox; $EDITOR ~/Cryptbox/TODO; wait-for-dropbox; }
 # set up pull to use public https: (no authentication) and push to use ssh (needing authentication)
 # $1: username/project to clone, eg. mmitch/mitchscripts
 github-clone() { git clone https://github.com/$1.git && pushd $(basename $1) && git remote set-url --push origin git@github.com:$1 && popd; }
+
+# reencode videos to H.264 in MKV
+# small size and plays fine on my RaspberryPi, my Android Tablet and mplayer
+# $*: filenames to encode
+tomkv() { for FILE in "$@"; do nice -n20 ionice -c3 ffmpeg -i "$FILE" "$FILE".mkv; done }
