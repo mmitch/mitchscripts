@@ -42,9 +42,9 @@
 (setq x-gtk-use-system-tooltips nil)
 
 ;; Line numbering
-(require 'nlinum)
-(global-linum-mode 1)
-(setq linum-format "%4d\u2502")
+;(require 'nlinum)
+;(global-linum-mode 1)
+;(setq linum-format "%4d\u2502")
 
 ;; Show line- and column-number in the mode line
 (line-number-mode 1)
