@@ -108,17 +108,6 @@
 ;;; theme for both console and X11
 ;;;
 
-(defun my:change-face-weight (face old new)
-  "Conditionally change font weight in a FACE.
-If FACE has :weight OLD it will be changed to :weight NEW."
-  (when (eq (face-attribute face :weight) old)
-     (set-face-attribute face nil :weight new)))
-
-(defun my:change-all-face-weight (old new)
-  "Conditionally change font weights in all faces.
-All faces with a :weight OLD will be changed to :weight NEW."
-  (mapc (function (lambda (face) (my:change-face-weight face old new))) (face-list)))
-
 (defvar my:theme-console-loaded nil)
 (defvar my:theme-windowed-loaded nil)
 (defun my:set-theme (windowed)
@@ -127,19 +116,14 @@ WINDOWED is t if running under X11"
   (if windowed
       ;; set theme for X
       (progn
-	;; set usable font (otherwise default Ubuntu install comes up with a Comic Sans lookalike - YUCK!)
-	(set-face-attribute 'default nil :font "Source Code Pro 10")
+	;; use Efont Fixed bitmap font
+	;; - on Ubuntu, you need to remove /etc/fonts/conf.d/70-no-bitmaps.conf to enable bitmap fonts
+	;; - on Debian/Ubuntu, install xfonts-efont-unicode and xfonts-efont-unicode-ib
+	(set-face-attribute 'default nil :font "b14")
 	
-	;; this was a nice bitmap font but bold does not work any more since Ubuntu 18.04.01 LTS?!
-	;; (set-face-attribute 'default nil :font "-efont-fixed-medium-r-normal-*-14-140-75-75-c-70-iso10646-1")
-
 	(unless my:theme-windowed-loaded
 	  (progn
-	    ;; not on the laptop, light weight gets too faint
-	    (when (> (display-pixel-height) 800)
-	      ;; fine grained font weight control - "Source Code Pro" has more weights than regular and bold
-	      (my:change-all-face-weight 'normal 'light)
-	      (my:change-all-face-weight 'bold 'semi-bold))
+	    ;; reserved for future use ;-)
 
 	    ;; remember this and only change the weights once
 	    (setq my:theme-windowed-loaded t))))
