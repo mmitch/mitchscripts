@@ -42,7 +42,7 @@ case "$TERM" in
 
 	case $HOSTNAME in
 	    zecora)
-		color=4
+		color=53
 		;;
 	    yggdrasil)
 		color=59
