@@ -123,7 +123,8 @@ WINDOWED is t if running under X11"
 	
 	(unless my:theme-windowed-loaded
 	  (progn
-	    ;; reserved for future use ;-)
+	    ;; don't use Monospace for fixed-pitch, our default is already fixed-pitch
+	    (set-face-attribute 'fixed-pitch nil :family 'unspecified)
 
 	    ;; remember this and only change the weights once
 	    (setq my:theme-windowed-loaded t))))
