@@ -117,8 +117,11 @@ WINDOWED is t if running under X11"
       ;; set theme for X
       (progn
 	;; use Efont Fixed bitmap font
-	;; - on Ubuntu, you need to remove /etc/fonts/conf.d/70-no-bitmaps.conf to enable bitmap fonts
 	;; - on Debian/Ubuntu, install xfonts-efont-unicode and xfonts-efont-unicode-ib
+	;; - on Ubuntu, you need to enable bitmap fonts:
+	;;   - either remove /etc/fonts/conf.d/70-no-bitmaps.conf
+	;;   - or selectively enable only the efont font to minimize side effects,
+	;;     see https://github.com/mmitch/vater/blob/master/README.md for an example
 	(set-face-attribute 'default nil :font "b14")
 	
 	(unless my:theme-windowed-loaded
