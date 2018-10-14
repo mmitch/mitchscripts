@@ -122,7 +122,7 @@ WINDOWED is t if running under X11"
 	;;   - either remove /etc/fonts/conf.d/70-no-bitmaps.conf
 	;;   - or selectively enable only the efont font to minimize side effects,
 	;;     see https://github.com/mmitch/vater/blob/master/README.md for an example
-	(set-face-attribute 'default nil :font "b14")
+	(set-face-attribute 'default nil :family "BiWidth")
 	
 	(unless my:theme-windowed-loaded
 	  (progn
