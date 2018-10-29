@@ -1,0 +1,11 @@
+#!/bin/bash
+# ask for hostname before running shutdown
+# this should put an end to accidentially powering off the wrong server...
+# drop this wrapper somwhere into your path before the real shutdown, eg. /usr/local/sbin
+read -e -r -p "hostname? "
+if [ "$REPLY" = "$(hostname)" ]; then
+    /sbin/shutdown "$@"
+else
+    echo "the host you are looking for is in another castle" 1>&2
+    false
+fi
