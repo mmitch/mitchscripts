@@ -4,9 +4,9 @@
 #
 # optionally needs dzen2 and zenity
 
-LANG=C
-LANGUAGE=C
-LC_MESSAGES=C
+LANG=en_US.utf8
+LANGUAGE=en_US.utf8
+LC_MESSAGES=en_US.utf8
 export LANG
 export LANGUAGE
 export LC_MESSAGES
@@ -28,14 +28,14 @@ TIMER=2
 # wait until idle
 if [ "$(dropbox status)" != "$IDLESTATUS" ]; then
 
-    if [ -x "$(which dzen2)" -a "$DISPLAY" ]; then
+    if [ -x "$(which dzen2)" ] && [ "$DISPLAY" ]; then
 
         # graphical
 
 	(
 	    echo '^tw()Waiting for dropbox to settle...'
 	    while [ "$(dropbox status)" != "$IDLESTATUS" ]; do
-		echo "$(dropbox status)"
+		dropbox status
 		sleep $TIMER
 #		echo
 	    done
