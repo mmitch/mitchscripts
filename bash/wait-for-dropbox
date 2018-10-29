@@ -12,7 +12,7 @@ export LANGUAGE
 export LC_MESSAGES
 
 # dropbox daemon sometimes changes this :/
-IDLESTATUS="Up to date"
+IDLESTATUS="(Up to date|Aktualisiert)"
 
 # is there a dropbox?
 if [ "$(dropbox status)" = "Dropbox isn't running!" ] ; then
@@ -26,7 +26,7 @@ fi
 TIMER=2
 
 # wait until idle
-if [ "$(dropbox status)" != "$IDLESTATUS" ]; then
+if [[ ! "$(dropbox status)" =~ $IDLESTATUS ]]; then
 
     if [ -x "$(which dzen2)" ] && [ "$DISPLAY" ]; then
 
@@ -34,7 +34,7 @@ if [ "$(dropbox status)" != "$IDLESTATUS" ]; then
 
 	(
 	    echo '^tw()Waiting for dropbox to settle...'
-	    while [ "$(dropbox status)" != "$IDLESTATUS" ]; do
+	    while [[ ! "$(dropbox status)" =~ $IDLESTATUS ]]; do
 		dropbox status
 		sleep $TIMER
 #		echo
@@ -46,7 +46,7 @@ if [ "$(dropbox status)" != "$IDLESTATUS" ]; then
         # text only
 
 	echo -n 'Waiting for dropbox to settle...'
-	while [ "$(dropbox status)" != "$IDLESTATUS" ]; do
+	while [[ ! "$(dropbox status)" =~ $IDLESTATUS ]]; do
 	    sleep $TIMER
 	    echo -n .
 	done
