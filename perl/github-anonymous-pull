@@ -1,0 +1,54 @@
+#!/usr/bin/perl
+#
+# github-anonymous-pull - updates git repository configuration to pull via https:
+#
+# Copyright (C) 2018  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPL v3 (or later)
+#
+# When cloning a GitHub repository using a git: URL, you need valid
+# SSH keys for pull as well as for push operations.
+#
+# This script updates a .git/config in two ways:
+# 1. The pull url is switched from git: to https:
+#    to allow pulls without authentication.
+# 2. A separate push url is added that uses the original git: URL,
+#    so pushing still uses SSH keys.
+#
+# Call this script with one or more .git/config files as parameters.
+# If all your git repositories are in ~/git, you could do this:
+# $ github-anonymous-pull ~/git/*/.git/config
+#
+# Every processed .git/config will be renamed to .git/config~
+
+use strict;
+use warnings;
+
+for my $filename (@ARGV) {
+
+    die "`$filename' does not exist" unless -f $filename;
+    
+    my $filename_new = $filename;
+    my $filename_old = $filename . '~';
+
+    rename $filename, $filename_old or die "can't rename `$filename_old' to `$filename_new': $1";
+
+    open my $fh_in,  '<', $filename_old or die "can't open `$filename_old' for reading: $!";
+    open my $fh_out, '>', $filename_new or die "can't open `$filename_new' for writing: $!";
+    
+    while (my $line = <$fh_in>) {
+	if ($line =~ m,^\s+url\s*=\s*git\@github.com:,) {
+	    my $url = $line;
+	    $url =~ tr,:,/,;
+	    $url =~ s,git\@,https://,;
+	    my $pushurl = $line;
+	    $pushurl =~ s/url/pushurl/;
+	    print $fh_out $url;
+	    print $fh_out $pushurl;
+	} else {
+	    print $fh_out $line;
+	}
+    }
+    
+    close $fh_in  or die "can't close `$filename_old': $!";
+    close $fh_out or die "can't close `$filename_new': $!";
+}
