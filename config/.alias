@@ -294,3 +294,6 @@ github-clone() { git clone https://github.com/$1.git && pushd $(basename $1) && 
 # small size and plays fine on my RaspberryPi, my Android Tablet and mplayer
 # $*: filenames to encode
 tomkv() { for FILE in "$@"; do nice -n20 ionice -c3 ffmpeg -i "$FILE" "$FILE".mkv; done }
+
+# reminder to switch from k4dirstat to qdirstat (no KDE dependencies)
+alias k4dirstat='echo "use qdirstat instead"'
