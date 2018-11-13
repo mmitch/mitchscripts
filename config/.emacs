@@ -21,9 +21,6 @@
 (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
 
-;; TODO: is this needed?
-; (add-to-list 'load-path "~/.emacs.d/lisp/")
-
 ;;;
 ;;; global emacs configuration
 ;;;
@@ -103,6 +100,11 @@
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
+
+;; load ox-s9y.el if present
+(when (file-directory-p "~/git/ox-s9y/")
+  (add-to-list 'load-path "~/git/ox-s9y/")
+  (require 'ox-s9y))
 
 ;;;
 ;;; theme for both console and X11
