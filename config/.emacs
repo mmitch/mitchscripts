@@ -88,8 +88,10 @@
 
 ;; skip when not installed
 (when (require 'atomic-chrome nil :noerror)
-  (atomic-chrome-start-server)
-  (setq atomic-chrome-buffer-open-style 'frame))
+  ;; don't throw an error if another emacs instance has the port
+  (ignore-errors
+    (atomic-chrome-start-server)
+    (setq atomic-chrome-buffer-open-style 'frame)))
 
 ;;;
 ;;; org-mode
