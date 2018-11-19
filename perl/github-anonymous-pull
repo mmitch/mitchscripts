@@ -23,6 +23,8 @@
 use strict;
 use warnings;
 
+die "usage:  $0 <.git/config> [...]\n" unless @ARGV;
+
 for my $filename (@ARGV) {
 
     die "`$filename' does not exist" unless -f $filename;
