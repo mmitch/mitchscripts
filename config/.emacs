@@ -108,6 +108,33 @@
   (add-to-list 'load-path "~/git/ox-s9y/")
   (require 'ox-s9y))
 
+;; use smart link insertion
+(defun my:string-match-perl-module-p (string)
+  "Return non-nil if STRING looks like a Perl module name."
+  (string-match "\\(?:[A-Za-z0-9]+::\\)+[A-Za-z0-9]+" string))
+
+(defun my:org-insert-link-smart (&optional complete-file link-location default-description)
+       "Insert a link with smart defaults.
+Works like `org-insert-link', but when the active region in the
+current buffer matches certain criteria, a link target is
+automatically generated:
+
+- Perl-Module names will expand to https://metacpan.net/pod/
+  links.
+
+Otherwise call `org-insert-link' with the original COMPLETE-FILE,
+LINK-LOCATION and DEFAULT-DESCRIPTION."
+       (interactive "p")
+       (let* ((region (when (org-region-active-p)
+			(buffer-substring (region-beginning) (region-end))))
+	      (calculated-link (when (my:string-match-perl-module-p region)
+				 (concat "https://metacpan.org/pod/" region))))
+	 (if calculated-link
+	     (org-insert-link complete-file calculated-link region)
+	   (org-insert-link complete-file link-location default-description))))
+
+(define-key org-mode-map (kbd "C-c C-l") 'my:org-insert-link-smart)
+
 ;;;
 ;;; theme for both console and X11
 ;;;
