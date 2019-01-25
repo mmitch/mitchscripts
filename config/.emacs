@@ -111,7 +111,7 @@
 ;; use smart link insertion
 (defun my:string-match-perl-module-p (string)
   "Return non-nil if STRING looks like a Perl module name."
-  (string-match "\\(?:[A-Za-z0-9]+::\\)+[A-Za-z0-9]+" string))
+  (and string (string-match "\\(?:[A-Za-z0-9]+::\\)+[A-Za-z0-9]+" string)))
 
 (defun my:org-insert-link-smart (&optional complete-file link-location default-description)
        "Insert a link with smart defaults.
@@ -205,11 +205,14 @@ WINDOWED is t if running under X11"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(c-basic-offset 3)
+ '(c-default-style "bsd")
  '(column-number-mode t)
  '(custom-safe-themes
    (quote
     ("f5b591870422cd28da334552aae915cdcae3edfcfedb6653a9f42ed84bbec69f" default)))
  '(ecb-options-version "2.40")
+ '(ecb-source-path (quote ("/home/mitch/git/gbsplay")))
  '(inhibit-startup-screen t)
  '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/Cryptbox/TODO")))
@@ -218,16 +221,14 @@ WINDOWED is t if running under X11"
  '(org-html-doctype "html5")
  '(package-selected-packages
    (quote
-    (atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize)))
+    (cobol-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize)))
  '(safe-local-variable-values
    (quote
     ((eval require
 	   (quote ox-reveal))
      (eval require
 	   (quote ob-vala)))))
- '(scss-compile-at-save nil)
- '(c-default-style "bsd")
- '(c-basic-offset 3))
+ '(scss-compile-at-save nil))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
