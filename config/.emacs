@@ -75,6 +75,19 @@
 (ido-mode t)
 
 ;;;
+;;; perl
+;;;
+
+;; use CPerlMode instead of PerlMode
+;(require 'cperl-mode)
+;(fset 'perl-mode 'cperl-mode)
+;(setq cperl-indent-level 4
+;      cperl-close-paren-offset -4
+;      cperl-continued-statement-offset 4
+;      cperl-indent-parens-as-block t
+;      cperl-tab-always-indent t)
+
+;;;
 ;;; flycheck
 ;;;
 
