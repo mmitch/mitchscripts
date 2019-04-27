@@ -297,3 +297,7 @@ tomkv() { for FILE in "$@"; do nice -n20 ionice -c3 ffmpeg -i "$FILE" "$FILE".mk
 
 # reminder to switch from k4dirstat to qdirstat (no KDE dependencies)
 alias k4dirstat='echo "use qdirstat instead"'
+
+# one-time ssh access without known_hosts interaction
+# useful if a remote server is booted into a rescue system
+alias ssh_once='ssh -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null'
