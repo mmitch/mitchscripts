@@ -54,7 +54,7 @@ links()
 {	
 	(
 		if [ -z "$*" ]; then
-			/usr/bin/elinks http://www.mitch.h.shuttle.de/mediawiki/index.php/Hauptseite
+			/usr/bin/elinks http://www.dn.cgarbs.de/mediawiki/index.php/Hauptseite
 		else
 			/usr/bin/elinks "$@"
 		fi
