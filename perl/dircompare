@@ -1,0 +1,107 @@
+#!/usr/bin/perl
+
+# list changes in directory trees consisting of hardlinked files
+
+# Copyright (C) 2019  Christian Garbs <mitch@cgarbs.de>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+# Usage:
+#
+# 1.  create a recursive copy using hardlinks: `cp -rl dir1 dir2`
+# 2.  add/rename/move/delete files in dir1 and/or dir2
+# 3.  run `dircompare dir1 dir2`
+ 
+use strict;
+use warnings;
+
+use File::Find;
+use File::Spec;
+use Set::Scalar;
+
+# parse arguments
+die "usage: dircompare <dir1> <dir2>\n" unless @ARGV == 2;
+my ($dir1, $dir2) = map { File::Spec->canonpath($_) } @ARGV;
+die "`$_' does not exist\n" foreach grep { ! -e $_ } ($dir1, $dir2);
+die "`$_' is no directory\n" foreach grep { ! -d $_ } ($dir1, $dir2);
+
+# scan directories
+sub register_file
+{
+    return unless -f _;
+    my ($fileset, $startdir) = @_;
+
+    my ($basename, $dirname, $fullname) = ($_, $File::Find::dir, $File::Find::name);
+    my ($dev, $inode,undef) = stat _;
+
+    my $reldir = File::Spec->abs2rel($dirname, $startdir);
+
+    my $file = {
+	BASENAME => $basename,
+	FULLNAME => $fullname,
+	RELDIR   => $reldir,
+    };
+
+    my $key = $dev.':'.$inode;
+
+    # if there are hardlinks within a tree, the last seen filename will win...
+    # use arrayrefs here if that is relevant
+    # push @{$fileset->{$key}}, $file;
+    $fileset->{$key} = $file;
+}
+
+my $fileset1 = {};
+find({ wanted => sub { register_file($fileset1, $dir1) }, follow_fast => 1}, $dir1);
+
+my $fileset2 = {};
+find({ wanted => sub { register_file($fileset2, $dir2) }, follow_fast => 1}, $dir2);
+
+# compute set relations
+my $keys_in_1 = Set::Scalar->new(keys %{$fileset1});
+my $keys_in_2 = Set::Scalar->new(keys %{$fileset2});
+my $unique_to_1 = $keys_in_1 - $keys_in_2;
+my $unique_to_2 = $keys_in_2 - $keys_in_1;
+my $common = $keys_in_1 * $keys_in_2;
+
+# print results
+sub sort_by_name
+{
+    my $fileset = shift;
+    return $fileset->{$a}->{FULLNAME} cmp $fileset->{$b}->{FULLNAME};
+}
+
+foreach my $key (sort { sort_by_name $fileset1 } $unique_to_1->elements) {
+    my $file = $fileset1->{$key};
+    printf "%-7s  %s\n", 'DIR1', $file->{FULLNAME};
+}
+
+foreach my $key (sort { sort_by_name $fileset2 } $unique_to_2->elements) {
+    my $file = $fileset2->{$key};
+    printf "%7s  %s\n", 'DIR2', $file->{FULLNAME};
+}
+
+foreach my $key (sort { sort_by_name $fileset1 } $common->elements) {
+    my $file1 = $fileset1->{$key};
+    my $file2 = $fileset2->{$key};
+
+    my $moved   = $file1->{RELDIR}   ne $file2->{RELDIR};
+    my $renamed = $file1->{BASENAME} ne $file2->{BASENAME};
+
+    # don't show unchanged files
+    next unless $moved or $renamed;
+    
+    print "\n";
+    printf "%7s  %s\n", '', $file1->{FULLNAME};
+    printf "%3s %3s  %s\n", $moved ? 'MOV' : '', $renamed ? 'REN' : '', $file2->{FULLNAME};
+}
