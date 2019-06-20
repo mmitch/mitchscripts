@@ -1,0 +1,72 @@
+#!/bin/bash
+#
+# like du(1), but only recurses into the biggest directories
+#
+# Copyright (C) 2019  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPL v3 or later
+
+# defaults
+MIN_PERCENT=15
+PREFIX='  '
+
+# overwrite percentage if given
+if [ "$1" = '-p' ]; then
+    MIN_PERCENT="$2"
+    shift 2
+fi
+
+# show help if wanted
+if [ "$1" = '-h' ] || [ "$1" = '--help' ]; then
+    cat <<'EOF'
+usage:  quickdu [-h] [--help] [-p <min_percent>] [<start_directory>]
+
+ -h  or  --help     shows this help
+ -p <min_percent>   sets the minimum percentage for recursion into a
+                    directory (default: 15)
+ <start_directory>  start directory for the size calculations
+                    (default: current directory)
+
+Basically works like du(1), but only descends into a directory to
+if that directory's size is at least <min_percent> of its parent
+directory's size.  This selective recursion only affects the
+displayed tree; directory sizes always contain all child
+directories.
+
+Currently recursion stops at filesystem boundaries (like `du -x').
+EOF
+    exit 0
+fi
+    
+# get start directory; use current directory if not given
+STARTDIR="${1:-.}"
+if [ ! -d "$STARTDIR" ]; then
+    echo "\`$STARTDIR' is no directory"
+    exit 1
+fi
+
+# recursive scan function
+scandir()
+{
+    local DIR="$1" DEPTH="$2"
+
+    du -x -d1 "$DIR" | sort -rn | (
+	read -r TOTALSIZE _
+
+	if [ "$DEPTH" ]; then
+	    DISPLAYDIR="${DIR##*/}"
+	else
+	    DISPLAYDIR="$STARTDIR"
+	fi
+	printf "%s%8dM   %s\n" "$DEPTH" $(( TOTALSIZE / 1024 )) "$DISPLAYDIR"
+	
+	while read -r SIZE SUBDIR; do
+	    if [ $(( SIZE * 100 / TOTALSIZE )) -lt "$MIN_PERCENT" ]; then
+		break
+	    fi
+	    scandir "$SUBDIR" "$PREFIX$DEPTH"
+	done
+    )
+}
+
+# start recursice scan
+scandir "$STARTDIR"
