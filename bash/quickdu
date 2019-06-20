@@ -49,7 +49,7 @@ scandir()
 {
     local DIR="$1" DEPTH="$2"
 
-    du -x -d1 "$DIR" | sort -rn | (
+    du -x -d1 "$DIR" | sort -k 1rn,1 -k2,2 | (
 	read -r TOTALSIZE _
 
 	if [ "$DEPTH" ]; then
