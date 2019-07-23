@@ -152,7 +152,6 @@ fi
 umask 022
 
 # set compression options
-export GZIP="-9v"
 export BZIP2="-9v"
 
 # enable globstar: ** matches dirs + files
