@@ -68,5 +68,5 @@ scandir()
     )
 }
 
-# start recursice scan
+# start recursive scan
 scandir "$STARTDIR"
