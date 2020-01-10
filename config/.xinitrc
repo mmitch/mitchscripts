@@ -4,12 +4,15 @@ exec 1< /dev/null
 exec 1> /tmp/xsession-stdout
 exec 2> /tmp/xsession-stderr
 
-[ -r ~/.Xresources ] && xrdb -merge ~/.Xresources
+PATH="$HOME/bin:$PATH"
+export PATH
+
+[ -r ~/.Xresources ] && xrdb ~/.Xresources
 
 #export DMENU_COLORS="-fn fixed -nb #336 -nf #ccc -sb #669 -sf #eee"
 export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
 
-( sleep 2; cd Dropbox/backgrounds/; ./feh-random-bg ) &
+( sleep 2; cd Dropbox/backgrounds/ && ./feh-random-bg ) &
 # ( floatbg -satmid 0.2 -satvar 0.15 -fase 0.1 -value 0.3 & ) &
 # feh --no-fehbg --bg-center ~/iss2.png ~/iss1.png
 
@@ -32,6 +35,7 @@ export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
 
 # http://stereopsis.com/flux/
 ## ~/xflux -l 51.151786 -g 10.415039 -k 4500 # 36 is cool  2700 (3400) 4200
+[ -x redshift ] && redshift -l 51.151786:10.415039 &
 
 # Mausrad verdrehen
 ~/git/mitchscripts/bash/reverse_scrollwheel.sh
@@ -50,13 +54,19 @@ numlockx on
 
 # Dropbox
 #LANG=C LC_MESSAGE=C LANGUAGE=C /home/mitch/.dropbox-dist/dropboxd &
-#encfs -S /home/mitch/Dropbox/.CRYPT/ /home/mitch/Cryptbox < /home/mitch/.encfspassword &
 
 # KEYBOARD NORMALISIEREN!!! AccessX ausmachen
 xkbset -a
 
 # ein Terminal starten
 # ( sleep 2; x-terminal-emulator ) &
+
+# Screensaver
+# -secure disabled remote-Steuerung! (mplayer, dwm-mitch etc.)
+[ -x slock ] && [ -x xautolock ] && ( xset +dpms s blank s 240; xautolock -time 4 -locker slock -notify 30 -notifier "notify-send -u critical -t 10000 -i important -- 'LOCKING SCREEN' 'in 30 seconds'" ) &
+
+# Notifications
+[ -x dunst ] && dunst &
 
 # emacs vorstarten
 emacs --daemon &
