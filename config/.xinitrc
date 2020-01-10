@@ -17,11 +17,11 @@ export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
 # ( unclutter -idle 3 & ) &
 
 # fix Java GUI breakages (see dwm website)
-export AWT_TOOLKIT=MToolkit
-[ -x /usr/bin/wmname ] && /usr/bin/wmname LG3D
+# export AWT_TOOLKIT=MToolkit # <- this breaks Eclipse 2019-12
+# [ -x /usr/bin/wmname ] && /usr/bin/wmname LG3D
 
 # ask SSH password
-$HOME/bin/ssh-addkeys < /dev/null
+~/bin/ssh-addkeys < /dev/null
 
 # start notification if networked
 (ssh -X mitch "/home/mitch/git/mitchscripts/bash/start_notification.sh &" &) &
