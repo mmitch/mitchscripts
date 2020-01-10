@@ -3,13 +3,22 @@ set -e
 
 # simple status script plus dropbox indicator for dwm-mitch
 
-if dropbox > /dev/null 2>&1; then
-    DROPBOX=yes
-else
-    DROPBOX=no
-fi
+#if dropbox > /dev/null 2>&1; then
+#    DROPBOX=yes
+#else
+#    DROPBOX=no
+#fi
+
+DROPBOX=no
 
 DROPSTATE=/tmp/$USER.dropstate
+
+if command -v syncthing >/dev/null; then
+    SYNCTHING=yes
+else
+    SYNCTHING=no
+fi
+
 
 while true; do
       
@@ -18,19 +27,23 @@ while true; do
     LOAD=$(cut -d ' ' -f -3 /proc/loadavg)
 
     if [ $DROPBOX = yes ] ; then
-	LANG=C dropbox status > $DROPSTATE 2>&1
+	LANG=C dropbox status > "$DROPSTATE" 2>&1
 
-	if fgrep ownload $DROPSTATE; then
-	    DROP="$DROP[Dv] "
+	if grep -F ownload "$DROPSTATE"; then
+	    DROP="${DROP}[Dv] "
 	fi
 
-	if fgrep pload $DROPSTATE; then
-	    DROP="$DROP[D^] "
+	if grep -F pload "$DROPSTATE"; then
+	    DROP="${DROP}[D^] "
 	fi
 
     fi
 
+    if [ $SYNCTHING = yes ] ; then
+	DROP="$DROP$(~/git/mitchscripts/bash/syncthing_status) "
+    fi
+
     xsetroot -name "$DROP$TIME | $LOAD"
 
-    sleep 5
+    sleep 23
 done
