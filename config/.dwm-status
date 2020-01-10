@@ -3,13 +3,11 @@ set -e
 
 # simple status script plus dropbox indicator for dwm-mitch
 
-#if dropbox > /dev/null 2>&1; then
-#    DROPBOX=yes
-#else
-#    DROPBOX=no
-#fi
-
-DROPBOX=no
+if dropbox > /dev/null 2>&1; then
+    DROPBOX=yes
+else
+    DROPBOX=no
+fi
 
 DROPSTATE=/tmp/$USER.dropstate
 
