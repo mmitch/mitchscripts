@@ -1,0 +1,116 @@
+#!/bin/bash
+#
+# syncthing_status -- shows Syncthing status as a simple string for a status line
+#
+# Copyright 2020 (C)  Christian Garbs <mitch@cgarbs.de>
+# Licensed under Gnu GPL v3 or later
+#
+# Getting the Syncthing status is quite complicated.  We need three REST calls,
+# two of which are marked "expensive. don't call too often".
+#
+# This needs some shell utilities: pidof(1), sed(1), grep(1), curl(1) and jq(1)
+
+
+if ! pidof /usr/bin/syncthing >/dev/null; then
+    echo "[ST:gone]"
+    exit
+fi
+
+
+LOCAL_CONFIG_FILE=~/.config/syncthing/config.xml
+API_KEY=$(sed -n -e '/apikey/s/^.*>\(.*\)<.*$/\1/p' $LOCAL_CONFIG_FILE)
+
+rest_get() {
+    local URL=$1
+    curl -X GET -s -H "X-API-Key: $API_KEY" "http://localhost:8384/rest/$URL"
+}
+
+# only get currently connected devices
+DEVICES=$(rest_get system/connections | jq -r '.connections|to_entries|map(select(.value.connected))|map(.key)|join(" ")')
+
+if [ -z "$DEVICES" ]; then
+    # no devices connected
+    echo "[ST:offl]"
+    exit
+fi
+
+# get all known folders
+FOLDERS=$(rest_get stats/folder | jq -r 'keys|join(" ")')
+
+# check which folder is shared with whom
+ALL_SHARES=$(rest_get system/config | jq -r '.folders[]| { id: .id, devices: .devices[].deviceID}|join("/")')
+
+is_shared() {
+    local DEVICE=$1 FOLDER=$2
+    echo "$ALL_SHARES" | grep -q -F "$FOLDER/$DEVICE"
+}
+
+get_download_summary() {
+    {
+	
+	SEPARATOR=
+	echo "["
+	for FOLDER in $FOLDERS; do
+	    echo $SEPARATOR
+	    rest_get "db/status?folder=$FOLDER"
+	    SEPARATOR=,
+	done
+	echo "]"
+    } | jq -r 'map([.inSyncBytes, .globalBytes, .needDeletes + .needDirectories + .needFiles + .needSymlinks])|transpose|map(add)|[ (.[0]*100)/.[1], .[2] ]|map(floor)|@sh'
+
+    # jq description:
+    # 1. extract inSyncBytes, globalBytes and sum(need*) from every folder
+    # 2. transpose the array of arrays from one array per folder to one array per variable
+    # 3. sum all variables: [ inSyncBytes(folder1) + inSyncBytes(folder2) + ... , globalBytes(folder1) + ... ]
+    # 4. provide 2 values: percent synced [0-100], objects in need of sync
+    #    .[0] = sum(inSyncBytes); .[1] = sum(globalBytes); .[2] = sum(need*)
+    # 5. convert to integers
+    # 6. print for shell
+}
+
+get_upload_summary() {
+    {
+	
+	SEPARATOR=
+	echo "["
+	for FOLDER in $FOLDERS; do
+	    for DEVICE in $DEVICES; do
+		if is_shared "$DEVICE" "$FOLDER"; then
+		    echo $SEPARATOR
+		    rest_get "db/completion?device=$DEVICE&folder=$FOLDER"
+		    SEPARATOR=,
+		fi
+	    done
+	done
+	echo "]"
+    } | jq -r 'map([.needBytes, .globalBytes, .needDeletes + .needItems])|transpose|map(add)|[ (( .[1] - .[0] )*100)/.[1], .[2] ]|map(floor)|@sh'
+
+    # jq description:
+    # 1. extract needBytes, globalBytes and sum(need*) from every folder
+    # 2. transpose the array of arrays from one array per folder to one array per variable
+    # 3. sum all variables: [ inSyncBytes(folder1) + inSyncBytes(folder2) + ... , globalBytes(folder1) + ... ]
+    # 4. provide 2 values: percent synced [0-100], objects in need of sync
+    #    .[0] = sum(needBytes); .[1] = sum(globalBytes); .[2] = sum(need*)
+    # 5. convert to integers
+    # 6. print for shell
+}
+
+STATUSLINE=
+
+read -r PERCENT_SYNCED UNSYNCED_OBJECTS < <(get_download_summary)
+
+if [ "$UNSYNCED_OBJECTS" -gt 0 ] || [ "$PERCENT_SYNCED" -lt 100 ]; then
+    STATUSLINE=$STATUSLINE${STATUSLINE:+:}v${UNSYNCED_OBJECTS}#${PERCENT_SYNCED}%
+fi
+
+
+read -r PERCENT_SYNCED UNSYNCED_OBJECTS < <(get_upload_summary)
+
+if [ "$UNSYNCED_OBJECTS" -gt 0 ] || [ "$PERCENT_SYNCED" -lt 100 ]; then
+    STATUSLINE=$STATUSLINE${STATUSLINE:+:}^${UNSYNCED_OBJECTS}#${PERCENT_SYNCED}%
+fi
+
+
+if [ "$STATUSLINE" ]; then
+    echo "[ST:$STATUSLINE]"
+fi
