@@ -35,7 +35,7 @@ export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
 
 # http://stereopsis.com/flux/
 ## ~/xflux -l 51.151786 -g 10.415039 -k 4500 # 36 is cool  2700 (3400) 4200
-[ -x redshift ] && redshift -l 51.151786:10.415039 &
+[ -x /usr/bin/redshift ] && /usr/bin/redshift -l 51.151786:10.415039 &
 
 # Mausrad verdrehen
 ~/git/mitchscripts/bash/reverse_scrollwheel.sh
@@ -63,7 +63,7 @@ xkbset -a
 
 # Screensaver
 # -secure disabled remote-Steuerung! (mplayer, dwm-mitch etc.)
-[ -x slock ] && [ -x xautolock ] && ( xset +dpms s blank s 240; xautolock -time 4 -locker slock -notify 30 -notifier "notify-send -u critical -t 10000 -i important -- 'LOCKING SCREEN' 'in 30 seconds'" ) &
+[ -x /home/mitch/bin/slock ] && [ -x /usr/bin/xautolock ] && ( xset +dpms s blank s 240; /usr/bin/xautolock -time 4 -locker /home/mitch/bin/slock -notify 30 -notifier "notify-send -u critical -t 10000 -i important -- 'LOCKING SCREEN' 'in 30 seconds'" ) &
 
 # Notifications
 [ -x dunst ] && dunst &
