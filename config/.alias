@@ -306,3 +306,14 @@ alias k4dirstat='echo "use qdirstat instead"'
 # one-time ssh access without known_hosts interaction
 # useful if a remote server is booted into a rescue system
 alias ssh_once='ssh -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null'
+
+# call player with recursive file scanning and a shuffled but navigatable playlist
+# $*: zero, one or more options followed by at least one path
+mrecursive() {
+    declare -a args
+    while [ "${1:0:1}" = '-' ]; do
+	args+=( "$1" )
+	shift
+    done
+    mplayer "${args[@]}" -playlist <( find "$@" -type f | sort -r )
+}
