@@ -315,5 +315,5 @@ mrecursive() {
 	args+=( "$1" )
 	shift
     done
-    mplayer "${args[@]}" -playlist <( find "$@" -type f | sort -r )
+    mplayer "${args[@]}" -playlist <( find "$@" -type f | sort -R )
 }
