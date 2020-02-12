@@ -315,5 +315,14 @@ mrecursive() {
 	args+=( "$1" )
 	shift
     done
-    mplayer "${args[@]}" -playlist <( find "$@" -type f | sort -R )
+    declare -a paths
+    while [ "$1" ]; do
+	if [ "${1:0:1}" = '/' ]; then
+	    paths+=( "$1" )
+	else
+	    paths+=( "$PWD/$1" )
+	fi
+	shift
+    done
+    mplayer "${args[@]}" -playlist <( find "${paths[@]}" -type f | sort -R )
 }
