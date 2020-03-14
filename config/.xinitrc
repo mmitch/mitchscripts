@@ -4,7 +4,13 @@ exec 1< /dev/null
 exec 1> /tmp/xsession-stdout
 exec 2> /tmp/xsession-stderr
 
-PATH="$HOME/bin:$PATH"
+
+# add search paths
+for path in bin Cryptbox/bin; do
+    if [ -d "$HOME/$path" ] ; then
+	PATH="$HOME/$path:$PATH"
+    fi
+done
 export PATH
 
 [ -r ~/.Xresources ] && xrdb ~/.Xresources
