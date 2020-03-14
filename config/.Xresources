@@ -1,3 +1,10 @@
+! fix selection problems
+! https://unix.stackexchange.com/questions/45925/how-to-configure-the-double-click-behavior-in-an-x-terminal
+XTerm*VT100.cutNewline: false
+XTerm*VT100.cutToBeginningOfLine: false
+!XTerm*VT100.charClass: 33:48,35:48,37:48,42:48,45-47:48,64:48,95:48,126:48
+XTerm*VT100.charClass: 33:48,35:48,37:48,42:48,45-47:48,58:48,64:48,95:48,126:48
+
 ! this mainly fixes the "unreadable dark blue on black" problem
 xterm*color4: rgb:50/50/a0
 xterm*color12: rgb:80/80/f0
