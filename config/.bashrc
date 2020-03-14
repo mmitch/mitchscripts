@@ -140,10 +140,6 @@ export VISUAL=$EDITOR
 set +H
 
 # add private dirs to $PATH
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
 if [ -d "$HOME/Cryptbox/bin" ] ; then
     PATH="$HOME/Cryptbox/bin:$PATH"
 fi
