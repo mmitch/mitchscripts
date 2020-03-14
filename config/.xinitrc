@@ -16,8 +16,8 @@ export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
 # ( floatbg -satmid 0.2 -satvar 0.15 -fase 0.1 -value 0.3 & ) &
 # feh --no-fehbg --bg-center ~/iss2.png ~/iss1.png
 
-# this breaks mouse centering in WoW
-# ( unclutter -idle 3 & ) &
+# hide the mouse - unclutter has some issues
+xbanish &
 
 # fix Java GUI breakages (see dwm website)
 # export AWT_TOOLKIT=MToolkit # <- this breaks Eclipse 2019-12
