@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# unified PATH setup because it must be called in various places (at least ~/.xinitc and ~/ .bashrc)
+# this file has to be sourced, but uses bash specials, so do:
+# [ "$BASH_VERSION" ] && . /home/mitch/git/mitchscripts/config/setup-PATH
+# of course, in ~/.bashrc the bash check can be skipped ;-)
+
+basedir=/home/mitch
+new_paths=("Cryptbox/bin" "bin")
+
+for sub_path in "${new_paths[@]}"; do
+    new_path=$basedir/$sub_path
+    if [[ ! "$PATH" =~ (^|:)$new_path(:|$) ]]; then
+	PATH="${new_path}${PATH+:}${PATH}"
+    fi
+done
+
+export PATH

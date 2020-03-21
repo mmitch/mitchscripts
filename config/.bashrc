@@ -4,6 +4,9 @@ HISTSIZE=1000
 HISTFILESIZE=2000
 shopt -s histappend
 
+# setup path
+source /home/mitch/git/mitchscripts/config/setup-PATH
+
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -138,11 +141,6 @@ export VISUAL=$EDITOR
 
 # disable history expansion !
 set +H
-
-# add private dirs to $PATH
-if [ -d "$HOME/Cryptbox/bin" ] ; then
-    PATH="$HOME/Cryptbox/bin:$PATH"
-fi
 
 # set more restrictive umask
 umask 022
