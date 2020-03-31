@@ -61,6 +61,7 @@
 (setq auto-mode-alist
       (append
        '(("/mutt-" . mail-mode)
+	 ("/neomutt-" . mail-mode)
 	 ("/\\.letter\\." . mail-mode)
 	 ("/\\.article\\." . mail-mode))
        auto-mode-alist))
