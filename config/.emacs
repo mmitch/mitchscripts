@@ -96,6 +96,9 @@
 (when (require 'flycheck nil :noerror)
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
+(when (require 'flycheck-yamllint nil :noerror)
+  (add-hook 'flycheck-mode-hook 'flycheck-yamllint-setup))
+
 ;;;
 ;;; use emacs to edit <textarea>s in Firefox
 ;;;
@@ -124,7 +127,8 @@
 
 ;; use smart link insertion
 (defun my:string-match-perl-module-p (string)
-  "Return non-nil if STRING looks like a Perl module name."
+  "Check STRING for a Perl module name.
+Return non-nil if STRING looks like a Perl module name."
   (and string (string-match "\\(?:[A-Za-z0-9]+::\\)+[A-Za-z0-9]+" string)))
 
 (defun my:org-insert-link-smart (&optional complete-file link-location default-description)
@@ -235,7 +239,7 @@ WINDOWED is t if running under X11"
  '(org-html-doctype "html5")
  '(package-selected-packages
    (quote
-    (cobol-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize)))
+    (flycheck-yamllint groovy-mode bbcode-mode cobol-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize)))
  '(safe-local-variable-values
    (quote
     ((eval require
@@ -249,6 +253,7 @@ WINDOWED is t if running under X11"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(font-lock-function-name-face ((t (:foreground "deep sky blue" :height 1.0))))
  '(mode-line ((t (:background "orange4" :foreground "black" :box (:line-width -1 :style released-button))))))
 
 ;;; .emacs ends here
