@@ -1,3 +1,4 @@
 #!/bin/sh
-exec amixer set Master 5%+ > /dev/null
-
+exec > /dev/null
+pactl set-sink-mute 0 false
+pactl set-sink-volume 0 +5%
