@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
 xautolock -enable
 sleep 0.5 # race condition? does not work without!
 xautolock -locknow
+xset dpms force standby
