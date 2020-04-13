@@ -153,6 +153,25 @@ LINK-LOCATION and DEFAULT-DESCRIPTION."
 
 (define-key org-mode-map (kbd "C-c C-l") 'my:org-insert-link-smart)
 
+;; lualatex preview
+(setq org-latex-pdf-process
+  '("lualatex -shell-escape -interaction nonstopmode %f"
+    "lualatex -shell-escape -interaction nonstopmode %f"))
+
+(setq luamagick '(luamagick :programs ("lualatex" "convert")
+       :description "pdf > png"
+       :message "you need to install lualatex and imagemagick."
+       :use-xcolor t
+       :image-input-type "pdf"
+       :image-output-type "png"
+       :image-size-adjust (1.0 . 1.0)
+       :latex-compiler ("lualatex -interaction nonstopmode -output-directory %o %f")
+       :image-converter ("convert -density %D -trim -antialias %f -quality 100 %O")))
+
+(add-to-list 'org-preview-latex-process-alist luamagick)
+
+(setq org-preview-latex-default-process 'luamagick)
+
 ;;;
 ;;; theme for both console and X11
 ;;;
