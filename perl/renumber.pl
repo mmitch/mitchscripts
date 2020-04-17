@@ -156,7 +156,11 @@ foreach my $middle (sort { $a <=> $b } @middles) {
     my $task;
     if ($old ne $new) {
 	$task = '-->';
-	rename $old, $new or die "can't rename <$old> to <$new>: $!\n";
+
+	# this check is not atomic, but using 'mv -n' will save us in that case
+	die "won't rename <$old> to <$new>, target exists\n" if -e $new;
+
+	system 'mv', '-n', $old, $new or die "can't rename <$old> to <$new>: $!$?\n";
     } else {
 	$task = ' = ';
     }
