@@ -80,7 +80,7 @@ sub find_longest_common_prefix(@) {
     foreach my $in (@in) {
 	while (substr($in, 0, length $prefix) ne $prefix) {
 	    $prefix = substr $prefix, 0, length($prefix) - 1;
-	    die "no common prefix" unless length $prefix;
+	    die "ERROR: no common prefix" unless length $prefix;
 	}
     }
     return $prefix;
@@ -92,7 +92,7 @@ sub find_longest_common_suffix(@) {
     foreach my $in (@in) {
 	while (substr($in, 0 - length($suffix)) ne $suffix) {
 	    $suffix = substr $suffix, 1;
-	    die "no common suffix" unless length $suffix;
+	    die "ERROR: no common suffix" unless length $suffix;
 	}
     }
     return $suffix;
@@ -107,7 +107,7 @@ sub get_middle_parts($$@) {
 	my $in = $_;
 	my $middle = substr $in, $start;
 	$middle = substr $middle, 0, -$remove;
-	die "middle <$middle> not numeric in <$in>" unless $middle =~ /^\d+$/;
+	die "ERROR: middle <$middle> not numeric in <$in>" unless $middle =~ /^\d+$/;
 	$middle;
     } @in;
 }
@@ -138,31 +138,60 @@ print "suffix: <$suffix>\n";
 
 my @middles = get_middle_parts($prefix, $suffix, @files);
 
-die "middle part <$_> not numeric\n" foreach grep { $_ !~ /^\d+$/  } @middles;
+die "ERROR: middle part <$_> not numeric\n" foreach grep { $_ !~ /^\d+$/  } @middles;
 
 my $maxlen = get_longest_length(@middles);
 
 # print "maxlen: $maxlen\n";
 
 my $middle_pattern = '%0'.$maxlen.'d';
-my $total_pattern  = '%0'.( length($prefix) + $maxlen + length($suffix) ).'s';
+my $total_pattern  = '%-'.( length($prefix) + $maxlen + length($suffix) ).'s';
 
-print "pattrn: <$middle_pattern>\n";
+print "format: <$middle_pattern>\n";
 print "\n";
 
+my @tasks;
+my %existing_files = map { $_ => 1 } @files;
+my %new_files = ();
 foreach my $middle (sort { $a <=> $b } @middles) {
     my $old = $prefix.$middle.$suffix;
     my $new = $prefix.sprintf($middle_pattern, $middle).$suffix;
+
     my $task;
     if ($old ne $new) {
-	$task = '-->';
 
-	# this check is not atomic, but using 'mv -n' will save us in that case
-	die "won't rename <$old> to <$new>, target exists\n" if -e $new;
+	# check for consistency before doing anything
+	die sprintf("ERROR: target filename already exists:\n" .
+		    "$total_pattern  -->  $total_pattern\n",
+		    $old, $new)
+	    if exists $existing_files{$new};
+	
+	die sprintf("ERROR: target filename is not unique:\n" .
+		    "$total_pattern  -->  $total_pattern\n" .
+		    "$total_pattern  -->  $total_pattern\n",
+		    $old, $new,
+		    $new_files{$new}, $new)
+	    if exists $new_files{$new};
 
-	system 'mv', '-n', $old, $new or die "can't rename <$old> to <$new>: $!$?\n";
-    } else {
-	$task = ' = ';
+	# simulate what would be done
+	$new_files{$new} = $old;
+
+	# actual rename task
+	$task = sub() {
+	    # this check is not atomic, but using 'mv -n' will save us in that case
+	    die "ERROR: won't rename <$old> to <$new>, target exists\n" if -e $new;
+	    system('mv', '-n', $old, $new) == 0 or die "ERROR: can't rename <$old> to <$new>: $?\n";
+
+	    printf "$total_pattern  -->  $total_pattern\n", $old, $new;
+	};	
     }
-    printf "$total_pattern  %s  $total_pattern\n", $old, $task, $new;
+    else {
+	$task = sub() {
+	    printf "$total_pattern   =   $total_pattern\n", $old, $new;
+	};	
+    }
+    
+    push @tasks, $task;
 }
+
+$_->() foreach @tasks;
