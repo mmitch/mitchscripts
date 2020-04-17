@@ -71,6 +71,7 @@ sub get_files() {
     opendir my $dh, '.' or die "can't opendir: $!";
     my @files = grep { -f $_ && ! -x _ } readdir($dh);
     closedir $dh or die "can't closedir: $!";
+    die "ERROR: no files found" unless @files;
     return @files;
 }
 
@@ -112,6 +113,10 @@ sub get_middle_parts($$@) {
     } @in;
 }
 
+sub sort_numeric(@) {
+    return sort { $a <=> $b } @_;
+}
+
 sub get_longest_length(@) {
     my (@in) = @_;
     my $longest = 0;
@@ -122,76 +127,127 @@ sub get_longest_length(@) {
     return $longest;
 }
 
-my $dir = $ARGV[0] // '.';
+sub check_all_numeric(@) {
+    my (@middles) = @_;
+    die "ERROR: middle part <$_> not numeric\n" foreach grep { $_ !~ /^\d+$/  } @middles;
+}
 
-my @files = get_files();
+sub to_hash(@) {
+    return map { $_ => 1 } @_;
+}
 
-die "no files found" unless @files;
+sub none() {
+    return ();
+}
 
-# print "$_\n" foreach @files;
+my ($total_pattern);
 
-my $prefix = find_longest_common_prefix(@files);
-my $suffix = find_longest_common_suffix(@files);
+sub format_from_to($$$) {
+    my ($old, $symbol, $new) = @_;
+    return sprintf "$total_pattern  %s  $total_pattern\n", $old, $symbol, $new;
+}
 
-print "prefix: <$prefix>\n";
-print "suffix: <$suffix>\n";
+sub rename_file_secure($$) {
+    my ($old, $new) = @_;
+    
+    # this check is not atomic, but using external 'mv -n' will save us in that case
+    die "ERROR: won't rename <$old> to <$new>, target exists\n" if -e $new;
+    
+    system('mv', '-n', $old, $new) == 0 or die "ERROR: can't rename <$old> to <$new>: $?\n";
+    
+    print format_from_to($old, '-->', $new);
+}
 
-my @middles = get_middle_parts($prefix, $suffix, @files);
+sub do_nothing($$) {
+    my ($old, $new) = @_;
+    print format_from_to($old, ' = ', $new);
+}
 
-die "ERROR: middle part <$_> not numeric\n" foreach grep { $_ !~ /^\d+$/  } @middles;
+my (%existing_files, %new_files);
 
-my $maxlen = get_longest_length(@middles);
+sub check_for_collisions($$) {
+    my ($old, $new) = @_;
 
-# print "maxlen: $maxlen\n";
+    if (exists $existing_files{$new}) {
+	die "ERROR: target filename already exists:\n" .
+	    format_from_to($old, '-->', $new);
+    }
 
-my $middle_pattern = '%0'.$maxlen.'d';
-my $total_pattern  = '%-'.( length($prefix) + $maxlen + length($suffix) ).'s';
+    if (exists $new_files{$new}) {
+	die "ERROR: target filename is not unique:\n" .
+	    format_from_to($old,             '-->', $new) .
+	    format_from_to($new_files{$new}, '-->', $new);
+    }
+}
 
-print "format: <$middle_pattern>\n";
-print "\n";
+sub store_planned_rename($$) {
+    my ($old, $new) = @_;
+    $new_files{$new} = $old;
+}
 
-my @tasks;
-my %existing_files = map { $_ => 1 } @files;
-my %new_files = ();
-foreach my $middle (sort { $a <=> $b } @middles) {
+my ($prefix, $suffix);
+
+sub create_middle_pattern($) {
+    my ($maxlen) = @_;
+    return '%0'.$maxlen.'d';
+}
+
+sub create_total_pattern($) {
+    my ($maxlen) = @_;
+    return '%-'.( length($prefix) + $maxlen + length($suffix) ).'s';
+}
+
+my ($middle_pattern);
+
+sub create_task($) {
+    my ($middle) = $_;
     my $old = $prefix.$middle.$suffix;
     my $new = $prefix.sprintf($middle_pattern, $middle).$suffix;
 
-    my $task;
-    if ($old ne $new) {
-
-	# check for consistency before doing anything
-	die sprintf("ERROR: target filename already exists:\n" .
-		    "$total_pattern  -->  $total_pattern\n",
-		    $old, $new)
-	    if exists $existing_files{$new};
-	
-	die sprintf("ERROR: target filename is not unique:\n" .
-		    "$total_pattern  -->  $total_pattern\n" .
-		    "$total_pattern  -->  $total_pattern\n",
-		    $old, $new,
-		    $new_files{$new}, $new)
-	    if exists $new_files{$new};
-
-	# simulate what would be done
-	$new_files{$new} = $old;
-
-	# actual rename task
-	$task = sub() {
-	    # this check is not atomic, but using 'mv -n' will save us in that case
-	    die "ERROR: won't rename <$old> to <$new>, target exists\n" if -e $new;
-	    system('mv', '-n', $old, $new) == 0 or die "ERROR: can't rename <$old> to <$new>: $?\n";
-
-	    printf "$total_pattern  -->  $total_pattern\n", $old, $new;
-	};	
+    if ($old eq $new) {
+	return sub() { do_nothing($old, $new) };
     }
-    else {
-	$task = sub() {
-	    printf "$total_pattern   =   $total_pattern\n", $old, $new;
-	};	
-    }
-    
-    push @tasks, $task;
+
+    check_for_collisions($old, $new);
+    store_planned_rename($old, $new);
+    return sub() { rename_file_secure($old, $new) };
 }
 
-$_->() foreach @tasks;
+sub create_tasks(@) {
+    return map { create_task $_ } @_;
+}
+
+sub execute_tasks(@) {
+    $_->() foreach @_;
+}
+
+### main script here
+
+my $dir = $ARGV[0] // '.';
+
+print "folder: $dir\n";
+
+my @files       = get_files();
+%existing_files = to_hash @files;
+%new_files      = none;
+
+$prefix = find_longest_common_prefix(@files);
+$suffix = find_longest_common_suffix(@files);
+
+print "prefix: $prefix\n";
+print "suffix: $suffix\n";
+
+my @middles = sort_numeric get_middle_parts($prefix, $suffix, @files);
+
+check_all_numeric(@middles);
+
+my $maxlen = get_longest_length(@middles);
+
+$middle_pattern = create_middle_pattern($maxlen);
+$total_pattern  = create_total_pattern($maxlen);
+
+print "format: $middle_pattern\n";
+print "\n";
+
+my @tasks = create_tasks @middles;
+execute_tasks @tasks;
