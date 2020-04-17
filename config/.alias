@@ -329,3 +329,20 @@ mrecursive() {
 youtube-audio() {
     youtube-dl -x --audio-format mp3 --audio-quality 4 "$@"
 }
+
+# combine images into a PDF
+# WARNING: might need lots of RAM and looser settings in /etc/ImageMagick-6/policy.xml
+# $*: directories with images, one PDF is generated per directory
+topdf()
+{
+    local dir pdf
+    echo
+    for dir in "$@"; do
+	dir="${dir%/}"
+	echo "processing $dir:"
+	pdf="$dir.pdf"
+	convert "$dir/*.{jpg,jpeg,JPG,JPEG}" -quality 95 "$pdf"
+	ls -lh "$pdf"
+	echo
+    done
+}
