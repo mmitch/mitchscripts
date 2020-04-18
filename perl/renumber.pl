@@ -22,8 +22,7 @@
 #
 #  This program reads all files from the given directory (or the current
 #  directory, if no directory is given) and checks them for a common prefix
-#  and common suffix.  If neither a common prefix or common suffix can be
-#  found, the program exits.
+#  and common suffix.
 #
 #  In the next step file filenames are stripped by their prefix and suffix.
 #  If the remaining strings are not all numeric, the program exits.
@@ -81,7 +80,7 @@ sub find_longest_common_prefix(@) {
     foreach my $in (@in) {
 	while (substr($in, 0, length $prefix) ne $prefix) {
 	    $prefix = substr $prefix, 0, length($prefix) - 1;
-	    die "ERROR: no common prefix" unless length $prefix;
+	    return '' unless length $prefix; # no common prefix, this can be ok
 	}
     }
     return $prefix;
@@ -93,7 +92,7 @@ sub find_longest_common_suffix(@) {
     foreach my $in (@in) {
 	while (substr($in, 0 - length($suffix)) ne $suffix) {
 	    $suffix = substr $suffix, 1;
-	    die "ERROR: no common suffix" unless length $suffix;
+	    return '' unless length $suffix; # no common suffix, this can be ok
 	}
     }
     return $suffix;
