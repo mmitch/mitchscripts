@@ -312,6 +312,10 @@ mrecursive() {
 	args+=( "$1" )
 	shift
     done
+
+    # add current directory if no paths are given
+    [ "$1" ] ||	set -- .
+
     declare -a paths
     while [ "$1" ]; do
 	if [ "${1:0:1}" = '/' ]; then
@@ -321,6 +325,7 @@ mrecursive() {
 	fi
 	shift
     done
+
     mplayer "${args[@]}" -playlist <( find "${paths[@]}" -type f | sort -R )
 }
 
