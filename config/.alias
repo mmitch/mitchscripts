@@ -336,18 +336,32 @@ youtube-audio() {
 }
 
 # combine images into a PDF
-# WARNING: might need lots of RAM and looser settings in /etc/ImageMagick-6/policy.xml
 # $*: directories with images, one PDF is generated per directory
 topdf()
 {
-    local dir pdf
+    local jpegquality=95
+    local maxpixels=7000000
+    local dir pdf jpg finalpdf
+    local -a pdfs
     echo
     for dir in "$@"; do
 	dir="${dir%/}"
+	finalpdf="$PWD/$dir.pdf"
 	echo "processing $dir:"
-	pdf="$dir.pdf"
-	convert "$dir/*.{jpg,jpeg,JPG,JPEG}" -quality 95 "$pdf"
-	ls -lh "$pdf"
+	pushd "$dir" >/dev/null || return
+	pdfs=()
+	for jpg in *.{jpg,jpeg,JPG,JPEG}; do
+	    [ -e "$jpg" ] || continue # skip unmatched extensions
+	    pdf="$jpg.pdf"
+	    pdfs+=("$pdf")
+	    echo "  $jpg => $pdf"
+	    convert "$jpg""[>@$maxpixels]" -strip -quality $jpegquality "$pdf" || return
+	done
+	pdfunite -- "${pdfs[@]}" "$finalpdf" || return
+	ls -lh "$finalpdf"
+	echo "  cleaning up"
+	rm -- "${pdfs[@]}"
+	popd >/dev/null || return
 	echo
     done
 }
