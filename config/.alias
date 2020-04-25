@@ -365,3 +365,9 @@ topdf()
 	echo
     done
 }
+
+# switch man over to hman if everything is installed
+if [ "$(type -t hman)" = file ] && [ "$(type -t lynx)" = file ]&& [ "$(type -t lynx-for-man)" = file ]; then
+    alias man=hman
+    export MANHTMLPAGER=lynx-for-man
+fi

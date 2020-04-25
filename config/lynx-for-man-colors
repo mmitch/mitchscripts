@@ -1,0 +1,15 @@
+body:		normal:			lightgray
+h1:		bold+reverse:		brightcyan
+h2:		bold+underline:		brightcyan
+h3:		bold+underline:		brightcyan
+h4:		bold+underline:		brightcyan
+b:		bold:			yellow
+i:		bold:			green
+
+
+a:		underline:		brightblue
+alink:		reverse+underline:	black:brightblue
+
+status:		reverse:		gray
+alert:		bold:			yellow:red
+normal:		normal:			gray

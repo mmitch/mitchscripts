@@ -1,0 +1,2 @@
+#!/bin/sh
+lynx -lss=~/git/mitchscripts/config/lynx-for-man-colors "$@"
