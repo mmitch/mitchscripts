@@ -11,7 +11,7 @@ alias pulseaudio-DINGENS='echo "Du willst pavucontrol!"'
 alias RemoteX11Thingie='echo "Du willst Xpra!"'
 
 # tin singleton (avoid messing up read articles)
-alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else : /home/mitch/git/mitchscripts/bash/procrastinator.sh 1800 usenet; tin; fi'
+alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else : tin; fi'
 
 # Trogdor!
 alias sbemail.exe='mutt'
@@ -33,7 +33,6 @@ alias winegrep='ps aux | egrep "([w]ine|\.[e]xe)"'
 # - https://github.com/zigdon/twirssi/issues/75
 # - https://rt.cpan.org/Public/Bug/Display.html?id=78920
 alias irssi='
-/home/mitch/git/mitchscripts/bash/procrastinator.sh 300 irc
 (
   PERL_NET_HTTPS_SSL_SOCKET_CLASS=Net::SSL
   PERL_LWP_SSL_VERIFY_HOSTNAME=0
@@ -46,7 +45,7 @@ alias irssi='
 alias debsign-all='for I in *.dsc *.changes *.commands; do [ -e "$I" ] && debsign "$I"; done'
 
 # show latest procmail sorted mails
-alias mailtail='/home/mitch/git/mitchscripts/bash/procrastinator.sh 1800 mailtail; tail -n 300 -f /home/mitch/Mail/from | { IFS=""; read FROM; while [ ! "${FROM:0:5}" = "From " ] ; do read FROM; done; read SUBJECT; while read FOLDER; do if [ "${FOLDER:0:19}" != "  Folder: /dev/null" -a "${FOLDER:0:19}" != "  Folder: spam/new/" -a "${FOLDER:0:23}" != "  Folder: logfiles/new/" -a "${FOLDER:0:26}" != "  Folder: warpzone-ml/new/" -a "${FOLDER:0:23}" != "  Folder: omdstats/new/" ] ; then echo "$FROM"; echo "$SUBJECT"; echo "$FOLDER"; fi; read FROM; read SUBJECT; done } | /home/mitch/git/mitchscripts/perl/mimedecoder.pl | sed -e "s/^From/\nFrom/" -e "s,^\(  Folder: \)\([^/]\),\1${HOME}/Mail/\2,"'
+alias mailtail='tail -n 300 -f /home/mitch/Mail/from | { IFS=""; read FROM; while [ ! "${FROM:0:5}" = "From " ] ; do read FROM; done; read SUBJECT; while read FOLDER; do if [ "${FOLDER:0:19}" != "  Folder: /dev/null" -a "${FOLDER:0:19}" != "  Folder: spam/new/" -a "${FOLDER:0:23}" != "  Folder: logfiles/new/" -a "${FOLDER:0:26}" != "  Folder: warpzone-ml/new/" -a "${FOLDER:0:23}" != "  Folder: omdstats/new/" ] ; then echo "$FROM"; echo "$SUBJECT"; echo "$FOLDER"; fi; read FROM; read SUBJECT; done } | /home/mitch/git/mitchscripts/perl/mimedecoder.pl | sed -e "s/^From/\nFrom/" -e "s,^\(  Folder: \)\([^/]\),\1${HOME}/Mail/\2,"'
 
 # default start page in (e)links
 # $1: URL (optional)
