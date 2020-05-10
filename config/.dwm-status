@@ -28,13 +28,7 @@ get_free_memory()
 	mems[$id]="$amount"
     done < /proc/meminfo
     
-    #avl=$((  ${mems[MemAvailable:]} * 100 / ${mems[MemTotal:]} ))
-    #free=$(( ${mems[MemFree:]}      * 100 / ${mems[MemTotal:]} ))
-    #used=$(( 100 - avl - free ))
-    
-    #free_memory="${used}/${avl}/${free}"
-
-    buffcache=$(( ${mems[MemAvailable:]} - ${mems[MemFree:]} ))
+    buffcache=$(( ${mems[Buffers:]} + ${mems[Cached:]} ))
     avl=$((  buffcache         * 10 / ${mems[MemTotal:]} ))
     free=$(( ${mems[MemFree:]} * 10 / ${mems[MemTotal:]} ))
     used=$(( 10 - avl - free ))
