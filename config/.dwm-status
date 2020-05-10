@@ -34,8 +34,9 @@ get_free_memory()
     
     #free_memory="${used}/${avl}/${free}"
 
-    avl=$((  ${mems[MemAvailable:]} * 10 / ${mems[MemTotal:]} ))
-    free=$(( ${mems[MemFree:]}      * 10 / ${mems[MemTotal:]} ))
+    buffcache=$(( ${mems[MemAvailable:]} - ${mems[MemFree:]} ))
+    avl=$((  buffcache         * 10 / ${mems[MemTotal:]} ))
+    free=$(( ${mems[MemFree:]} * 10 / ${mems[MemTotal:]} ))
     used=$(( 10 - avl - free ))
     
     free_memory="|${USED:0:$used}${AVL:0:$avl}${FREE:0:$free}|"
