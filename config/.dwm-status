@@ -17,6 +17,13 @@ else
     SYNCTHING=no
 fi
 
+if [ -r /proc/spl/kstat/zfs/arcstats ]; then
+    ZFS=yes
+else
+    ZFS=no
+    arc=0
+fi
+
 USED=###########
 FREE="           "
 AVL=+++++++++++
@@ -29,8 +36,19 @@ get_free_memory()
     done < /proc/meminfo
     
     buffcache=$(( ${mems[Buffers:]} + ${mems[Cached:]} ))
-    avl=$((  buffcache         * 10 / ${mems[MemTotal:]} ))
-    free=$(( ${mems[MemFree:]} * 10 / ${mems[MemTotal:]} ))
+
+    if [ $ZFS = yes ]; then
+	# manually count ZFS ARC as cache
+	while read -r name _ data; do
+	    if [ "$name" = size ]; then
+		arc=$(( data / 1024 ))
+		break
+	    fi
+	done < /proc/spl/kstat/zfs/arcstats
+    fi
+   
+    avl=$((  ( buffcache + arc ) * 10 / ${mems[MemTotal:]} ))
+    free=$(( ${mems[MemFree:]}   * 10 / ${mems[MemTotal:]} ))
     used=$(( 10 - avl - free ))
     
     free_memory="|${USED:0:$used}${AVL:0:$avl}${FREE:0:$free}|"
