@@ -56,7 +56,7 @@ scandir()
 	else
 	    DISPLAYDIR="$STARTDIR"
 	fi
-	printf "%s%8dM   %s\n" "$DEPTH" $(( TOTALSIZE / 1024 )) "$DISPLAYDIR"
+	printf "%s%8dM   %s\\n" "$DEPTH" $(( TOTALSIZE / 1024 )) "$DISPLAYDIR"
 	
 	while read -r SIZE SUBDIR; do
 	    if [ $(( SIZE * 100 / TOTALSIZE )) -lt "$MIN_PERCENT" ]; then
