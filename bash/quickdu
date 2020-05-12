@@ -26,11 +26,10 @@ usage:  quickdu [-h] [--help] [-p <min_percent>] [<start_directory>]
  <start_directory>  start directory for the size calculations
                     (default: current directory)
 
-Basically works like du(1), but only descends into a directory to
-if that directory's size is at least <min_percent> of its parent
-directory's size.  This selective recursion only affects the
-displayed tree; directory sizes always contain all child
-directories.
+Basically works like du(1), but only descends into a directory if that
+directory's size is at least <min_percent> of its parent directory's
+size.  This selective recursion only affects the displayed tree;
+directory sizes always contain the size of all child directories.
 
 Currently recursion stops at filesystem boundaries (like `du -x').
 EOF
