@@ -114,6 +114,10 @@
 ;;; org-mode
 ;;;
 
+;; load ox-gfm.el if present
+(eval-after-load "org"
+  '(require 'ox-gfm)) ; nil :noerror))
+
 ;; org-mode keybindings
 (require 'org)
 ;;(define-key global-map "\C-cl" 'org-store-link)
