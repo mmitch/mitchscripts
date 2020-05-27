@@ -54,6 +54,9 @@
 ;; highlight matching parens
 (show-paren-mode 1)
 
+;; proper mouse selection handling in textmode emacs
+(xterm-mouse-mode 1)
+
 ;;;
 ;;; mutt + tin integration
 ;;;
