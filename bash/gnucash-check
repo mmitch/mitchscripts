@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# gnucash-check:
+# bruteforce search for a working Finance::Quote SOURCE that returns a given SYMBOL
+# needs GnuCash helper programs because that's what this script is made for
+#
+# Copyright (C) 2020  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPL v2 or later
+#
+
+symbol=$1
+
+if [ -z "$symbol" ]; then
+    echo "no symbol to look for given"
+    exit 2
+fi
+
+echo "looking for symbol <$symbol>"
+
+sources=($(gnc-fq-dump | grep . | tail -1))
+source_count=${#sources[@]}
+success=
+
+tmpfile=$(mktemp)
+trap "rm '$tmpfile'" EXIT
+
+echo "will check ${#sources[@]} sources"
+echo
+
+for (( i=0; i < source_count; i++ )); do
+    source=${sources[$i]}
+
+    printf -v pct %3.0f $(( (i+2) * 100 / source_count ))
+    
+    echo -n "[$pct%] trying source <$source>: "
+    if ! gnc-fq-dump "$source" "$symbol" 2>&1 > "$tmpfile"; then
+	cat "$tmpfile"
+	continue
+    fi
+    if ! grep -E '(No results found for stock|This stock quote cannot be used by GnuCash!)' "$tmpfile"; then
+	success=$source
+	break
+    fi
+done
+
+echo
+if [ "$success" ]; then
+    gnc-fq-dump -v "$source" "$symbol"
+    echo
+    echo "<$source> is a valid source for <$symbol>"
+else
+    echo "no valid source for <$symbol> found"
+    exit 1
+fi
+
