@@ -119,7 +119,7 @@
 
 ;; load ox-gfm.el if present
 (eval-after-load "org"
-  '(require 'ox-gfm)) ; nil :noerror))
+  '(require 'ox-gfm nil :noerror))
 
 ;; org-mode keybindings
 (require 'org)
