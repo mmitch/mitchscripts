@@ -54,6 +54,12 @@ get_free_memory()
     free_memory="|${USED:0:$used}${AVL:0:$avl}${FREE:0:$free}|"
 }
 
+touch_synced()
+{
+    local app=$1
+    printf "%(%c)T\\n" -1 > "/var/run/user/$UID/$app-synced"
+}
+
 while true; do
       
     DROP=
@@ -62,19 +68,25 @@ while true; do
 
     if [ $DROPBOX = yes ] ; then
 	LANG=C dropbox status > "$DROPSTATE" 2>&1
+	dropbox=in sync
 
 	if grep -F ownload "$DROPSTATE"; then
 	    DROP="${DROP}[Dv] "
+	    dropbox=syncing
 	fi
 
 	if grep -F pload "$DROPSTATE"; then
 	    DROP="${DROP}[D^] "
+	    dropbox=syncing
 	fi
 
+	[ "$dropbox" = 'in sync' ] && touch_synced dropbox
     fi
 
     if [ $SYNCTHING = yes ] ; then
-	DROP="$DROP$(~/git/mitchscripts/bash/syncthing_status) "
+	syncthing=$(~/git/mitchscripts/bash/syncthing_status)
+	DROP="$DROP$syncthing "
+	[ -z "$syncthing" ] && touch_synced syncthing
     fi
 
     get_free_memory
