@@ -230,7 +230,7 @@ key-method 2
 persist-key
 persist-tun
 ping 15
-ping-restart 300
+ping-restart 60
 ping-timer-rem
 port $PORT
 remote $HOST_CLT
