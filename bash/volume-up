@@ -1,4 +1,45 @@
 #!/bin/sh
 exec > /dev/null
-pactl set-sink-mute 0 false
-pactl set-sink-volume 0 +5%
+
+max_volume=120
+
+get_default_sink()
+# no parameters
+{
+    LANG=C pactl info | sed -e '/^Default Sink:/!d;s/.*: //'
+}
+
+get_sink_volume()
+# $1 = sink
+# returns volume in % without '%'
+{
+    LANG=C pactl list sinks | sed -e "0,/$1/d;/^Sink/,\$d;/^\\s\\+Volume: /!d;s/^.* \\([0-9]\\+\\)%.*\$/\\1/"
+}
+
+unmute_sink()
+# $1 = sink
+{
+    pactl set-sink-mute "$1" false
+}
+
+set_sink_volume()
+# $1 = sink
+# $2 = volume setting
+{
+    pactl set-sink-volume "$1" "$2"
+}
+
+clip_sink_volume()
+# $1 = sink
+# $2 = max volume in % without '%
+{
+    [ "$(get_sink_volume "$1")" -gt "$2" ] || return
+    set_sink_volume "$1" "$2"%
+}
+
+
+sink=$(get_default_sink)
+
+unmute_sink "$sink"
+set_sink_volume "$sink" +5%
+clip_sink_volume "$sink" "$max_volume"
