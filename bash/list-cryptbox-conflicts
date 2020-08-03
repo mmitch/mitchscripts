@@ -1,0 +1,2 @@
+#!/bin/sh
+find ~/Cryptbox -regextype egrep -regex '.*conflict-[0-9]{8}-[0-9]{6}-[0-9A-Z]{7}.*'
