@@ -27,7 +27,33 @@ my $termwidth = chars;
 my $formatter = Number::Bytes::Human->new(bs => 1000, round_style => 'round', precision => 1);
 my $cutoff = 4;
 
-if (($ARGV[0] // '') eq '--all') {
+## process parameters
+
+my $arg = (shift @ARGV) // '';
+
+if ($arg eq '-h' or $arg eq '--help') {
+    print <<'EOF';
+usage:  memtree [-h|--help] [--all]
+
+ -h or --help    shows this help
+ --all           show whole tree with all processes.
+
+Basically works like a combination of ps(1) and pstree(1):
+Lists processes in tree form and shows their memory usage (RSS).
+Every output line corresponds to a process and contains three values:
+
+  1. memory usage (RSS) of the process plus all child processes
+  2. memory usage (RSS) of the process itself
+  3. commandline of process
+
+Every level of the tree is sorted by the first value, biggest value first.
+By default only the four biggest entries on every level are shown.
+Use --all to list all entries.
+EOF
+    exit 0;
+}
+
+if ($arg eq '--all') {
     $cutoff = 0;
 }
 
