@@ -19,26 +19,28 @@
 use strict;
 use warnings;
 
+use List::Util qw( sum );
 use Number::Bytes::Human;
 use Proc::ProcessTable;
 use Term::Size::Any qw( chars );
 
 my $termwidth = chars;
 my $formatter = Number::Bytes::Human->new(bs => 1000, round_style => 'round', precision => 1);
-my $cutoff = 4;
+my $min_percent = 15;
 
 ## process parameters
 
 my $arg = $ARGV[0] // '';
 
 if ($arg eq '-h' or $arg eq '--help') {
-    print <<'EOF';
-usage:  memtree [-h|--help] [--all] [<start_pid>...]
+    print <<"EOF";
+usage:  memtree [-h|--help] [-p <min_percent>] [<start_pid>...]
 
- -h or --help    shows this help
- --all           show whole tree with all processes.
- <start_pid>     start tree this process id
-                 (default: list all processes)
+ -h or --help      shows this help
+ -p <min_percent>  sets the minimum percentage for recursion into
+                   child processes (default: ${min_percent})
+ <start_pid>       start tree this process id
+                   (default: list all processes)
 
 Basically works like a combination of ps(1) and pstree(1):
 Lists processes in tree form and shows their memory usage (RSS).
@@ -50,8 +52,10 @@ Every output line corresponds to a process and contains three values:
 
 Every level of the tree is sorted by the first value, biggest value first.
 
-By default only the four biggest entries on every level are shown.
-Use --all to list all entries.
+By default deeper levels of the tree are only shown if they contribute at
+least ${min_percent}% of the total memory usage on that level.  Skipped parts of the
+tree are shown as ellipses (...).  Use -p <min_percent> to change the
+threshold for the recursion (eg. -p 0 will show the whole tree).
 
 When one or more <start_pid>s are given, the listed tree is limited to
 these processes and their children.
@@ -59,9 +63,9 @@ EOF
     exit 0;
 }
 
-if ($arg eq '--all') {
+if ($arg eq '-p') {
     shift;
-    $cutoff = 0;
+    $min_percent = shift // $min_percent;
 }
 
 my @start_pids = @ARGV;
@@ -74,6 +78,11 @@ sub calculate_child_rss {
 	$sum += $child->{SUM};
     }
     $process->{SUM} = $sum;
+}
+
+sub sum_sums {
+    my ($processes) = @_;
+    return sum ( map { $_->{SUM} } @{$processes} ) // 0;
 }
 
 sub by_size_descending {
@@ -91,9 +100,10 @@ sub print_line {
 sub print_recursive {
     my ($processes, $level) = @_;
     my $indentation = '   ' x $level;
-    my $count = 0;
+    my $sum = sum_sums $processes;
+    my $threshold = int( $sum * $min_percent / 100 );
     foreach my $process ( sort { by_size_descending } @{$processes} ) {
-	if ($cutoff and ++$count > $cutoff) {
+	if ($process->{SUM} < $threshold) {
 	    print_line $indentation, '...', '...', '...';
 	    last;
 	}
