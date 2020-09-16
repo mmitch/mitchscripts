@@ -1,0 +1,107 @@
+#!/usr/bin/env perl
+#
+#   memtree.pl  -  show process memory usage in a tree
+#   Copyright (C) 2020  Christian Garbs <mitch@cgarbs.de>
+#
+#   This program is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+use strict;
+use warnings;
+
+use Number::Bytes::Human;
+use Proc::ProcessTable;
+use Term::Size::Any qw( chars );
+
+my $termwidth = chars;
+my $formatter = Number::Bytes::Human->new(bs => 1000, round_style => 'round', precision => 1);
+my $cutoff = 4;
+
+if (($ARGV[0] // '') eq '--all') {
+    $cutoff = 0;
+}
+
+sub calculate_child_rss {
+    my ($process) = @_;
+    my $sum = $process->{RSS};
+    foreach my $child ( @{$process->{CHILDS}} ) {
+	calculate_child_rss( $child );
+	$sum += $child->{SUM};
+    }
+    $process->{SUM} = $sum;
+}
+
+sub by_size_descending {
+    return $b->{SUM} <=> $a->{SUM};
+}
+
+sub print_line {
+    my ($indentation, $sum, $rss, $cmdline) = @_;
+
+    my $line = sprintf "%s %5s %5s  %s\n", $indentation, $sum, $rss, $cmdline;
+    $line = substr $line, 0, $termwidth;
+    print $line;
+}
+
+sub print_recursive {
+    my ($processes, $level) = @_;
+    my $indentation = '   ' x $level;
+    my $count = 0;
+    foreach my $process ( sort { by_size_descending } @{$processes} ) {
+	if ($cutoff and ++$count > $cutoff) {
+	    print_line $indentation, '...', '...', '...';
+	    last;
+	}
+
+	print_line
+	    $indentation,
+	    $formatter->format($process->{SUM}),
+	    $formatter->format($process->{RSS}),
+	    $process->{CMD};
+#	    "[$process->{PID}] $process->{CMD}";
+
+	print_recursive( $process->{CHILDS}, $level+1);
+    }
+}
+
+sub process_to_hash {
+    my ($process) = @_; # isa Proc::ProcessTable::Process
+
+    return () if $process->rss == 0;
+    
+    return ($process->pid => {
+	PID    => $process->pid,
+	PPID   => $process->ppid,
+	CMD    => join(' ', @{ $process->cmdline }),
+	RSS    => $process->rss,
+	    }
+	);
+}
+
+my %processes = map { process_to_hash $_ } @{ Proc::ProcessTable->new( 'enable_ttys' => 0 )->table };
+
+my @root_processes = ();
+
+foreach my $process ( values %processes ) {
+    my $parent = $processes{$process->{PPID}};
+    if (defined $parent) {
+	$process->{PARENT} = $parent;
+	push @{$parent->{CHILDS}}, $process;
+    } else {
+	push @root_processes, $process;
+    }
+}
+
+calculate_child_rss $_ foreach @root_processes;
+
+print_recursive \@root_processes, 0;
