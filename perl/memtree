@@ -29,14 +29,16 @@ my $cutoff = 4;
 
 ## process parameters
 
-my $arg = (shift @ARGV) // '';
+my $arg = $ARGV[0] // '';
 
 if ($arg eq '-h' or $arg eq '--help') {
     print <<'EOF';
-usage:  memtree [-h|--help] [--all]
+usage:  memtree [-h|--help] [--all] [<start_pid>...]
 
  -h or --help    shows this help
  --all           show whole tree with all processes.
+ <start_pid>     start tree this process id
+                 (default: list all processes)
 
 Basically works like a combination of ps(1) and pstree(1):
 Lists processes in tree form and shows their memory usage (RSS).
@@ -47,15 +49,22 @@ Every output line corresponds to a process and contains three values:
   3. commandline of process
 
 Every level of the tree is sorted by the first value, biggest value first.
+
 By default only the four biggest entries on every level are shown.
 Use --all to list all entries.
+
+When one or more <start_pid>s are given, the listed tree is limited to
+these processes and their children.
 EOF
     exit 0;
 }
 
 if ($arg eq '--all') {
+    shift;
     $cutoff = 0;
 }
+
+my @start_pids = @ARGV;
 
 sub calculate_child_rss {
     my ($process) = @_;
@@ -126,6 +135,13 @@ foreach my $process ( values %processes ) {
     } else {
 	push @root_processes, $process;
     }
+}
+
+if (@start_pids) {
+    @root_processes = map {
+	my $process = $processes{$_};
+	defined $process ? $process : ();
+    } @start_pids;
 }
 
 calculate_child_rss $_ foreach @root_processes;
