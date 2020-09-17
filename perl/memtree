@@ -92,9 +92,9 @@ sub by_size_descending {
 sub print_line {
     my ($indentation, $sum, $rss, $cmdline) = @_;
 
-    my $line = sprintf "%s %5s %5s  %s\n", $indentation, $sum, $rss, $cmdline;
+    my $line = sprintf '%s %5s %5s  %s', $indentation, $sum, $rss, $cmdline;
     $line = substr $line, 0, $termwidth;
-    print $line;
+    print $line . "\n";
 }
 
 sub print_recursive {
