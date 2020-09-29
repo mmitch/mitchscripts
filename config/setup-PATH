@@ -6,7 +6,7 @@
 # of course, in ~/.bashrc the bash check can be skipped ;-)
 
 basedir=/home/mitch
-new_paths=("Cryptbox/bin" "bin")
+new_paths=("Cryptbox/bin" "bin" ".npm-global/bin")
 
 for sub_path in "${new_paths[@]}"; do
     new_path=$basedir/$sub_path
