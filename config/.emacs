@@ -179,6 +179,9 @@ LINK-LOCATION and DEFAULT-DESCRIPTION."
 
 (setq org-preview-latex-default-process 'luamagick)
 
+;; autosave org archive file after org-archive-subtree
+(advice-add 'org-archive-subtree :after 'org-save-all-org-buffers)
+
 ;;;
 ;;; theme for both console and X11
 ;;;
