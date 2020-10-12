@@ -307,7 +307,7 @@ alias k4dirstat='echo "use qdirstat instead"'
 # useful if a remote server is booted into a rescue system
 alias ssh_once='ssh -o StrictHostKeyChecking=no  -o UserKnownHostsFile=/dev/null'
 
-# call player with recursive file scanning and a shuffled but navigatable playlist
+# call mplayer with recursive file scanning and a shuffled but navigatable playlist
 # $*: zero, one or more options followed by at least one path
 mrecursive() {
     declare -a args
@@ -331,6 +331,22 @@ mrecursive() {
 
     mplayer "${args[@]}" -playlist <( find "${paths[@]}" -type f | sort -R )
 }
+
+# call pqiv with recursive file scanning and a shuffled but navigatable playlist
+# $*: zero, one or more options followed by at least one path
+precursive() {
+    declare -a args
+    while [ "${1:0:1}" = '-' ]; do
+	args+=( "$1" )
+	shift
+    done
+
+    # add current directory if no paths are given
+    [ "$1" ] ||	set -- .
+
+    pqiv --shuffle -P off --action 'toggle_scale_mode(5);' -t -i "${args[@]}" "$@"
+}
+
 
 # use youtube-dl for an audio-only download (encode to medium quality MP3)
 # $*: video URLs understood by youtube-dl
