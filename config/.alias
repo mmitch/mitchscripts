@@ -334,17 +334,23 @@ mrecursive() {
 
 # call pqiv with recursive file scanning and a shuffled but navigatable playlist
 # $*: zero, one or more options followed by at least one path
+#     use -N to disable default --shuffle parameter
 precursive() {
     declare -a args
+    local viewmode=--shuffle
     while [ "${1:0:1}" = '-' ]; do
-	args+=( "$1" )
+	if [ "$1" = '-n' ] || [ "$1" = '--sort' ] ; then
+	    viewmode=--sort
+	else
+	    args+=( "$1" )
+	fi
 	shift
     done
 
     # add current directory if no paths are given
     [ "$1" ] ||	set -- .
 
-    pqiv --shuffle -P off --action 'toggle_scale_mode(5);' -t -i "${args[@]}" "$@"
+    pqiv $viewmode -P off --action 'toggle_scale_mode(5);' -t -i "${args[@]}" "$@"
 }
 
 
