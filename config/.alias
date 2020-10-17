@@ -350,7 +350,7 @@ precursive() {
     # add current directory if no paths are given
     [ "$1" ] ||	set -- .
 
-    pqiv $viewmode -P off --action 'toggle_scale_mode(5);' -t -i "${args[@]}" "$@"
+    pqiv $viewmode "${args[@]}" "$@"
 }
 
 

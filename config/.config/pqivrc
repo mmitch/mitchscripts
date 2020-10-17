@@ -1,0 +1,16 @@
+[options]
+scale-images-up=1
+hide-info-box=1
+window-position=off
+
+[keybindings]
+a                    { goto_file_relative(-1);  }
+d                    { goto_file_relative(1);   }
+<Page_Up>            { goto_file_relative(-1);  }
+<Page_Down>          { goto_file_relative(1);   }
+<Control><Page_Up>   { goto_file_relative(-10); }
+<Control><Page_Down> { goto_file_relative(10);  }
+<Shift><Delete>      { command( rm -v );        }
+
+[actions]
+toggle_scale_mode(5);
