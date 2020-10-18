@@ -10,7 +10,7 @@ d                    { goto_file_relative(1);   }
 <Page_Down>          { goto_file_relative(1);   }
 <Control><Page_Up>   { goto_file_relative(-10); }
 <Control><Page_Down> { goto_file_relative(10);  }
-<Shift><Delete>      { command( rm -v );        }
+<Control><Delete>    { command( rm -v );        }
 
 [actions]
 toggle_scale_mode(5);
