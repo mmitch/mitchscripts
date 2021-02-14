@@ -2,7 +2,7 @@
 #
 # send STDIN to USER via IRC without joining a channel
 #
-# Copyright (C) 2019  Christian Garbs <mitch@cgarbs.de>
+# Copyright (C) 2019, 2021  Christian Garbs <mitch@cgarbs.de>
 # licensed under GNU GPL v3 or later
 #
 
@@ -19,12 +19,19 @@ fi
 
 set -e
 
-exec >/dev/tcp/$IRCSERVER/$IRCPORT # todo: multi-server-fallback
-echo "USER $NICK 8 * : $NICK bot"
-echo "NICK $NICK"
-sleep 1
+connected=no
+
+exec >/dev/tcp/"$IRCSERVER"/"$IRCPORT" # todo: multi-server-fallback
 while read -r LINE; do
+    if [ $connected = no ]; then
+	echo "USER $NICK 8 * : $NICK bot"
+	echo "NICK $NICK"
+	sleep 1
+	connected=yes
+    fi
     echo "PRIVMSG $TARGET :$LINE"
     sleep 0.5
 done
-echo "QUIT"
+if [ $connected = yes ]; then
+    echo "QUIT"
+fi
