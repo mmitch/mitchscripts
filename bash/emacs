@@ -4,10 +4,11 @@
 # if we find anything that looks remotely like it needs to spawn a new/fresh emacs, delegate to the real emacs implementation
 # * -q/-Q start without config files, this obviously won't work when reconnecting to an existing emacs
 # * --daemon is used to start the daemon, so there should be nothing to reconnect to
+# * --batch runs code directly; this could work with a daemon, but emacsclient does not understand --batch
 # false positives are no problem - the worst that can happen is a new emacs instance that takes a bit longer to start
 for ARG in "$@"; do
     case "$ARG" in
-	--daemon|-q|-Q)
+	--daemon|-q|-Q|--batch)
 	    exec /usr/bin/emacs "$@"
 	    ;;
     esac
