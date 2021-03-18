@@ -146,7 +146,7 @@ set +H
 umask 022
 
 # set compression options
-export BZIP2="-9v"
+export BZIP2="-9"
 
 # enable globstar: ** matches dirs + files
 shopt -s globstar
