@@ -44,6 +44,8 @@ case "$comp" in
 esac
 
 for file in "$@"; do
-    actual=$(midentify.sh "$file" | sed -n "/${stat_grep}/s/^.*=//p")
-    [ "$actual" "-${comp}" "$value" ] && echo "$file"
+    if [ -f "$file" ]; then
+	actual=$(midentify.sh "$file" | sed -n "/${stat_grep}/s/^.*=//p")
+	[ "$actual" "-${comp}" "$value" ] && echo "$file"
+    fi
 done
