@@ -1,0 +1,49 @@
+#!/bin/bash
+set -e
+
+STATS='[w|h]'
+COMPS='[lt|eq|gt]'
+
+die()
+{
+    echo "$*" >&2
+    exit 1
+}
+
+if [ x"$1" = x-h ]; then
+    echo "$0 $STATS $COMPS <value> <files...>"
+    exit 0
+fi
+
+stat=$1
+comp=$2
+value=$3
+shift 3 || die "too few parameters given"
+
+case "$stat" in
+    w)
+	stat_grep=ID_VIDEO_WIDTH
+	;;
+   
+    h)
+	stat_grep=ID_VIDEO_HEIGHT
+	;;
+   
+    *)
+	die "invalid stat $STATS"
+	;;
+esac
+
+case "$comp" in
+    lt|eq|gt)
+    ;;
+
+    *)
+	die "invalid comparatur $COMPS"
+	;;
+esac
+
+for file in "$@"; do
+    actual=$(midentify.sh "$file" | sed -n "/${stat_grep}/s/^.*=//p")
+    [ "$actual" "-${comp}" "$value" ] && echo "$file"
+done
