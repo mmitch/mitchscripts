@@ -1,0 +1,87 @@
+# personalized mutt color scheme for 256 color terminals via ncurses
+# tested with neomutt 20180716+dfsg.1-1+deb10u2
+# include from your readl ~/.muttrc via "source /path/to/this/file"
+
+
+#### global stuff
+color status		brightcolor220 color59
+color indicator		color220 color89
+
+
+
+#### index view
+# defaults
+color index		color102 black '.*'
+color index_flags	color100 black '.*'
+
+# big mails (attachments?)
+# index_size can't have a pattern, so do it "the other way around" :/
+# change default color and overwrite all columns that should not change with the normal default...
+color index color109 black '~z>100K'
+color index_flags color109 black '~z>100K'
+
+# ...defaults continued
+color index_author	color80  black '.*'
+color index_subject	color80  black '.*'
+color index_number	color31  black
+
+# new mails
+color index_flags	color106 black '~N'
+color index_author	color148 black '~N'
+color index_subject	color148 black '~N'
+
+# mails from myself
+color index_author	color187 black '~P'
+
+# mails from service accounts
+color index_author	color65 black "~froot@"
+color index_author	color65 black "~fnews@"
+color index_author	color204 black "~fblog@"
+color index_author	color138 black "~fbuilds@"
+color index_author	color138 black "~fnotifications@"
+
+# tagged mails
+color index_flags	brightcolor220 black '~T'
+color index_author	brightcolor123 black '~T'
+color index_subject	brightcolor123 black '~T'
+color index_author	brightcolor192 black '~T ~N'
+color index_subject	brightcolor192 black '~T ~N'
+
+# deleted mails
+color index		color24 black '~D'
+color index_flags	color24 black '~D'
+color index_author	color24 black '~D'
+color index_subject	color24 black '~D'
+
+# encrypted mails
+color index_flags	color202 black '~G'
+
+
+#### mail view
+color attachment brightcolor29 black
+
+color header red black .*
+color header brightcolor160 black ^(From|Subject):
+
+color quoted  color75 black
+color quoted1 color77 black
+color quoted2 color75 black
+color quoted3 color77 black
+color quoted4 color75 black
+
+color body color208 black "[-a-z_0-9.+]+@[-a-z_0-9.]+"			# e-mail addresses
+color body color220 black "((ftp|http|https)://|news:)[^ >)\"\t]+"	# URLs
+
+
+#### attributes when using a mono terminal
+mono header underline ^(From|Subject):
+mono quoted bold
+
+#### not yet optimized
+color bold brightgreen black
+color error brightyellow red
+color search brightwhite cyan
+color signature color180 black
+color tilde red black
+color tree color104 black
+color underline brightgreen black
