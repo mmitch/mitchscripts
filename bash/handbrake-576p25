@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# converts DVDs with 576p25
+# reads from /dev/dvd
+# call examples:
+# - "target.mp4 -t 1": convert track 1 to target.mp4
+# - "target.mkv -t 2-4": convert tracks 2-4 to target.mkv
+
+die()
+{
+    echo "$@" >&2
+    exit 1
+}
+
+target="$1"
+tag="$2"
+track="$3"
+
+options=(-m --audio-lang-list "eng,ger,ja" -E copy --subtitle-lang-list "eng,ger,ja" --all-subtitles -i /dev/dvd)
+
+case "$target" in
+    *.mkv)
+	options+=(-Z "H.264 MKV 576p25" -o "$target")
+	;;
+
+    *.mp4)
+	options+=(-Z "Fast 576p25" -o "$target")
+	;;
+
+    *)
+	die "unknown target format (target filename is \`$target')"
+	;;
+esac
+
+case "$tag" in
+    -t)
+	options+=(-t)
+	;;
+
+    *)
+	die "no -t given (found \`$tag' instead)"
+	;;
+esac
+
+case "$track" in
+    '')
+	die "no track number(s) given"
+	;;
+    *)
+	options+=("$track")
+	;;
+esac
+
+echo
+echo "HandBrakeCLI ${options[*]}"
+echo
+HandBrakeCLI "${options[@]}"
