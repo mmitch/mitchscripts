@@ -54,4 +54,4 @@ esac
 echo
 echo "HandBrakeCLI ${options[*]}"
 echo
-HandBrakeCLI "${options[@]}"
+time HandBrakeCLI "${options[@]}"
