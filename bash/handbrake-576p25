@@ -16,7 +16,7 @@ target="$1"
 tag="$2"
 track="$3"
 
-options=(-m --audio-lang-list "eng,ger,ja" -E copy --subtitle-lang-list "eng,ger,ja" --all-subtitles -i /dev/dvd)
+options=(-m --audio-lang-list "eng,ger,ja" -E copy --subtitle-lang-list "eng,ger,ja" --all-subtitles "--subtitle-burned=none" -i /dev/dvd)
 
 case "$target" in
     *.mkv)
