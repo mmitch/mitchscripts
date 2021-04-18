@@ -38,7 +38,7 @@ if ($find) {
       if ($idx) {
 	while (! feof($idx)) {
 	  $line = rtrim(fgets($idx, 8192)); // max 8k per line
-	  $linearr = split("\t", $line);
+	  $linearr = explode("\t", $line);
 	  if (count($linearr) == 2) {
 	      $entry[$linearr[0]] = $linearr[1];
 	  }
