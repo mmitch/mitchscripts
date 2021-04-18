@@ -68,6 +68,5 @@ if ($find) {
     </table>
     <hr>
     <address><a href="mailto:mitch@cgarbs.de">Christian Garbs [Master Mitch]</a></address>
-    <p><small>$Revision: 1.4 $<br>$Date: 2007-05-17 13:07:48 $</small></p>
   </body>
 </html>
