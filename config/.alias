@@ -329,7 +329,7 @@ mrecursive() {
 	shift
     done
 
-    mplayer "${args[@]}" -playlist <( find "${paths[@]}" -type f | sort -R )
+    mplayer "${args[@]}" -playlist <( find "${paths[@]}" -type f | grep -Eiv '\.(jpg|jpeg|pdf|png|rar)$' | sort -R )
 }
 
 # call pqiv with recursive file scanning and a shuffled but navigatable playlist
