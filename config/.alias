@@ -357,7 +357,7 @@ precursive() {
 # use youtube-dl for an audio-only download (encode to medium quality MP3)
 # $*: video URLs understood by youtube-dl
 youtube-audio() {
-    youtube-dl -x --audio-format mp3 --audio-quality 4 "$@"
+    youtube-dl --ignore-config -x --audio-format mp3 --audio-quality 4 "$@"
 }
 
 # combine images into a PDF
