@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+# list all fail2ban jails with detailed statistics
+#
+# Copyright (C) 2021  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPL v3 or later
+
+jails=$(fail2ban-client status  | grep Jail | cut -f2 -d: | tr -d , )
+
+printf '%-20s %13s %13s\n' 'JAIL' 'FILTER  ' 'ACTIONS  '
+printf '%-20s %6s %6s %6s %6s\n' '' cur total cur total
+printf -- '------------------------------------------------\n'
+
+for jail in $jails; do
+
+    # we hardcode the expected output, this is NOT tolerant to changes in any way
+    fail2ban-client status "$jail" | cut -d: -f2 | (
+        read -r _jail_name
+        read -r _filter_subtitle
+        read -r current_fail
+        read -r total_fail
+        read -r _file_list
+        read -r _actions_subtitle
+        read -r current_ban
+        read -r total_ban
+        printf '%-20s %6d %6d %6d %6d\n' "$jail" "$current_fail" "$total_fail" "$current_ban" "$total_ban"
+    )
+done
