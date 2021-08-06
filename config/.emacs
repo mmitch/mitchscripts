@@ -252,7 +252,7 @@ WINDOWED is t if running under X11"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(c-basic-offset 3)
+ '(c-basic-offset 8)
  '(c-default-style "bsd")
  '(column-number-mode t)
  '(custom-safe-themes
@@ -265,13 +265,51 @@ WINDOWED is t if running under X11"
  '(org-agenda-files (quote ("~/Cryptbox/TODO")))
  '(org-babel-load-languages (quote ((emacs-lisp . t) (perl . t))))
  '(org-confirm-babel-evaluate nil)
+ '(org-format-latex-options
+   (quote
+    (:foreground default :background default :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+		 ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-html-doctype "html5")
  '(package-selected-packages
    (quote
-    (flycheck-yamllint groovy-mode bbcode-mode cobol-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize)))
+    (package-build package-lint which-key eglot nyan-mode flycheck-yamllint groovy-mode bbcode-mode cobol-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize)))
  '(safe-local-variable-values
    (quote
-    ((eval require
+    ((eval when
+	   (and
+	    (buffer-file-name)
+	    (not
+	     (file-directory-p
+	      (buffer-file-name)))
+	    (string-match-p "^[^.]"
+			    (buffer-file-name)))
+	   (unless
+	       (featurep
+		(quote package-build))
+	     (let
+		 ((load-path
+		   (cons "../package-build" load-path)))
+	       (require
+		(quote package-build))))
+	   (unless
+	       (derived-mode-p
+		(quote emacs-lisp-mode))
+	     (emacs-lisp-mode))
+	   (package-build-minor-mode)
+	   (setq-local flycheck-checkers nil)
+	   (set
+	    (make-local-variable
+	     (quote package-build-working-dir))
+	    (expand-file-name "../working/"))
+	   (set
+	    (make-local-variable
+	     (quote package-build-archive-dir))
+	    (expand-file-name "../packages/"))
+	   (set
+	    (make-local-variable
+	     (quote package-build-recipes-dir))
+	    default-directory))
+     (eval require
 	   (quote ox-reveal))
      (eval require
 	   (quote ob-vala)))))
