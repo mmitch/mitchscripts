@@ -11,7 +11,7 @@ alias pulseaudio-DINGENS='echo "Du willst pavucontrol!"'
 alias RemoteX11Thingie='echo "Du willst Xpra!"'
 
 # tin singleton (avoid messing up read articles)
-alias tin='if [ $(pidof tin) ] ; then echo "tin is already running..."; else tin; fi'
+alias tin='if [ $(pidof tin rtin) ] ; then echo "(r)tin is already running..."; else rtin; fi'
 
 # Trogdor!
 alias sbemail.exe='mutt'
