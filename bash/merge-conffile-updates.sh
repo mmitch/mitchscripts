@@ -72,24 +72,73 @@
 #--------------------------------------------------------------------------------
 # SUBS
 
+set_sizes()
+{
+    local want_cols=$1 want_rows=$2
+
+    cols=$(( $(tput cols  2>&1 || echo 60) - 4 ))
+    rows=$(( $(tput lines 2>&1 || echo 18) - 2 ))
+
+    if [ $want_cols -lt $cols ]; then
+	cols=$want_cols
+    fi
+
+    if [ $want_rows -lt $rows ]; then
+	rows=$want_rows
+    fi
+}
+
+show_message()
+{
+    local title=$1 message=$2
+
+    local text
+    local widest=0
+    for text in "$title" "$message"; do
+	if [ ${#text} -gt $widest ]; then
+	    widest=${#text}
+	fi
+    done
+
+    set_sizes $(( widest + 10 )) 8
+
+    whiptail --title "$title" --msgbox "$message" $rows $cols
+}
+
+select_from_entries()
+{
+    local title=$1 message=$2
+
+    local text
+    local widest=0
+    for text in "$title" "$message" "${entries[@]}"; do
+	if [ ${#text} -gt $widest ]; then
+	    widest=${#text}
+	fi
+    done
+
+    local overhead=8
+
+    set_sizes $(( widest + 10 )) $(( ${#entries[@]} / 2 + overhead ))
+
+    selection=$( whiptail --title "$title" --menu "$message" $rows $cols $(( rows - overhead )) "${entries[@]}" 3>&2 2>&1 1>&3- )
+    selection_rc=$?
+}
+
 action_completed()
 {
     local file=$1 action=$2
     
     action_id=$(( action_id + 1 ))
 
-    local cols=$(tput cols  2>&1 || echo 60)
-
-    whiptail --title "$file OK" --msgbox "$file $action" 10 $(( cols - 4 ))
+    show_message "$file OK" "$file $action"
 }
 
 action_aborted()
 {
     local file=$1 action=$2
     
-    local cols=$(tput cols  2>&1 || echo 60)
-
-    whiptail --title "ABORT: $file" --msgbox "$file $action" 10 $(( cols - 4 ))
+    show_message "ABORT: $file" "$file $action"
 }
 
 is_deleted()
@@ -199,16 +248,14 @@ handle_removal()
     local continue=yes
     while [ $continue = yes ]; do
 
-	local cols=$(tput cols  2>&1 || echo 60)
-	local rows=$(tput lines 2>&1 || echo 18)
+	entries=()
+	entries+=('L' 'ist file')
+	entries+=('R' 'remove file')
+	entries+=('C' 'ancel')
 
-	selection=$( whiptail --title "$conffile" --menu "No current file found, this looks like a removal: " 12 $(( cols - 4 )) 3 \
-			      'L' 'ist file' \
-			      'R' 'emove file' \
-			      'C' 'ancel' \
-			      3>&2 2>&1 1>&3- )
+	select_from_entries "$conffile" 'No current file found, this looks like a removal:'
 
-	if [ $? -ne 0 ] || [ $selection = C ]; then
+	if [ $selection_rc -ne 0 ] || [ $selection = C ]; then
 	    action_aborted "$conffile" 'not removed'
 	    continue=no
     
@@ -231,16 +278,14 @@ handle_addition()
     local continue=yes
     while [ $continue = yes ]; do
 
-	local cols=$(tput cols  2>&1 || echo 60)
-	local rows=$(tput lines 2>&1 || echo 18)
+	entries=()
+	entries+=('L' 'ist file')
+	entries+=('A' 'add file')
+	entries+=('C' 'ancel')
 
-	selection=$( whiptail --title "$conffile" --menu "No current file found, this looks like an addition: " 12 $(( cols - 4 )) 3 \
-			      'L' 'ist file' \
-			      'A' 'add file' \
-			      'C' 'ancel' \
-			      3>&2 2>&1 1>&3- )
+	select_from_entries "$conffile" 'No current file found, this looks like an addition:'
 
-	if [ $? -ne 0 ] || [ $selection = C ]; then
+	if [ $selection_rc -ne 0 ] || [ $selection = C ]; then
 	    action_aborted "$conffile" 'not added'
 	    continue=no
 
@@ -300,10 +345,7 @@ get_conffiles() {
 select_conffile() {
     whiptail_args=()
 
-    local cols=$(tput cols  2>&1 || echo 60)
-    local rows=$(tput lines 2>&1 || echo 18)
-
-    local entries=()
+    entries=()
     local conffile
     # todo: unique tags: letters [a..z ,aa..zz , ...] or filenames
     tag=0
@@ -311,9 +353,11 @@ select_conffile() {
 	entries+=($tag "$conffile")
 	tag=$(( tag + 1 ))
     done
-    
-    selection=$( whiptail --menu "Select conffile to merge:" $(( rows - 2 )) $(( cols - 4 )) $(( rows - 10 )) "${entries[@]}" 3>&2 2>&1 1>&3- )
-    if [ $? -ne 0 ]; then
+
+    select_from_entries 'merge conffiles' 'Select conffile to process:'
+
+    if [ $selection_rc -ne 0 ]; then
+	echo "$selection" >&2
 	echo "conffile selection canceled"
 	exit 0
     fi
