@@ -92,6 +92,20 @@ action_aborted()
     whiptail --title "ABORT: $file" --msgbox "$file $action" 10 $(( cols - 4 ))
 }
 
+is_deleted()
+{
+    local file=$1
+
+    [[ $file =~ \.dpkg-removed$ ]]
+}
+
+is_new()
+{
+    local file=$1
+
+    [[ $file =~ \.dpkg-dist$ ]]
+}
+
 temp_filename()
 {
     local source=$(basename "$1")
@@ -129,7 +143,17 @@ remove()
     record_path "$conffile"
     mv "$conffile" "$( temp_filename "$conffile" removed )"
     action_completed "$conffile" 'has been removed'
-    
+}
+
+add()
+{
+    local basefile=$1
+    local conffile=$2
+
+    record_path "$conffile"
+    cp "$conffile" "$( temp_filename "$basefile" added )"
+    mv "$conffile" "$basefile"
+    action_completed "$conffile" 'has been added and renamed to "$basefile"'
 }
 
 list()
@@ -174,20 +198,20 @@ handle_removal()
 
     local continue=yes
     while [ $continue = yes ]; do
-	
+
 	local cols=$(tput cols  2>&1 || echo 60)
 	local rows=$(tput lines 2>&1 || echo 18)
 
 	selection=$( whiptail --title "$conffile" --menu "No current file found, this looks like a removal: " 12 $(( cols - 4 )) 3 \
 			      'L' 'ist file' \
 			      'R' 'emove file' \
-			      'A' 'bort' \
+			      'C' 'ancel' \
 			      3>&2 2>&1 1>&3- )
-	
-	if [ $? -ne 0 ] || [ $selection = A ]; then
+
+	if [ $? -ne 0 ] || [ $selection = C ]; then
 	    action_aborted "$conffile" 'not removed'
 	    continue=no
-	    
+    
 	elif [ $selection = R ]; then
 	    remove "$conffile"
 	    continue=no
@@ -199,6 +223,45 @@ handle_removal()
     done
 }
 
+handle_addition()
+{
+    local basefile=$1
+    local conffile=$2
+
+    local continue=yes
+    while [ $continue = yes ]; do
+
+	local cols=$(tput cols  2>&1 || echo 60)
+	local rows=$(tput lines 2>&1 || echo 18)
+
+	selection=$( whiptail --title "$conffile" --menu "No current file found, this looks like an addition: " 12 $(( cols - 4 )) 3 \
+			      'L' 'ist file' \
+			      'A' 'add file' \
+			      'C' 'ancel' \
+			      3>&2 2>&1 1>&3- )
+
+	if [ $? -ne 0 ] || [ $selection = C ]; then
+	    action_aborted "$conffile" 'not added'
+	    continue=no
+
+	elif [ $selection = R ]; then
+	    add "$basefile" "$conffile"
+	    continue=no
+
+	else
+	    list "$conffile"
+	fi
+
+    done
+}
+
+handle_unknown_single_file()
+{
+    local conffile=$1
+
+    abort_command "$conffile" "unknown single file $conffile encountered, don't know what to do"
+}
+
 handle_conffile()
 {
     local basefile=${1%.*}
@@ -206,8 +269,18 @@ handle_conffile()
 
     if [ -e "$basefile" ]; then
 	handle_merge "$basefile" "$conffile"
+
     else
-	handle_removal "$basefile" "$conffile"
+	if is_deleted "$conffile"; then
+	    handle_removal "$basefile" "$conffile"
+
+	elif is_new "$conffile"; then
+	    handle_addition "$basefile" "$conffile"
+
+	else
+	    handle_unknown_single_file "$conffile"
+
+	fi
     fi
 }
 
