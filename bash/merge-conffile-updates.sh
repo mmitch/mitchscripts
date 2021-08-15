@@ -168,7 +168,7 @@ init_tempfiles()
     action_id=0
     tempdir=$( mktemp --directory --tmpdir merge-conffile-updates.XXXXXXXXXX )
 
-    trap 'echo intermediate files in "<$tempdir>" are kept' EXIT
+    trap 'echo intermediate files in "$tempdir" are kept' EXIT
 }
 
 record_path()
@@ -374,6 +374,9 @@ while true; do
     get_conffiles
 
     if [ ${#conffiles[@]} -eq 0 ]; then
+
+	show_message 'nothing to do' 'no conffiles need merges'
+
 	echo "no conffiles need merge"
 	echo "finished"
 	exit 0
