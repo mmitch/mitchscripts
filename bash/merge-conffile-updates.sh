@@ -206,12 +206,17 @@ temp_filename()
     printf '%s/%04d.%s..%s' "$tempdir" "$action_id" "$source" "$action"
 }
 
+clean_tempfiles()
+{
+    rmdir "$tempdir" 2>/dev/null || echo "echo intermediate files in $tempdir are kept"
+}
+
 init_tempfiles()
 {
     action_id=0
     tempdir=$( mktemp --directory --tmpdir merge-conffile-updates.XXXXXXXXXX )
 
-    trap 'echo intermediate files in "$tempdir" are kept' EXIT
+    trap clean_tempfiles EXIT
 }
 
 record_path()
