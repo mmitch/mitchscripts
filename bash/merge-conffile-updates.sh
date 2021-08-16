@@ -108,7 +108,6 @@
 # - support three-way-merges?
 #   is there a way to get the pristine conffile from the previous release?
 # - set -e
-# - run ShellCheck
 # - rewrite in a proper language
 
 
@@ -122,11 +121,11 @@ set_sizes()
     cols=$(( $(tput cols  2>&1 || echo 60) - 4 ))
     rows=$(( $(tput lines 2>&1 || echo 18) - 2 ))
 
-    if [ $want_cols -lt $cols ]; then
+    if [ "$want_cols" -lt $cols ]; then
 	cols=$want_cols
     fi
 
-    if [ $want_rows -lt $rows ]; then
+    if [ "$want_rows" -lt $rows ]; then
 	rows=$want_rows
     fi
 }
@@ -145,7 +144,7 @@ show_message()
 
     set_sizes $(( widest + 10 )) 8
 
-    whiptail --title "$title" --msgbox "$message" $rows $cols
+    whiptail --title "$title" --msgbox "$message" "$rows" "$cols"
 }
 
 select_from_entries()
@@ -164,7 +163,7 @@ select_from_entries()
 
     set_sizes $(( widest + 10 )) $(( ${#entries[@]} / 2 + overhead ))
 
-    selection=$( whiptail --title "$title" --menu "$message" $rows $cols $(( rows - overhead )) "${entries[@]}" 3>&2 2>&1 1>&3- )
+    selection=$( whiptail --title "$title" --menu "$message" "$rows" "$cols" $(( rows - overhead )) "${entries[@]}" 3>&2 2>&1 1>&3- )
     selection_rc=$?
 }
 
@@ -200,7 +199,7 @@ is_new()
 
 temp_filename()
 {
-    local source=$(basename "$1")
+    local source=${1##*/}
     local action=${2:-unknown}
 
     printf '%s/%04d.%s..%s' "$tempdir" "$action_id" "$source" "$action"
@@ -228,7 +227,7 @@ record_path()
 
 two_way_merge()
 {
-    local file1="$1" file2="$2" output="$3"
+    local input1="$1" input2="$2" output="$3"
 
     emacs --eval "(progn (setq ediff-quit-hook 'kill-emacs) (ediff-merge-files \"$input1\" \"$input2\" nil \"$output\"))"
 }
@@ -250,7 +249,7 @@ add()
     record_path "$conffile"
     cp "$conffile" "$( temp_filename "$basefile" added )"
     mv "$conffile" "$basefile"
-    action_completed "$conffile" 'has been added and renamed to "$basefile"'
+    action_completed "$conffile" "has been added and renamed to $basefile"
 }
 
 list()
@@ -265,9 +264,10 @@ handle_merge()
     local basefile=$1
     local conffile=$2
 
-    local input1="$( temp_filename "$basefile" input )"
-    local input2="$( temp_filename "$conffile" input )"
-    local output="$( temp_filename "$basefile" output )"
+    local input1 input2 output
+    input1="$( temp_filename "$basefile" input  )"
+    input2="$( temp_filename "$conffile" input  )"
+    output="$( temp_filename "$basefile" output )"
 
     cp "$basefile" "$input1"
     cp "$conffile" "$input2"
@@ -303,11 +303,11 @@ handle_removal()
 
 	select_from_entries "$conffile" 'No current file found, this looks like a removal:'
 
-	if [ $selection_rc -ne 0 ] || [ $selection = C ]; then
+	if [ $selection_rc -ne 0 ] || [ "$selection" = C ]; then
 	    action_aborted "$conffile" 'not removed'
 	    continue=no
     
-	elif [ $selection = R ]; then
+	elif [ "$selection" = R ]; then
 	    remove "$conffile"
 	    continue=no
 
@@ -333,11 +333,11 @@ handle_addition()
 
 	select_from_entries "$conffile" 'No current file found, this looks like an addition:'
 
-	if [ $selection_rc -ne 0 ] || [ $selection = C ]; then
+	if [ $selection_rc -ne 0 ] || [ "$selection" = C ]; then
 	    action_aborted "$conffile" 'not added'
 	    continue=no
 
-	elif [ $selection = R ]; then
+	elif [ "$selection" = R ]; then
 	    add "$basefile" "$conffile"
 	    continue=no
 
@@ -391,14 +391,12 @@ get_conffiles() {
 }
 
 select_conffile() {
-    whiptail_args=()
-
     entries=()
     local conffile
     # todo: unique tags: letters [a..z ,aa..zz , ...] or filenames
     tag=0
     for conffile in "${conffiles[@]}"; do
-	entries+=($tag "$conffile")
+	entries+=("$tag" "$conffile")
 	tag=$(( tag + 1 ))
     done
 
