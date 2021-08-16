@@ -418,9 +418,11 @@ while true; do
 
     if [ ${#conffiles[@]} -eq 0 ]; then
 
-	show_message 'nothing to do' 'no conffiles need merges'
+	if [ $action_id -gt 0 ]; then
+	    show_message 'nothing to do' 'no conffiles need merges'
+	fi
 
-	echo "no conffiles need merge"
+	echo "no conffiles need merges"
 	echo "finished"
 	exit 0
     fi
