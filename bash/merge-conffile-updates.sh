@@ -130,17 +130,25 @@ set_sizes()
     fi
 }
 
+get_widest()
+{
+    local string
+    local widest=0
+    for string in "$@"; do
+	if [ ${#string} -gt $widest ]; then
+	    widest=${#string}
+	fi
+    done
+
+    echo "$widest"
+}
+
 show_message()
 {
     local title=$1 message=$2
 
-    local text
-    local widest=0
-    for text in "$title" "$message"; do
-	if [ ${#text} -gt $widest ]; then
-	    widest=${#text}
-	fi
-    done
+    local widest
+    widest=$( get_widest "$title" "$message" )
 
     set_sizes $(( widest + 10 )) 8
 
@@ -151,13 +159,8 @@ select_from_entries()
 {
     local title=$1 message=$2
 
-    local text
-    local widest=0
-    for text in "$title" "$message" "${entries[@]}"; do
-	if [ ${#text} -gt $widest ]; then
-	    widest=${#text}
-	fi
-    done
+    local widest
+    widest=$( get_widest "$title" "$message" "${entries[@]}" )
 
     local overhead=8
 
