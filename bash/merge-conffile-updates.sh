@@ -352,7 +352,7 @@ handle_unknown_single_file()
 {
     local conffile=$1
 
-    abort_command "$conffile" "unknown single file $conffile encountered, don't know what to do"
+    action_aborted "$conffile" "single file with unknown extension .${conffile##*.} encountered, don't know what to do"
 }
 
 handle_conffile()
