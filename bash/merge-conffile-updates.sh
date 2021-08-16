@@ -9,16 +9,56 @@
 # DESCRIPTION and WARNINGS
 # ========================
 #
-# Just do your release update as usual. You will be asked how to
-# handle conffile updates.  This script is intended for to just press
-# Enter and that prompt and sort out the upgrade conflicts later.  Be
-# aware that YOU MIGHT RUN INTO PROBLEMS by doing this when eg.  the
-# old sshd configuration is incompatible with a new sshd version, sshd
-# won't start after the package update and you can't log in.  So far,
-# I've never had any problems.  The Debian bullseye Release Notes
-# advise to install the new maintainer versions, but this might also
-# run into problems when you thus overwrite some required local
-# configuration.
+# This script works similar to rpmconf(8).
+#
+# When you install (release) updates and configuration files change,
+# you might get prompted to choose between keeping your local
+# configuration or installing the default configuration from upstream
+# instead.  (Third option: start a shell and do whatever you like.)
+#
+# The conflicted files will be named something like '*.dpkg-dist',
+# '*.dpkg-removed' or '*.ucf-new'.
+#
+# This script is intended to find and identify these configuration
+# file conflics and automatically call a tool or editor that helps you
+# merge the old and new configuration.
+#
+# You can handle conflicts in various ways:
+#
+# 1) On every conflict, choosing to spawn a shell and then run this
+#    script.  This is the safest way as every configuration is updated
+#    before restarting a service.  But you also have to babysit the
+#    upgrade process and handle every conflict manually.
+#
+#    Another benefit of this method is that the service gets restarted
+#    automatically.
+#
+# 2) Choose to resolve all conflicts by always choosing to install the
+#    new upstream version.  When all updates have been processed, you
+#    can then run this script and merge all conflicts in a single
+#    session.  This might lead to PROBLEMS when an important service
+#    gets restarted with a default configuration before you get to
+#    merge its configuration and restart it.
+#
+#    To circumvent the babysitting during the package installs, you
+#    could add '-o Dpkg::Options::=--force-confnew' to your apt(8) to
+#    always choose to install the new upstream version automatically.
+#    (This might be tuned further by adding --force-confdef to prevent
+#     some of the PROBLEMS stated above.)
+#
+#    Please note that after all merges have been done you have to
+#    restart affected services manually (or just boot once after
+#    everything is merged).
+#
+# 3) Choose to resolve all conflicts by always choosing to keep your
+#    local configuration.  This is nearly the same as option 2) above:
+#
+#    You might get PROBLEMS with important services not starting
+#    because of an outdated configuration file format.
+#
+#    The apt parameter becomes '-o Dpkg::Options::=--force-confold'.
+#
+#    Service restarts will be needed as well.
 #
 # In the end it does not matter if you choose 'keep current version'
 # or 'install new maintainer version' during the package updates,
@@ -58,6 +98,9 @@
 # TODO
 # ====
 #
+# - add --frontend option like rpmconf(8) to support other merge tools
+# - try being an apt-hook
+#   - if it works, include a description in to the instructions
 # - find a proper name for conffiles like *.dpkg-* and *.ucf-*
 #   - rename $conffile to that new name
 #   - rename $basefile to $conffile
