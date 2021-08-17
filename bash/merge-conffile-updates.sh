@@ -190,14 +190,21 @@ is_deleted()
 {
     local file=$1
 
-    [[ $file =~ \.dpkg-removed$ ]]
+    [[ $file =~ \.(dpkg|ucf)-removed$ ]]
 }
 
 is_new()
 {
     local file=$1
 
-    [[ $file =~ \.dpkg-dist$ ]]
+    [[ $file =~ \.(dpkg|ucf)-dist$ ]]
+}
+
+is_old()
+{
+    local file=$1
+
+    [[ $file =~ \.(dpkg|ucf)-old$ ]]
 }
 
 temp_filename()
@@ -267,13 +274,28 @@ handle_merge()
     local basefile=$1
     local conffile=$2
 
-    local input1 input2 output
-    input1="$( temp_filename "$basefile" input  )"
-    input2="$( temp_filename "$conffile" input  )"
-    output="$( temp_filename "$basefile" output )"
+    local oldfile newfile
+    if is_old "$conffile"; then
+	oldfile=$conffile
+	newfile=$basefile
 
-    cp "$basefile" "$input1"
-    cp "$conffile" "$input2"
+    elif is_new "$conffile"; then
+	oldfile=$basefile
+	newfile=$conffile
+
+    else
+	action_aborted "$conffile" "trying to merge, but file with unknown extension .${conffile##*.} encountered, don't know what to do"
+	return
+
+    fi
+
+    local input1 input2 output
+    input1="$( temp_filename "$oldfile"  input.old  )"
+    input2="$( temp_filename "$newfile"  input.new  )"
+    output="$( temp_filename "$basefile" output     )"
+
+    cp "$oldfile" "$input1"
+    cp "$newfile" "$input2"
     touch "$output"
     
     if two_way_merge "$input1" "$input2" "$output" && [ -s "$output" ]; then
