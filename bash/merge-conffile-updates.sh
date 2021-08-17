@@ -72,6 +72,9 @@
 # You can use etckeeper to have a backup of /etc, but please note that
 # you have to manually reconfigure etckeeper to not ignore *.dpkg-*
 # and *.ucf-*.  By default they are NOT included in your git history.
+# Be sure to edit /etc/etckeeper/update-ignore.d/01update-ignore
+# instead of /etc/.gitignore or the relevant lines will be overwritten
+# by etckeeper later!
 #
 # Intermediate files (version 1, version 2, merged file or removed
 # files) of all conffiles are created in a temporary subdirectory and
