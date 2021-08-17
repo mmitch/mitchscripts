@@ -193,14 +193,14 @@ is_deleted()
 {
     local file=$1
 
-    [[ $file =~ \.(dpkg|ucf)-removed$ ]]
+    [[ $file =~ \.(dpkg|ucf)-(removed?|bak)$ ]]
 }
 
 is_new()
 {
     local file=$1
 
-    [[ $file =~ \.(dpkg|ucf)-dist$ ]]
+    [[ $file =~ \.(dpkg|ucf)-(dist|new)$ ]]
 }
 
 is_old()
