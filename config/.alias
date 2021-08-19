@@ -396,3 +396,9 @@ if [ "$(type -t hman)" = file ] && [ "$(type -t lynx)" = file ]&& [ "$(type -t l
     alias man=hman
     export MANHTMLPAGER=lynx-for-man
 fi
+
+# check if needed Perl dependencies are installed
+check-perl-deps() {
+    cpanm --showdeps "$@" | grep :: | grep -v ^- | sed 's/~.*//' \
+	| while read -r module; do perl "-M$module" -e '1;' && echo "$module OK"; done
+}
