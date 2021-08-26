@@ -127,6 +127,9 @@
 ;;(define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 
+;; don't prose paragraphs to headline indentation
+(setq org-adapt-indentation nil)
+
 ;; load ox-s9y.el if present
 (when (file-directory-p "~/git/ox-s9y/")
   (add-to-list 'load-path "~/git/ox-s9y/")
