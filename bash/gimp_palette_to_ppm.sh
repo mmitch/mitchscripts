@@ -35,8 +35,8 @@ done
 # print PPM header
 width=$square_size
 height=$width
-color_depth=256
-printf 'P3\n%d %d\n%d\n' $width $height $color_depth
+max_color=255
+printf 'P3\n%d %d\n%d\n' $width $height $max_color
 printf '# this is a PPM bitmap generated from GIMP palette\n'
 
 i=0
