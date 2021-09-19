@@ -185,6 +185,21 @@ LINK-LOCATION and DEFAULT-DESCRIPTION."
 ;; autosave org archive file after org-archive-subtree
 (advice-add 'org-archive-subtree :after 'org-save-all-org-buffers)
 
+;; Remap org-meta-return (eg. new entry in list) to S-RET
+;; because my window manager handles M-RET.
+;; Keep original binding of S-RET in tables.
+(defun my:org-meta-return-or-table-copy-down (&optional arg)
+  "Call org-meta-return or org-table-copy-down.
+Call either macro depending on being in a table or not,
+optionally passing ARG (but only to org-table-copy-down)."
+  (interactive "P")
+  (if (org-table-check-inside-data-field :noerror)
+      (org-table-copy-down arg)
+    (org-meta-return)))
+
+(define-key org-mode-map (kbd "<S-return>") 'my:org-meta-return-or-table-copy-down)
+
+
 ;;;
 ;;; theme for both console and X11
 ;;;
