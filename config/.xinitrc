@@ -4,7 +4,7 @@ exec 1< /dev/null
 exec 1> /tmp/xsession-stdout
 exec 2> /tmp/xsession-stderr
 
-[ "$BASH_VERSION" ] && . /home/mitch/git/mitchscripts/config/setup-PATH
+[ "$BASH_VERSION" ] && . ~/git/mitchscripts/config/setup-PATH
 
 [ -r ~/.Xresources ] && xrdb ~/.Xresources
 
@@ -55,7 +55,7 @@ numlockx on
 
 
 # Dropbox
-#LANG=C LC_MESSAGE=C LANGUAGE=C /home/mitch/.dropbox-dist/dropboxd &
+#LANG=C LC_MESSAGE=C LANGUAGE=C ~/.dropbox-dist/dropboxd &
 
 # KEYBOARD NORMALISIEREN!!! AccessX ausmachen
 xkbset -a
@@ -65,7 +65,7 @@ xkbset -a
 
 # Screensaver
 # -secure disabled remote-Steuerung! (mplayer, dwm-mitch etc.)
-[ -x /home/mitch/bin/slock ] && [ -x /usr/bin/xautolock ] && ( xset +dpms s blank s 240; /usr/bin/xautolock -time 4 -locker /home/mitch/bin/slock -notify 30 -notifier "notify-send -u critical -t 10000 -i important -- 'LOCKING SCREEN' 'in 30 seconds'" ) &
+[ -x ~/bin/slock ] && [ -x /usr/bin/xautolock ] && ( xset +dpms s blank s 240; /usr/bin/xautolock -time 4 -locker ~/bin/slock -notify 30 -notifier "notify-send -u critical -t 10000 -i important -- 'LOCKING SCREEN' 'in 30 seconds'" ) &
 
 # Notifications
 [ -x dunst ] && dunst &

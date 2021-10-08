@@ -5,7 +5,7 @@ HISTFILESIZE=2000
 shopt -s histappend
 
 # setup path
-source /home/mitch/git/mitchscripts/config/setup-PATH
+source ~/git/mitchscripts/config/setup-PATH
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
