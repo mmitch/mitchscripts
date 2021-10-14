@@ -18,28 +18,48 @@ xterm*color12: rgb:80/80/f0
 
 xterm*utf8Title:	true
 
-XTerm*fontMenu*fontdefault*Label:       Default
-XTerm*font:     -efont-fixed-medium-r-normal-*-14-140-75-75-c-70-iso10646-1
-XTerm*wideFont: -efont-fixed-medium-r-normal-*-14-140-75-75-c-140-iso10646-1
+XTerm*fontMenu*fontdefault*Label:	size 180 (default)
+XTerm*font:		-*-terminus-medium-r-normal-*-*-180-*-*-c-*-iso10646-1
+XTerm*boldFont: 	-*-terminus-bold-r-normal-*-*-180-*-*-c-*-iso10646-1
+XTerm*wideFont: 	-efont-fixed-medium-r-normal-*-*-160-*-*-c-160-iso10646-1
+XTerm*wideBoldFont: 	-efont-fixed-bold-r-normal-*-*-160-*-*-c-160-iso10646-1
 
-XTerm*font1.Label: efont 12 pixel
-XTerm*font1:     -efont-fixed-medium-r-normal-*-12-120-75-75-c-60-iso10646-1
-XTerm*wideFont1: -efont-fixed-medium-r-normal-*-12-120-75-75-c-120-iso10646-1
-XTerm*font2.Label: misc  13 pixel
-XTerm*font2:     -misc-fixed-medium-r-semicondensed-*-13-120-75-75-c-60-iso10646-1
-XTerm*wideFont2: -misc-fixed-medium-r-normal-*-13-120-75-75-c-120-iso10646-1
-XTerm*font3.Label: efont 14 pixel
-XTerm*font3:     -efont-fixed-medium-r-normal-*-14-140-75-75-c-70-iso10646-1
-XTerm*wideFont3: -efont-fixed-medium-r-normal-*-14-140-75-75-c-140-iso10646-1
-XTerm*font4.Label: efont 16 pixel
-XTerm*font4:     -efont-fixed-medium-r-normal-*-16-160-75-75-c-80-iso10646-1
-XTerm*wideFont4: -efont-fixed-medium-r-normal-*-16-160-75-75-c-160-iso10646-1
-XTerm*font5.Label: misc  18 pixel
-XTerm*font5:     -misc-fixed-medium-r-normal-*-18-120-100-100-c-90-iso10646-1
-XTerm*wideFont5: -misc-fixed-medium-r-normal-*-18-120-100-100-c-180-iso10646-1
-XTerm*font6.Label: efont 24 pixel
-XTerm*font6:     -efont-fixed-medium-r-normal-*-24-240-75-75-c-120-iso10646-1
-XTerm*wideFont6: -efont-fixed-medium-r-normal-*-24-240-75-75-c-240-iso10646-1
+XTerm*font1.Label:	size 120
+XTerm*font1:		-*-terminus-medium-r-normal-*-*-120-*-*-c-60-iso10646-1
+XTerm*boldFont1:	-*-terminus-bold-r-normal-*-*-120-*-*-c-60-iso10646-1
+XTerm*wideFont1:	-efont-fixed-medium-r-normal-*-*-120-*-*-c-120-iso10646-1
+XTerm*wideBoldFont1:	-efont-fixed-bold-r-normal-*-*-120-*-*-c-120-iso10646-1
+
+XTerm*font2.Label:	size 140
+XTerm*font2:		-*-terminus-medium-r-normal-*-*-140-*-*-c-80-iso10646-1
+XTerm*boldFont2:	-*-terminus-bold-r-normal-*-*-140-*-*-c-80-iso10646-1
+XTerm*wideFont2:	-efont-fixed-medium-r-normal-*-*-140-*-*-c-140-iso10646-1
+XTerm*wideBoldFont2:	-efont-fixed-bold-r-normal-*-*-140-*-*-c-140-iso10646-1
+
+XTerm*font3.Label:	size 220
+XTerm*font3:		-*-terminus-medium-r-normal-*-*-220-*-*-c-110-iso10646-1
+XTerm*boldFont3:	-*-terminus-bold-r-normal-*-*-220-*-*-c-110-iso10646-1
+XTerm*wideFont3:	-efont-fixed-medium-r-normal-*-*-240-*-*-c-240-iso10646-1
+XTerm*wideBoldFont3:	-efont-fixed-bold-r-normal-*-*-240-*-*-c-240-iso10646-1
+
+XTerm*font4.Label: size 240
+XTerm*font4:		-*-terminus-medium-r-normal-*-*-240-*-*-c-120-iso10646-1
+XTerm*boldFont4:	-*-terminus-bold-r-normal-*-*-240-*-*-c-120-iso10646-1
+XTerm*wideFont4:	-efont-fixed-medium-r-normal-*-*-240-*-*-c-240-iso10646-1
+XTerm*wideBoldFont4:	-efont-fixed-bold-r-normal-*-*-240-*-*-c-240-iso10646-1
+
+! too big for wide efont
+XTerm*font5.Label: size 280
+XTerm*font5:		-*-terminus-medium-r-normal-*-*-280-*-*-c-140-iso10646-1
+XTerm*boldFont5:	-*-terminus-bold-r-normal-*-*-280-*-*-c-140-iso10646-1
+XTerm*wideFont5:	-*-fixed-medium-r-normal-*-*-280-*-*-c-280-iso10646-1
+XTerm*wideBoldFont5:	-*-fixed-bold-r-normal-*-*-280-*-*-c-280-iso10646-1
+
+XTerm*font6.Label: size 320
+XTerm*font6:		-*-terminus-medium-r-normal-*-*-320-*-*-c-160-iso10646-1
+XTerm*boldFont6:	-*-terminus-bold-r-normal-*-*-320-*-*-c-160-iso10646-1
+XTerm*wideFont6:	-*-fixed-medium-r-normal-*-*-320-*-*-c-320-iso10646-1
+XTerm*wideBoldFont6:	-*-fixed-bold-r-normal-*-*-320-*-*-c-320-iso10646-1
 
 
 
@@ -54,13 +74,13 @@ XTerm*wideFont6: -efont-fixed-medium-r-normal-*-24-240-75-75-c-240-iso10646-1
 !emacs.modeline*attributeFont: -*-verdana-medium-r-*-*-*-70-*-*-*-*-iso8859-1
 !emacs*popup*Font:             -*-verdana-medium-r-*-*-*-80-*-*-*-*-iso8859-1
 !emacs.reverseVideo:on
-emacs*font:-efont-fixed-medium-r-normal-*-14-*
+emacs*font:-*-terminus-medium-r-normal-*-*-180-*-*-c-*-iso10646-1
 emacs*toolBar:0
 emacs*menuBar:0
 
 ! ssh-askpass theme
 ! source: /etc/X11/app-defaults/SshAskpass
-SshAskpass*Dialog.font:			-*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+SshAskpass*Dialog.font:			-*-terminus-medium-r-*-*-18-*-*-*-*-*-*-*
 SshAskpass*foreground:			rgb:af/af/af
 SshAskpass*background:			rgb:10/10/10
 SshAskpass*topShadowColor:		rgb:6f/6f/6f
@@ -70,7 +90,7 @@ SshAskpass*shadowThickness:		1
 SshAskpass*borderWidth:			1
 !SshAskpass*horizontalSpacing:		5
 !SshAskpass*verticalSpacing:		6
-SshAskpass*Button.font:			-*-fixed-medium-r-*-*-14-*-*-*-*-*-*-*
+SshAskpass*Button.font:			-*-terminus-medium-r-*-*-18-*-*-*-*-*-*-*
 !SshAskpass*Button.shadowThickness:	2
 !SshAskpass*Button.borderWidth:		1
 !SshAskpass*Button.horizontalSpacing:	5
