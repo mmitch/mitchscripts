@@ -14,52 +14,77 @@ xterm*color12: rgb:80/80/f0
 ! white on black please
 *.reverseVideo:on
 
-!XTerm*faceNameDoublesize: Sazanami Mincho-10
 
 xterm*utf8Title:	true
 
-XTerm*fontMenu*fontdefault*Label:	size 180 (default)
-XTerm*font:		-*-terminus-medium-r-normal-*-*-180-*-*-c-*-iso10646-1
-XTerm*boldFont: 	-*-terminus-bold-r-normal-*-*-180-*-*-c-*-iso10646-1
-XTerm*wideFont: 	-efont-fixed-medium-r-normal-*-*-160-*-*-c-160-iso10646-1
-XTerm*wideBoldFont: 	-efont-fixed-bold-r-normal-*-*-160-*-*-c-160-iso10646-1
+! use Freetype fonts:
+XTerm*faceName: Terminus
+XTerm*faceNameDoublesize: VL Gothic
+!alternatives: Dejavu Sans Mono,monospace
+!alternatives: IPAGothic
 
-XTerm*font1.Label:	size 120
-XTerm*font1:		-*-terminus-medium-r-normal-*-*-120-*-*-c-60-iso10646-1
-XTerm*boldFont1:	-*-terminus-bold-r-normal-*-*-120-*-*-c-60-iso10646-1
-XTerm*wideFont1:	-efont-fixed-medium-r-normal-*-*-120-*-*-c-120-iso10646-1
-XTerm*wideBoldFont1:	-efont-fixed-bold-r-normal-*-*-120-*-*-c-120-iso10646-1
+XTerm*fontMenu*fontdefault*Label: 14 (default)
+XTerm*faceSize: 14
 
-XTerm*font2.Label:	size 140
-XTerm*font2:		-*-terminus-medium-r-normal-*-*-140-*-*-c-80-iso10646-1
-XTerm*boldFont2:	-*-terminus-bold-r-normal-*-*-140-*-*-c-80-iso10646-1
-XTerm*wideFont2:	-efont-fixed-medium-r-normal-*-*-140-*-*-c-140-iso10646-1
-XTerm*wideBoldFont2:	-efont-fixed-bold-r-normal-*-*-140-*-*-c-140-iso10646-1
+XTerm*font1.Label: 8
+XTerm*faceSize1: 8
 
-XTerm*font3.Label:	size 220
-XTerm*font3:		-*-terminus-medium-r-normal-*-*-220-*-*-c-110-iso10646-1
-XTerm*boldFont3:	-*-terminus-bold-r-normal-*-*-220-*-*-c-110-iso10646-1
-XTerm*wideFont3:	-efont-fixed-medium-r-normal-*-*-240-*-*-c-240-iso10646-1
-XTerm*wideBoldFont3:	-efont-fixed-bold-r-normal-*-*-240-*-*-c-240-iso10646-1
+XTerm*font2.Label: 10
+XTerm*faceSize2: 10
 
-XTerm*font4.Label: size 240
-XTerm*font4:		-*-terminus-medium-r-normal-*-*-240-*-*-c-120-iso10646-1
-XTerm*boldFont4:	-*-terminus-bold-r-normal-*-*-240-*-*-c-120-iso10646-1
-XTerm*wideFont4:	-efont-fixed-medium-r-normal-*-*-240-*-*-c-240-iso10646-1
-XTerm*wideBoldFont4:	-efont-fixed-bold-r-normal-*-*-240-*-*-c-240-iso10646-1
+XTerm*font3.Label: 16
+XTerm*faceSize3: 16
+
+XTerm*font4.Label: 18
+XTerm*faceSize4: 18
+
+XTerm*font5.Label: 20
+XTerm*faceSize5: 20
+
+XTerm*font6.Label: 24
+XTerm*faceSize6: 24
+
+
+! problems with Bold in different sizes because there is only ONE bold font to select
+
+!Xterm*alwaysBoldMode: 	false
+
+!XTerm*fontMenu*fontdefault*Label:	size 180 (default)
+!XTerm*font:		-*-terminus-medium-r-normal-*-*-180-*-*-c-*-iso10646-1
+!XTerm*boldFont: 	-*-terminus-bold-r-normal-*-*-180-*-*-c-*-iso10646-1
+!XTerm*wideFont: 	-efont-fixed-medium-r-normal-*-*-160-*-*-c-160-iso10646-1
+!XTerm*wideBoldFont: 	-efont-fixed-bold-r-normal-*-*-160-*-*-c-160-iso10646-1
+
+!XTerm*font1.Label:	size 120
+!XTerm*font1:		-*-terminus-medium-r-normal-*-*-120-*-*-c-60-iso10646-1
+!XTerm*wideFont1:	-efont-fixed-medium-r-normal-*-*-120-*-*-c-120-iso10646-1
+!XTerm*wideBoldFont1:	-efont-fixed-bold-r-normal-*-*-120-*-*-c-120-iso10646-1
+
+!XTerm*font2.Label:	size 140
+!XTerm*font2:		-*-terminus-medium-r-normal-*-*-140-*-*-c-80-iso10646-1
+!XTerm*wideFont2:	-efont-fixed-medium-r-normal-*-*-140-*-*-c-140-iso10646-1
+!XTerm*wideBoldFont2:	-efont-fixed-bold-r-normal-*-*-140-*-*-c-140-iso10646-1
+
+!XTerm*font3.Label:	size 220
+!XTerm*font3:		-*-terminus-medium-r-normal-*-*-220-*-*-c-110-iso10646-1
+!XTerm*wideFont3:	-efont-fixed-medium-r-normal-*-*-240-*-*-c-240-iso10646-1
+!XTerm*wideBoldFont3:	-efont-fixed-bold-r-normal-*-*-240-*-*-c-240-iso10646-1
+
+!XTerm*font4.Label: size 240
+!XTerm*font4:		-*-terminus-medium-r-normal-*-*-240-*-*-c-120-iso10646-1
+!XTerm*wideFont4:	-efont-fixed-medium-r-normal-*-*-240-*-*-c-240-iso10646-1
+!XTerm*wideBoldFont4:	-efont-fixed-bold-r-normal-*-*-240-*-*-c-240-iso10646-1
 
 ! too big for wide efont
-XTerm*font5.Label: size 280
-XTerm*font5:		-*-terminus-medium-r-normal-*-*-280-*-*-c-140-iso10646-1
-XTerm*boldFont5:	-*-terminus-bold-r-normal-*-*-280-*-*-c-140-iso10646-1
-XTerm*wideFont5:	-*-fixed-medium-r-normal-*-*-280-*-*-c-280-iso10646-1
-XTerm*wideBoldFont5:	-*-fixed-bold-r-normal-*-*-280-*-*-c-280-iso10646-1
+!XTerm*font5.Label: size 280
+!XTerm*font5:		-*-terminus-medium-r-normal-*-*-280-*-*-c-140-iso10646-1
+!XTerm*wideFont5:	-*-fixed-medium-r-normal-*-*-280-*-*-c-280-iso10646-1
+!XTerm*wideBoldFont5:	-*-fixed-bold-r-normal-*-*-280-*-*-c-280-iso10646-1
 
-XTerm*font6.Label: size 320
-XTerm*font6:		-*-terminus-medium-r-normal-*-*-320-*-*-c-160-iso10646-1
-XTerm*boldFont6:	-*-terminus-bold-r-normal-*-*-320-*-*-c-160-iso10646-1
-XTerm*wideFont6:	-*-fixed-medium-r-normal-*-*-320-*-*-c-320-iso10646-1
-XTerm*wideBoldFont6:	-*-fixed-bold-r-normal-*-*-320-*-*-c-320-iso10646-1
+!XTerm*font6.Label: size 320
+!XTerm*font6:		-*-terminus-medium-r-normal-*-*-320-*-*-c-160-iso10646-1
+!XTerm*wideFont6:	-*-fixed-medium-r-normal-*-*-320-*-*-c-320-iso10646-1
+!XTerm*wideBoldFont6:	-*-fixed-bold-r-normal-*-*-320-*-*-c-320-iso10646-1
 
 
 
