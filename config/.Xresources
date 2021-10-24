@@ -99,7 +99,8 @@ XTerm*faceSize6: 24
 !emacs.modeline*attributeFont: -*-verdana-medium-r-*-*-*-70-*-*-*-*-iso8859-1
 !emacs*popup*Font:             -*-verdana-medium-r-*-*-*-80-*-*-*-*-iso8859-1
 !emacs.reverseVideo:on
-emacs*font:-*-terminus-medium-r-normal-*-*-180-*-*-c-*-iso10646-1
+!emacs*font:-*-terminus-medium-r-normal-*-*-180-*-*-c-*-iso10646-1
+Emacs.font: Terminus-14
 emacs*toolBar:0
 emacs*menuBar:0
 

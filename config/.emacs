@@ -204,57 +204,76 @@ optionally passing ARG (but only to org-table-copy-down)."
 ;;; theme for both console and X11
 ;;;
 
+(defvar my:theme-defined nil)
 (defvar my:theme-console-loaded nil)
 (defvar my:theme-windowed-loaded nil)
 (defun my:set-theme (windowed)
   "Set theme and font.
 WINDOWED is t if running under X11"
-  (if windowed
-      ;; set theme for X
-      (progn
-	;; use Efont Fixed bitmap font
-	;; - on Debian/Ubuntu, install xfonts-efont-unicode and xfonts-efont-unicode-ib
-	;; - on Ubuntu, you need to enable bitmap fonts:
-	;;   - either remove /etc/fonts/conf.d/70-no-bitmaps.conf
-	;;   - or selectively enable only the efont font to minimize side effects,
-	;;     see https://github.com/mmitch/vater/blob/master/README.md for an example
+  (progn
+    (if windowed
+	;; set theme for X
+	(progn
+	  ;; use Efont Fixed bitmap font
+	  ;; - on Debian/Ubuntu, install xfonts-efont-unicode and xfonts-efont-unicode-ib
+	  ;; - on Ubuntu, you need to enable bitmap fonts:
+	  ;;   - either remove /etc/fonts/conf.d/70-no-bitmaps.conf
+	  ;;   - or selectively enable only the efont font to minimize side effects,
+	  ;;     see https://github.com/mmitch/vater/blob/master/README.md for an example
 
-	;(set-face-attribute 'default nil :family "BiWidth")
-	(set-face-attribute 'default nil :family "terminus" :height 130)
-	
-	(unless my:theme-windowed-loaded
-	  (progn
-	    ;; don't use Monospace for fixed-pitch, our default is already fixed-pitch
-	    (set-face-attribute 'fixed-pitch nil :family 'unspecified)
+	  ;(set-face-attribute 'default nil :family "BiWidth")
+	  ;(set-face-attribute 'default nil :family "terminus" :height 130)
+	  (set-face-attribute 'default nil :font "Terminus-14")
 
-	    ;; remember this and only change the weights once
-	    (setq my:theme-windowed-loaded t))))
-  
-    ;; set console theme
-    (if my:theme-console-loaded
-	;; if theme is already defined, just use it
-	(enable-theme 'manoj-dark)
+	  (unless my:theme-windowed-loaded
+	    (progn
+	      ;; don't use Monospace for fixed-pitch, our default is already fixed-pitch
+	      (set-face-attribute 'fixed-pitch nil :family 'unspecified)
+
+	      ;; remember this and only change the weights once
+	      (setq my:theme-windowed-loaded t))))
+
+      ;; console setup
+      (unless my:theme-console-loaded
+	;; CURRENTLY EMPTY
+	;; remember this and only run this code once
+	(setq my:theme-console-loaded t)))
+
+    ;; common setup (X + console) - set a theme
+    (if my:theme-defined
+	(progn
+	  (enable-theme 'manoj-dark)
+	  (enable-theme 'manoj-dark-addon-mitch))
+
+      ;; not yet defined, create it
       (progn
-	;; build a unique "theme" just to fix some things in console mode
-	
 	;; this is a good base theme
 	(load-theme 'manoj-dark)
+
+	;; build a unique theme just to fix some things in console mode
+	(deftheme manoj-dark-addon-mitch "some on-top customizations for manoj-dark theme")
 	
-	;; add own customizations on top
-	(custom-theme-set-faces
-	 'manoj-dark
-	 
-	 ;; bright bold red on medium gray is hard to read
-	 `(mode-line-buffer-id ((t (:foreground "Wheat" :background "grey30"))))
-	 ;; minor tweak
-	 `(mode-line ((t (:foreground "grey90" :background "grey20"))))
-	 
-	 ;; bright background is irritating
-	 `(diff-header ((t (:background "grey10"))))
-	 )
-	
-	;; remember this and only define the theme once
-	(setq my:theme-console-loaded t)))))
+        ;; add own customizations on top
+        (custom-theme-set-faces
+         'manoj-dark-addon-mitch
+
+         ;; bright bold red on medium gray is hard to read
+         '(mode-line-buffer-id ((t . (:foreground "Wheat" :background "grey30"))) t)
+         ;; minor tweak
+         '(mode-line ((t . (:foreground "grey90" :background "grey20"))) t)
+
+         ;; bright background is irritating
+         '(diff-header ((t . (:background "grey10"))) t))
+
+	;; theme definition is finished
+	(provide-theme 'manoj-dark-addon-mitch)
+
+	;; and enable right away
+	(enable-theme 'manoj-dark)
+	(enable-theme 'manoj-dark-addon-mitch)
+
+	;; and remember that the theme is set up
+	(setq my:theme-defined t)))))
 
 ;; apply theme correctly both standalone and with daemon/emacsclient
 (if (daemonp)
