@@ -392,10 +392,10 @@ topdf()
 }
 
 # switch man over to hman if everything is installed
-if [ "$(type -t hman)" = file ] && [ "$(type -t lynx)" = file ]&& [ "$(type -t lynx-for-man)" = file ]; then
-    alias man=hman
-    export MANHTMLPAGER=lynx-for-man
-fi
+#if [ "$(type -t hman)" = file ] && [ "$(type -t lynx)" = file ]&& [ "$(type -t lynx-for-man)" = file ]; then
+#    alias man=hman
+#    export MANHTMLPAGER=lynx-for-man
+#fi
 
 # check if needed Perl dependencies are installed
 check-perl-deps() {

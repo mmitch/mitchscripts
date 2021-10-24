@@ -12,7 +12,8 @@ exec 2> /tmp/xsession-stderr
 export FREETYPE_PROPERTIES=truetype:interpreter-version=35
 
 #export DMENU_COLORS="-fn fixed -nb #336 -nf #ccc -sb #669 -sf #eee"
-export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
+#export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
+export DMENU_COLORS="-fn -*-terminus-medium-r-normal-*-*-180-*-*-c-*-iso10646-1 -nb #222 -nf #ddd -se #222"
 
 ( sleep 2; cd Dropbox/backgrounds/ && ./feh-random-bg ) &
 # ( floatbg -satmid 0.2 -satvar 0.15 -fase 0.1 -value 0.3 & ) &

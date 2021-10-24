@@ -214,15 +214,6 @@ WINDOWED is t if running under X11"
     (if windowed
 	;; set theme for X
 	(progn
-	  ;; use Efont Fixed bitmap font
-	  ;; - on Debian/Ubuntu, install xfonts-efont-unicode and xfonts-efont-unicode-ib
-	  ;; - on Ubuntu, you need to enable bitmap fonts:
-	  ;;   - either remove /etc/fonts/conf.d/70-no-bitmaps.conf
-	  ;;   - or selectively enable only the efont font to minimize side effects,
-	  ;;     see https://github.com/mmitch/vater/blob/master/README.md for an example
-
-	  ;(set-face-attribute 'default nil :family "BiWidth")
-	  ;(set-face-attribute 'default nil :family "terminus" :height 130)
 	  (set-face-attribute 'default nil :font "Terminus-14")
 
 	  (unless my:theme-windowed-loaded
@@ -295,26 +286,22 @@ WINDOWED is t if running under X11"
  '(c-default-style "bsd")
  '(column-number-mode t)
  '(custom-safe-themes
-   (quote
-    ("f5b591870422cd28da334552aae915cdcae3edfcfedb6653a9f42ed84bbec69f" default)))
+   '("f5b591870422cd28da334552aae915cdcae3edfcfedb6653a9f42ed84bbec69f" default))
  '(ecb-options-version "2.40")
- '(ecb-source-path (quote ("/home/mitch/git/gbsplay")))
+ '(ecb-source-path '("/home/mitch/git/gbsplay"))
  '(inhibit-startup-screen t)
  '(menu-bar-mode nil)
- '(org-agenda-files (quote ("~/Cryptbox/TODO")))
- '(org-babel-load-languages (quote ((emacs-lisp . t) (perl . t))))
+ '(org-agenda-files '("~/Cryptbox/TODO"))
+ '(org-babel-load-languages '((emacs-lisp . t) (perl . t)))
  '(org-confirm-babel-evaluate nil)
  '(org-format-latex-options
-   (quote
-    (:foreground default :background default :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
-		 ("begin" "$1" "$" "$$" "\\(" "\\["))))
+   '(:foreground default :background default :scale 2.0 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+		 ("begin" "$1" "$" "$$" "\\(" "\\[")))
  '(org-html-doctype "html5")
  '(package-selected-packages
-   (quote
-    (package-build package-lint which-key eglot nyan-mode flycheck-yamllint groovy-mode bbcode-mode cobol-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize)))
+   '(package-build package-lint which-key eglot nyan-mode flycheck-yamllint groovy-mode bbcode-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize))
  '(safe-local-variable-values
-   (quote
-    ((eval when
+   '((eval when
 	   (and
 	    (buffer-file-name)
 	    (not
@@ -323,35 +310,27 @@ WINDOWED is t if running under X11"
 	    (string-match-p "^[^.]"
 			    (buffer-file-name)))
 	   (unless
-	       (featurep
-		(quote package-build))
+	       (featurep 'package-build)
 	     (let
 		 ((load-path
 		   (cons "../package-build" load-path)))
-	       (require
-		(quote package-build))))
+	       (require 'package-build)))
 	   (unless
-	       (derived-mode-p
-		(quote emacs-lisp-mode))
+	       (derived-mode-p 'emacs-lisp-mode)
 	     (emacs-lisp-mode))
 	   (package-build-minor-mode)
 	   (setq-local flycheck-checkers nil)
 	   (set
-	    (make-local-variable
-	     (quote package-build-working-dir))
+	    (make-local-variable 'package-build-working-dir)
 	    (expand-file-name "../working/"))
 	   (set
-	    (make-local-variable
-	     (quote package-build-archive-dir))
+	    (make-local-variable 'package-build-archive-dir)
 	    (expand-file-name "../packages/"))
 	   (set
-	    (make-local-variable
-	     (quote package-build-recipes-dir))
+	    (make-local-variable 'package-build-recipes-dir)
 	    default-directory))
-     (eval require
-	   (quote ox-reveal))
-     (eval require
-	   (quote ob-vala)))))
+     (eval require 'ox-reveal)
+     (eval require 'ob-vala)))
  '(scss-compile-at-save nil))
 
 (custom-set-faces
@@ -359,8 +338,7 @@ WINDOWED is t if running under X11"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(font-lock-function-name-face ((t (:foreground "deep sky blue" :height 1.0))))
- '(mode-line ((t (:background "orange4" :foreground "black" :box (:line-width -1 :style released-button))))))
+ '(font-lock-function-name-face ((t (:foreground "deep sky blue" :height 1.0)))))
 
 ;;; .emacs ends here
 
