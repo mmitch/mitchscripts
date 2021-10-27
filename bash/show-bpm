@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# calculate BPM of one or more sound files
+#
+# usage:
+#  show-bpm file [file ...]
+#
+# needs bpm from bpm-tools and sox
+
+set -e
+
+# we're into faster stuff than the defaults
+min_bpm=100
+max_bpm=180
+
+decode() {
+    sox "$1" -t raw -r 44100 -e float -c 1 - 2>/dev/null
+}
+
+for file in "$@"; do
+    bpm=$(decode "$file" | bpm -m $min_bpm -x $max_bpm -f "%5.1f")
+    printf '%s   %s\n' "$bpm" "$file"
+done
