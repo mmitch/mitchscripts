@@ -1,23 +1,84 @@
-#!/bin/sh
+#!/bin/bash
 #
-# calculate BPM of one or more sound files
+# Calculate BPM of one or more sound files.
+# To catch BPM changes in DJ mixes or mixtapes, long files
+# are additionaly split into parts to show BPM over time.
 #
 # usage:
 #  show-bpm file [file ...]
 #
-# needs bpm from bpm-tools and sox
+# needs bpm(1) from bpm-tools and sox(1)
 
 set -e
 
-# we're into faster stuff than the defaults
+# we're into faster stuff than the defaults of bpm(1)
 min_bpm=100
-max_bpm=180
+max_bpm=220
 
-decode() {
-    sox "$1" -t raw -r 44100 -e float -c 1 - 2>/dev/null
+# files longer than this get additionally checked in parts
+mixtape_threshold_seconds=600
+part_length_seconds=300
+
+# set up tempfile used for all operations; auto-remove on exit
+tmp=$(mktemp --tmpdir 'show-bpm.XXXXXXXX')
+trap remove_tempfile EXIT
+
+# sox(1) format fit for consumption by bpm(1)
+format=(-t raw -b 32 -r 44100 -e float -c 1)
+
+remove_tempfile() {
+    rm -f "$tmp"
+}
+
+decode_to_tempfile() {
+    local file="$1"
+    sox "$file" "${format[@]}" "$tmp" 2>/dev/null
+}
+
+math_floor() {
+    sed -E 's/\..*$//'
+}
+
+get_tempfile_length() {
+    sox "${format[@]}" "$tmp" -n stat 2>&1 | sed -En '/^Length/s/^.*: +//p' | math_floor
+}
+
+measure_whole_tempfile() {
+    bpm -m $min_bpm -x $max_bpm -f "%5.1f" < "$tmp"
+}
+
+measure_tempfile_part() {
+    local start="$1" end="$2"
+    sox "${format[@]}" "$tmp" "${format[@]}" - trim "$start" ="$end" 2>/dev/null \
+	| bpm -m $min_bpm -x $max_bpm -f "%5.1f"
+}
+
+process_file_part() {
+    local start="$1" end="$2"
+    bpm="$(measure_tempfile_part "$start" "$end")"
+    printf '%s' "$bpm"
 }
 
 for file in "$@"; do
-    bpm=$(decode "$file" | bpm -m $min_bpm -x $max_bpm -f "%5.1f")
+
+    decode_to_tempfile "$file"
+
+    bpm=$(measure_whole_tempfile)
     printf '%s   %s\n' "$bpm" "$file"
+
+    # TODO: get file length directly from decoding
+    len=$(( $(get_tempfile_length) ))
+    if [ "$len" -gt $mixtape_threshold_seconds ]; then
+	printf '%5s   [' ''
+	start=0
+	while [ $(( start + part_length_seconds )) -lt $len ]; do
+	    process_file_part $start $(( start + part_length_seconds - 1 ))
+	    printf ' '
+	    start=$(( start + part_length_seconds ))
+	done
+	process_file_part $start $len
+	echo ']'
+	echo
+    fi
+
 done
