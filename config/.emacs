@@ -135,6 +135,9 @@
   (add-to-list 'load-path "~/git/ox-s9y/")
   (require 'ox-s9y))
 
+;; expand "<s" to a source block like before Org 9.2
+(require 'org-tempo)
+
 ;; use smart link insertion
 (defun my:string-match-perl-module-p (string)
   "Check STRING for a Perl module name.
