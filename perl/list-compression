@@ -1,0 +1,21 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+sub show {
+    my ($file) = @_;
+
+    my $original   = `du --apparent-size "$file"`;
+    my $compressed = `du "$file"`;
+
+    $original   =~ s/[^0-9].*$//;
+    $compressed =~ s/[^0-9].*$//;
+
+    printf "%10d  %10d  %4.1f  %s\n",
+	$original,
+	$compressed,
+	1.0 * $original / ($compressed == 0 ? 1 : $compressed),
+	$file;
+}
+
+show $_ foreach grep { -f $_ } @ARGV;
