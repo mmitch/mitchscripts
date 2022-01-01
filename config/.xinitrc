@@ -68,8 +68,5 @@ xkbset -a
 # -secure disabled remote-Steuerung! (mplayer, dwm-mitch etc.)
 [ -x ~/bin/slock ] && [ -x /usr/bin/xautolock ] && ( xset +dpms s blank s 240; /usr/bin/xautolock -time 4 -locker ~/bin/slock -notify 30 -notifier "notify-send -u critical -t 10000 -i important -- 'LOCKING SCREEN' 'in 30 seconds'" ) &
 
-# Notifications
-[ -x dunst ] && dunst &
-
 # emacs vorstarten
 emacs --daemon &
