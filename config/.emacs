@@ -98,6 +98,39 @@
   (projectile-mode +1))
 
 ;;;
+;;; eglot / LSP / language server
+;;;
+
+(when (require 'eglot nil :noerror)
+  (let ((wanted-modes '(
+			c++-mode-hook
+			c-mode-hook
+			css-mode-hook
+			html-mode-hook
+			java-mode-hook
+			js-mode-hook
+			perl-mode-hook
+			sh-mode-hook
+			typescript-mode-hook
+			)))
+    ;; configure languages not known to eglot yet:
+    (add-to-list 'eglot-server-programs '(perl-mode . ("perl" "-MPerl::LanguageServer" "-e" "Perl::LanguageServer::run")))
+    ;; auto activations
+    (dolist (wanted-mode wanted-modes)
+      (add-hook wanted-mode 'eglot-ensure)))
+  ;; key bindings:
+  (define-key eglot-mode-map (kbd "<f1>") 'eldoc)
+  (define-key eglot-mode-map (kbd "<M-f1>") 'code-action-quickfix)
+  (define-key eglot-mode-map (kbd "<f2>") 'eglot-rename)
+  (define-key eglot-mode-map (kbd "<f5>") 'eglot-code-action-organize-imports)
+  (define-key eglot-mode-map (kbd "<f6>") 'eglot-format)
+  (define-key eglot-mode-map (kbd "<f9>") 'eglot-code-actions)
+  (define-key eglot-mode-map (kbd "<f12>") 'xref-find-definitions)
+  (define-key eglot-mode-map (kbd "<M-f12>") 'xref-find-references)
+  ;; eglot completion via company:
+  (when (require 'company nil :noerror)
+    (add-hook 'eglot-managed-mode-hook 'company-mode)
+    (define-key eglot-mode-map (kbd "<S-iso-lefttab>") 'company-complete)))
 
 ;;;
 ;;; perl
@@ -114,15 +147,31 @@
 	cperl-tab-always-indent t))
 
 ;;;
+;;; flymake
+;;;
+
+(when (require 'flymake-gradle nil :noerror)
+  (with-eval-after-load 'flymake (flymake-gradle-setup)))
+(when (require 'flymake nil :noerror)
+  (when (require 'flymake-lua nil :noerror)
+    (add-hook 'lua-mode-hook 'flymake-lua-load))
+  (when (require 'flymake-markdownlint nil :noerror)
+    (add-hook 'markdown-mode-hook 'flymake-markdownlint-setup))
+  ;;  (when (require 'flymake-perlcritic nil :noerror) THIS BREAKS??
+  (when (require 'flymake-shellcheck nil :noerror)
+    (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+  (when (require 'flymake-vala nil :noerror)
+    (add-hook 'vala-mode-hook 'flymake-vala-load))
+  (when (require 'flymake-yamllint nil :noerror)
+    (add-hook 'yaml-mode-hook 'flymake-yamllint-setup)))
+
+;;;
 ;;; flycheck
 ;;;
 
 ;; enable Flycheck when installed
 (when (require 'flycheck nil :noerror)
   (add-hook 'after-init-hook #'global-flycheck-mode))
-
-(when (require 'flycheck-yamllint nil :noerror)
-  (add-hook 'flycheck-mode-hook 'flycheck-yamllint-setup))
 
 ;;;
 ;;; use emacs to edit <textarea>s in Firefox
@@ -330,7 +379,8 @@ WINDOWED is t if running under X11"
 		 ("begin" "$1" "$" "$$" "\\(" "\\[")))
  '(org-html-doctype "html5")
  '(package-selected-packages
-   '(package-build package-lint which-key eglot nyan-mode flycheck-yamllint groovy-mode bbcode-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize))
+   '(ox-bb marginalia selectrum-prescient flymake-yamllint flymake-vala flymake-shellcheck flymake-markdownlint flymake-lua flymake-perlcritic flymake-gradle eldoc-overlay css-eldoc c-eldoc typescript-mode json-mode eglot-java package-build package-lint which-key eglot nyan-mode groovy-mode bbcode-mode atomic-chrome magit lua-mode vala-mode simpleclip scss-mode ox-reveal org-plus-contrib nlinum monokai-theme linum-relative flycheck markdown-mode htmlize))
+ '(projectile-mode t nil (projectile))
  '(safe-local-variable-values
    '((eval when
 	   (and
