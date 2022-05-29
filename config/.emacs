@@ -1,4 +1,4 @@
-;;; .emacs --- personal Emacs configuration
+;;; .emacs --- personal Emacs configuration -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;; none, but I want to keep flycheck happy
@@ -16,9 +16,9 @@
 
 ;; use MELPA/ORG
 (require 'package)
-; (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
+;; (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+;; (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
 (package-initialize)
 
 ;;;
@@ -39,17 +39,17 @@
 (setq x-gtk-use-system-tooltips nil)
 
 ;; Line numbering
-;(require 'nlinum)
-;(global-linum-mode 1)
-;(setq linum-format "%4d\u2502")
+;;(require 'nlinum)
+;;(global-linum-mode 1)
+;;(setq linum-format "%4d\u2502")
 
 ;; Show line- and column-number in the mode line
 (line-number-mode 1)
 (column-number-mode 1)
 
 ;; highlight current line
-;(global-hl-line-mode 1)
-;(set-face-background 'hl-line "#033")
+;;(global-hl-line-mode 1)
+;;(set-face-background 'hl-line "#033")
 
 ;; highlight matching parens
 (show-paren-mode 1)
@@ -83,13 +83,14 @@
 ;;;
 
 ;; use CPerlMode instead of PerlMode
-;(require 'cperl-mode)
-;(fset 'perl-mode 'cperl-mode)
-;(setq cperl-indent-level 4
-;      cperl-close-paren-offset -4
-;      cperl-continued-statement-offset 4
-;      cperl-indent-parens-as-block t
-;      cperl-tab-always-indent t)
+(when nil ; disabled
+  (require 'cperl-mode nil :noerror)
+  (fset 'perl-mode 'cperl-mode)
+  (setq cperl-indent-level 4
+	cperl-close-paren-offset -4
+	cperl-continued-statement-offset 4
+	cperl-indent-parens-as-block t
+	cperl-tab-always-indent t))
 
 ;;;
 ;;; flycheck
@@ -114,6 +115,7 @@
     (setq atomic-chrome-buffer-open-style 'frame)))
 
 ;;;
+;;;	       	  
 ;;; org-mode
 ;;;
 
@@ -145,7 +147,7 @@ Return non-nil if STRING looks like a Perl module name."
   (and string (string-match "\\(?:[A-Za-z0-9]+::\\)+[A-Za-z0-9]+" string)))
 
 (defun my:org-insert-link-smart (&optional complete-file link-location default-description)
-       "Insert a link with smart defaults.
+  "Insert a link with smart defaults.
 Works like `org-insert-link', but when the active region in the
 current buffer matches certain criteria, a link target is
 automatically generated:
@@ -155,31 +157,31 @@ automatically generated:
 
 Otherwise call `org-insert-link' with the original COMPLETE-FILE,
 LINK-LOCATION and DEFAULT-DESCRIPTION."
-       (interactive "p")
-       (let* ((region (when (org-region-active-p)
-			(buffer-substring (region-beginning) (region-end))))
-	      (calculated-link (when (my:string-match-perl-module-p region)
-				 (concat "https://metacpan.org/pod/" region))))
-	 (if calculated-link
-	     (org-insert-link complete-file calculated-link region)
-	   (org-insert-link complete-file link-location default-description))))
+  (interactive "p")
+  (let* ((region (when (org-region-active-p)
+		   (buffer-substring (region-beginning) (region-end))))
+	 (calculated-link (when (my:string-match-perl-module-p region)
+			    (concat "https://metacpan.org/pod/" region))))
+    (if calculated-link
+	(org-insert-link complete-file calculated-link region)
+      (org-insert-link complete-file link-location default-description))))
 
 (define-key org-mode-map (kbd "C-c C-l") 'my:org-insert-link-smart)
 
 ;; lualatex preview
 (setq org-latex-pdf-process
-  '("lualatex -shell-escape -interaction nonstopmode %f"
-    "lualatex -shell-escape -interaction nonstopmode %f"))
+      '("lualatex -shell-escape -interaction nonstopmode %f"
+	"lualatex -shell-escape -interaction nonstopmode %f"))
 
 (setq luamagick '(luamagick :programs ("lualatex" "convert")
-       :description "pdf > png"
-       :message "you need to install lualatex and imagemagick."
-       :use-xcolor t
-       :image-input-type "pdf"
-       :image-output-type "png"
-       :image-size-adjust (1.0 . 1.0)
-       :latex-compiler ("lualatex -interaction nonstopmode -output-directory %o %f")
-       :image-converter ("convert -density %D -trim -antialias %f -quality 100 %O")))
+			    :description "pdf > png"
+			    :message "you need to install lualatex and imagemagick."
+			    :use-xcolor t
+			    :image-input-type "pdf"
+			    :image-output-type "png"
+			    :image-size-adjust (1.0 . 1.0)
+			    :latex-compiler ("lualatex -interaction nonstopmode -output-directory %o %f")
+			    :image-converter ("convert -density %D -trim -antialias %f -quality 100 %O")))
 
 (add-to-list 'org-preview-latex-process-alist luamagick)
 
@@ -344,4 +346,4 @@ WINDOWED is t if running under X11"
  '(font-lock-function-name-face ((t (:foreground "deep sky blue" :height 1.0)))))
 
 ;;; .emacs ends here
-
+;;
