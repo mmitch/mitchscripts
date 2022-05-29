@@ -1,3 +1,4 @@
+#!/bin/bash
 # to be sourced from ~/.alias
 
 # finally start to use iproute2 over net-tools!
@@ -51,86 +52,86 @@ alias mailtail='tail -n 300 -f /home/mitch/Mail/from | { IFS=""; read FROM; whil
 # $1: URL (optional)
 links()
 {	
-	(
-		if [ -z "$*" ]; then
-			/usr/bin/elinks http://www.dn.cgarbs.de/mediawiki/index.php/Hauptseite
-		else
-			/usr/bin/elinks "$@"
-		fi
-	)
+    (
+	if [ -z "$*" ]; then
+	    /usr/bin/elinks http://www.dn.cgarbs.de/mediawiki/index.php/Hauptseite
+	else
+	    /usr/bin/elinks "$@"
+	fi
+    )
 }
 
 # dump all links on a website
 # $1: URL
 dumpurls()
 {
-	lynx -dump "$@" | cut -c 7- | grep -E '^https?:'
+    lynx -dump "$@" | cut -c 7- | grep -E '^https?:'
 }
 
 # dump all pictures from an imageboard thread
 # $1: URL
 boardget() {
-        dumpurls "$1" | egrep '\.(jpg|png|gif)$' | sort | uniq | wget -i-
+    dumpurls "$1" | egrep '\.(jpg|png|gif)$' | sort | uniq | wget -i-
 }
 
 # enable Japanese input method
 # $1: command to execute
 JAP()
 {
-	(
-		XMODIFIERS="@im=kinput2"
-		LC_CTYPE=ja_JP.UTF-8
-		echo variables set
-		export XMODIFIERS
-		export LC_CTYPE
-		echo variables exported
-		echo -n starting kinput2
-		kinput2 -xim -canna -kinput &
-		echo -n .
-		sleep 1
-		echo -n .
-		sleep 1
-		echo .
-		echo switching editor
-		export EDITOR=jmacs
-		export VISUAL=jmacs
-		echo running command
-		if [ -z "$@" ]; then
-			x-terminal-emulator
-		else
-			"$@"
-		fi
-		echo command finished
-		killall kinput2
-		echo kinput2 killed
-	)
+    (
+	XMODIFIERS="@im=kinput2"
+	LC_CTYPE=ja_JP.UTF-8
+	echo variables set
+	export XMODIFIERS
+	export LC_CTYPE
+	echo variables exported
+	echo -n starting kinput2
+	kinput2 -xim -canna -kinput &
+	echo -n .
+	sleep 1
+	echo -n .
+	sleep 1
+	echo .
+	echo switching editor
+	export EDITOR=jmacs
+	export VISUAL=jmacs
+	echo running command
+	if [ -z "$@" ]; then
+	    x-terminal-emulator
+	else
+	    "$@"
+	fi
+	echo command finished
+	killall kinput2
+	echo kinput2 killed
+    )
 }
 
 # quick www fetch (e.g. for sites that reject wget's useragent)
 # $1: URL
 CHAN()
 {
-	GET "$1" > "$(basename "$1")"
+    GET "$1" > "$(basename "$1")"
 }
 
 # screenshot a window
 SHOT()
 {
     FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
-        if command -v gm >/dev/null; then
+    if command -v gm >/dev/null; then
 	# GraphicsMagick is available
 	gm import "$FILE"
     else
 	# fall back on ImageMagick - I have problems with an invisible X cursor here
 	import "$FILE"
     fi
-	echo "$FILE"
+    echo "$FILE"
 }
 
 # screenshot the screen
 SHOT_ALL()
 {
-	FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
+    FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
     if command -v gm >/dev/null; then
 	# GraphicsMagick is available
 	gm import -window root "$FILE"
@@ -138,72 +139,72 @@ SHOT_ALL()
 	# fall back on ImageMagick - I have problems with an invisible X cursor here
 	import -window root "$FILE"
     fi
-	echo "$FILE"
+    echo "$FILE"
 }
 
 # screenshot a window and publish on www
 SHOT_WEB()
 {
-	FILE=$(SHOT)
-	ari_temp "$FILE"
-	rm "$FILE"
+    FILE=$(SHOT)
+    ari_temp "$FILE"
+    rm "$FILE"
 }
 
 # screenshot a window and publish locally
 SHOT_MITCH()
 {
-	FILE=$(SHOT)
-	mitch_temp "$FILE"
-	rm "$FILE"
+    FILE=$(SHOT)
+    mitch_temp "$FILE"
+    rm "$FILE"
 }
 
 # set window title on ssh connection
 ssh()
 {
-	xtermset -T "ssh $*"
-	/usr/bin/ssh "$@"
-	xtermset -T "$USER@$HOSTNAME"
+    xtermset -T "ssh $*"
+    /usr/bin/ssh "$@"
+    xtermset -T "$USER@$HOSTNAME"
 }
 
 # lookup inside WadokuJT
 # $1: word
 edict()
 {
-	grep -hi "$@" /home/mitch/WadokuJT.txt | sensible-pager
+    grep -hi "$@" /home/mitch/WadokuJT.txt | sensible-pager
 }
 
 # lookup in Pokédex™
 # $1: search string
 pokedex()
 {
-	( cd ~/git/pokedex; ./pokedex "$1" )
+    ( cd ~/git/pokedex; ./pokedex "$1" )
 }
 
 # play all my music sorted by album
 # 'q' to jump to next album, '^c' to quit
 albumplay()
 {
-	mount | grep -q /mnt/mp3 || mount /mnt/mp3
+    mount | grep -q /mnt/mp3 || mount /mnt/mp3
+    (
+	tty
 	(
-		tty
-		(
-			find /mnt/mp3 -type d 2>/dev/null
-			echo ..find 1>&2
-		) | (
-			unsort
-			echo ..unsort 1>&2
-		) | (
-			sleep 2
-			echo ..sleep 1>&2
-			unsort
-			echo ..unsort 1>&2
-		)
+	    find /mnt/mp3 -type d 2>/dev/null
+	    echo ..find 1>&2
 	) | (
-		read TTY
-		while read DIR; do
-			mplayer -shuffle "${DIR}"/* <$TTY
-		done
+	    unsort
+	    echo ..unsort 1>&2
+	) | (
+	    sleep 2
+	    echo ..sleep 1>&2
+	    unsort
+	    echo ..unsort 1>&2
 	)
+    ) | (
+	read TTY
+	while read DIR; do
+	    mplayer -shuffle "${DIR}"/* <$TTY
+	done
+    )
 }
 
 # quick way to renice and ionice a given process or everything matching a string
@@ -260,16 +261,16 @@ share_file_once()
 # colored man
 # sauce: http://www.pcspinnt.de/2013/09/lazy-admins-using-the-shell-third-one/
 if [[ -e /usr/bin/less ]]; then
-	man() {
-		env LESS_TERMCAP_mb=$'\E[01;31m' \
-		LESS_TERMCAP_md=$'\E[01;38;5;74m' \
-		LESS_TERMCAP_me=$'\E[0m' \
-		LESS_TERMCAP_se=$'\E[0m' \
-		LESS_TERMCAP_so=$'\E[38;5;246m' \
-		LESS_TERMCAP_ue=$'\E[0m' \
-		LESS_TERMCAP_us=$'\E[04;38;5;146m' \
-		man "$@"
-	}
+    man() {
+	env LESS_TERMCAP_mb=$'\E[01;31m' \
+	    LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+	    LESS_TERMCAP_me=$'\E[0m' \
+	    LESS_TERMCAP_se=$'\E[0m' \
+	    LESS_TERMCAP_so=$'\E[38;5;246m' \
+	    LESS_TERMCAP_ue=$'\E[0m' \
+	    LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+	    man "$@"
+    }
 fi
 
 
@@ -293,7 +294,7 @@ uucopy()
 	    exit 1
 	    ;;
     esac;
-	
+    
     # print log is successful
     uucp -t -C -n mitch "$@" "$TARGET" && ( uulog | tail -n 5 )
 }
