@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
+notify-send -u low -a locknow -t 3000 'locking screen 3… 2… 1…'
+sleep 1
 xautolock -enable
-sleep 0.5 # race condition? does not work without!
+sleep 2 # race condition? does not work without!
 xautolock -locknow
-xset dpms force standby
+sleep 3
+xset dpms force off
