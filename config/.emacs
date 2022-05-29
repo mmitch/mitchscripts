@@ -232,7 +232,7 @@ WINDOWED is t if running under X11"
     (if windowed
 	;; set theme for X
 	(progn
-	  (set-face-attribute 'default nil :font "Terminus-14")
+	  (set-face-attribute 'default nil :font "Terminus-12")
 
 	  (unless my:theme-windowed-loaded
 	    (progn
