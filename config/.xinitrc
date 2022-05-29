@@ -70,3 +70,6 @@ xkbset -a
 
 # emacs vorstarten
 emacs --daemon &
+
+# Meldungen von Handy und Tablet
+bin=$(command -v kdeconnect-indicator) && ${bin} &
