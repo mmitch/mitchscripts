@@ -113,36 +113,48 @@ CHAN()
 	GET "$1" > "$(basename "$1")"
 }
 
-# snap a window
+# screenshot a window
 SHOT()
 {
-	FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
-	import $FILE
-	echo $FILE
+    FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
+        if command -v gm >/dev/null; then
+	# GraphicsMagick is available
+	gm import "$FILE"
+    else
+	# fall back on ImageMagick - I have problems with an invisible X cursor here
+	import "$FILE"
+    fi
+	echo "$FILE"
 }
 
-# snap the screen
+# screenshot the screen
 SHOT_ALL()
 {
 	FILE=/tmp/shot_$(date +%Y%m%d-%H%M%S).png
-	import -window root $FILE
-	echo $FILE
+    if command -v gm >/dev/null; then
+	# GraphicsMagick is available
+	gm import -window root "$FILE"
+    else
+	# fall back on ImageMagick - I have problems with an invisible X cursor here
+	import -window root "$FILE"
+    fi
+	echo "$FILE"
 }
 
-# snap a window and publish on www
+# screenshot a window and publish on www
 SHOT_WEB()
 {
 	FILE=$(SHOT)
-	ari_temp $FILE
-	rm $FILE
+	ari_temp "$FILE"
+	rm "$FILE"
 }
 
-# snap a window and publish locally
+# screenshot a window and publish locally
 SHOT_MITCH()
 {
 	FILE=$(SHOT)
-	mitch_temp $FILE
-	rm $FILE
+	mitch_temp "$FILE"
+	rm "$FILE"
 }
 
 # set window title on ssh connection
