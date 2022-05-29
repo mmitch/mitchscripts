@@ -128,6 +128,10 @@
     (setq atomic-chrome-buffer-open-style 'frame)))
 
 ;;;
+;;; activate which-key when installed
+(when (require 'which-key nil :noerror)
+  (which-key-mode))
+
 ;;;	       	  
 ;;; org-mode
 ;;;
