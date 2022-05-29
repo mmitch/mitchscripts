@@ -12,7 +12,7 @@
 set -e
 
 # we're into faster stuff than the defaults of bpm(1)
-min_bpm=100
+min_bpm=90
 max_bpm=220
 
 # files longer than this get additionally checked in parts
