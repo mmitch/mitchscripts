@@ -51,6 +51,9 @@
 ;;(global-hl-line-mode 1)
 ;;(set-face-background 'hl-line "#033")
 
+;; where is the cursor?
+(blink-cursor-mode t)
+
 ;; highlight matching parens
 (show-paren-mode 1)
 
