@@ -11,7 +11,7 @@
 
 for MKV in *.mkv; do
 
-    [ "$(lsof "$MKV" | wc -l)" = 0 ] || continue # file is still being written
+    [ "$(lsof "$MKV" 2>/dev/null | wc -l)" = 0 ] || continue # file is still being written
     
     MKVSIZE=$(stat -c%s "$MKV")
     [ "$MKVSIZE" -gt 0 ] || continue
