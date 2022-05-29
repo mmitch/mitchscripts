@@ -75,11 +75,21 @@
 (add-hook 'mail-mode-hook 'turn-on-auto-fill)
 
 ;;;
-;;; ido
+;;; Completion framework
 ;;;
 
-(require 'ido)
-(ido-mode t)
+;; I generally like this...
+(require 'marginalia nil :noerror)
+(when (require 'selectrum nil :noerror)
+  (selectrum-mode +1)
+  (selectrum-prescient-mode +1)
+  (prescient-persist-mode +1))
+
+;; ...but I prefere ido for choosing files
+(when (require 'ido nil :noerror)
+  (ido-mode t))
+
+;;;
 
 ;;;
 ;;; perl
@@ -293,6 +303,7 @@ WINDOWED is t if running under X11"
  '(c-basic-offset 8)
  '(c-default-style "bsd")
  '(column-number-mode t)
+ '(completion-styles '(basic initials partial-completion substring))
  '(custom-safe-themes
    '("f5b591870422cd28da334552aae915cdcae3edfcfedb6653a9f42ed84bbec69f" default))
  '(ecb-options-version "2.40")
@@ -339,7 +350,8 @@ WINDOWED is t if running under X11"
 	    default-directory))
      (eval require 'ox-reveal)
      (eval require 'ob-vala)))
- '(scss-compile-at-save nil))
+ '(scss-compile-at-save nil)
+ '(selectrum-highlight-candidates-function 'selectrum-prescient--highlight))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
