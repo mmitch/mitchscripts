@@ -90,6 +90,14 @@
   (ido-mode t))
 
 ;;;
+;;; Projectile source project interaction
+;;;
+
+(when (require 'projectile nil :noerror)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+
+;;;
 
 ;;;
 ;;; perl
