@@ -21,14 +21,14 @@ XTerm*faceNameDoublesize: VL Gothic
 !alternatives: Dejavu Sans Mono,monospace
 !alternatives: IPAGothic
 
-XTerm*fontMenu*fontdefault*Label: 14 (default)
-XTerm*faceSize: 14
+XTerm*fontMenu*fontdefault*Label: 10 (default)
+XTerm*faceSize: 10
 
 XTerm*font1.Label: 8
 XTerm*faceSize1: 8
 
-XTerm*font2.Label: 10
-XTerm*faceSize2: 10
+XTerm*font2.Label: 14
+XTerm*faceSize2: 14
 
 XTerm*font3.Label: 16
 XTerm*faceSize3: 16
