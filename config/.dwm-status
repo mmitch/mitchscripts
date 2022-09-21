@@ -24,9 +24,9 @@ else
     arc=0
 fi
 
-USED=###########
+USED=■■■■■■■■■■■
 FREE="           "
-AVL=+++++++++++
+AVL=···········
 
 get_free_memory()
 {
@@ -51,7 +51,7 @@ get_free_memory()
     free=$(( ${mems[MemFree:]}   * 10 / ${mems[MemTotal:]} ))
     used=$(( 10 - avl - free ))
     
-    free_memory="|${USED:0:$used}${AVL:0:$avl}${FREE:0:$free}|"
+    free_memory="${USED:0:$used}${AVL:0:$avl}${FREE:0:$free}"
 }
 
 touch_synced()
@@ -60,11 +60,40 @@ touch_synced()
     printf "%(%c)T\\n" -1 > "/var/run/user/$UID/$app-synced"
 }
 
+load='          '
+
+update_load()
+{
+    local new_load
+    read -r new_load _ < /proc/loadavg
+    case $new_load in
+	0.[01]*)
+	    new_load=' '
+	    ;;
+	0*)
+	    new_load='·'
+	    ;;
+	1*)
+	    new_load='░'
+	    ;;
+	2*)
+	    new_load='▒'
+	    ;;
+	3*)
+	    new_load='▓'
+	    ;;
+	*)
+	    new_load='█'
+	    ;;
+    esac
+
+    load="${load:1}$new_load"
+}
+
 while true; do
       
     DROP=
     TIME=$(/bin/date +%H:%M:%S)
-    LOAD=$(cut -d ' ' -f -3 /proc/loadavg)
 
     if [ $DROPBOX = yes ] ; then
 	LANG=C dropbox status > "$DROPSTATE" 2>&1
@@ -90,8 +119,11 @@ while true; do
     fi
 
     get_free_memory
+    update_load
 
-    xsetroot -name "$DROP$TIME $free_memory $LOAD"
+    temp_range="$(temprange.sh)°C"
+
+    xsetroot -name "$DROP$TIME [$free_memory] [$temp_range] [$load]"
 
     sleep 23
 done
