@@ -415,3 +415,8 @@ check-perl-deps() {
     cpanm --showdeps "$@" | grep :: | grep -v ^- | sed 's/~.*//' \
 	| while read -r module; do perl "-M$module" -e '1;' && echo "$module OK"; done
 }
+
+# pimp diction(1)
+diction() {
+    command diction "$@" | grep --color=auto -P '\[.+?]'
+}
