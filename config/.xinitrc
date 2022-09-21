@@ -13,7 +13,7 @@ export FREETYPE_PROPERTIES=truetype:interpreter-version=35
 
 #export DMENU_COLORS="-fn fixed -nb #336 -nf #ccc -sb #669 -sf #eee"
 #export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
-export DMENU_COLORS="-fn -*-terminus-medium-r-normal-*-*-180-*-*-c-*-iso10646-1 -nb #222 -nf #ddd -se #222"
+export DMENU_COLORS="-fn -*-terminus-medium-r-*-*-18-*-*-*-*-*-*-*,-*-*-*-*-*-*-17-*-*-*-*-*-jisx0208.1983-* -nb #222 -nf #ddd -se #222"
 
 ( sleep 2; cd Dropbox/backgrounds/ && ./feh-random-bg ) &
 # ( floatbg -satmid 0.2 -satvar 0.15 -fase 0.1 -value 0.3 & ) &
@@ -25,6 +25,10 @@ xbanish &
 # fix Java GUI breakages (see dwm website)
 # export AWT_TOOLKIT=MToolkit # <- this breaks Eclipse 2019-12
 # [ -x /usr/bin/wmname ] && /usr/bin/wmname LG3D
+
+# fix further Java GUI breakage (from IntelliJ)
+# export _JAVA_AWT_WM_NONREPARENTING=1
+
 
 # ask SSH password
 ~/bin/ssh-addkeys < /dev/null
