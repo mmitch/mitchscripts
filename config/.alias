@@ -169,7 +169,7 @@ edict()
 # $1: search string
 pokedex()
 {
-    ( cd ~/git/pokedex; ./pokedex "$1" )
+    ( cd ~/git/pokedex && ./pokedex "$1" )
 }
 
 # play all my music sorted by album
@@ -192,9 +192,9 @@ albumplay()
 	    echo ..unsort 1>&2
 	)
     ) | (
-	read TTY
-	while read DIR; do
-	    mplayer -shuffle "${DIR}"/* <$TTY
+	read -r TTY
+	while read -r DIR; do
+	    mplayer -shuffle "${DIR}"/* <"$TTY"
 	done
     )
 }
