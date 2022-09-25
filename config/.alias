@@ -158,14 +158,6 @@ SHOT_MITCH()
     rm "$FILE"
 }
 
-# set window title on ssh connection
-ssh()
-{
-    xtermset -T "ssh $*"
-    /usr/bin/ssh "$@"
-    xtermset -T "$USER@$HOSTNAME"
-}
-
 # lookup inside WadokuJT
 # $1: word
 edict()
