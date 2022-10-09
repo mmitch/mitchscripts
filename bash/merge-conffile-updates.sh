@@ -46,6 +46,10 @@
 #    (This might be tuned further by adding --force-confdef to prevent
 #     some of the PROBLEMS stated above.)
 #
+#    To get the same behaviour with packages that use ucf(1), you need
+#    to set the environment variables UCF_FORCE_CONFFNEW _and_
+#    RETAIN_OLD (the value does not matter, just use 'yes' or '1').
+#
 #    Please note that after all merges have been done you have to
 #    restart affected services manually (or just boot once after
 #    everything is merged).
@@ -57,6 +61,7 @@
 #    because of an outdated configuration file format.
 #
 #    The apt parameter becomes '-o Dpkg::Options::=--force-confold'.
+#    The ucf environment variable to set is just UCF_FORCE_CONFFOLD.
 #
 #    Service restarts will be needed as well.
 #
