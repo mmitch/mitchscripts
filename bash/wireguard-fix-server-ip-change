@@ -22,7 +22,7 @@ CFG_PATH=/etc/wireguard
 
 debug() {
     # remove : to enable debug messages
-    echo "DEBUG: ${interface}${interface:+: }$*"
+    : echo "DEBUG: ${interface}${interface:+: }$*"
 }
 
 info() {
