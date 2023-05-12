@@ -1,0 +1,25 @@
+#!/bin/sh -e
+#
+# - filter URLs from stdin and select a URL to open in browser
+# - removes mutt-style multiline continuation markers ("\n+")
+# - should be bound to the printer command in xterm(1), see ~/.Xresources
+
+sed ':a;N;$!ba;s/\n+//g' | \
+    grep -Eo '\bhttps?://\S+\b' | \
+    uniq | \
+    ifne rofi -dmenu -i -p "Open URL" -auto-select | \
+    xargs xdg-open
+
+
+# for future reference:
+# urxvt url matching from: https://bsd.to/ThrE/raw
+# $urxvt::NOCHAR see https://man.archlinux.org/man/urxvt-matcher.1.en#Wide
+#my $url =
+#   qr{
+#      (?:https?://|ftp://|news://|mailto:|file://|\bwww\.)
+#      [\w\-\@;\/?:&=%\$.+!*\x27,~#$urxvt::NOCHAR]*
+#      (
+#         \([\w\-\@;\/?:&=%\$.+!*\x27,~#$urxvt::NOCHAR]*\)| # Allow a pair of matched parentheses
+#         [\w\-\@;\/?:&=%\$+*~]  # exclude some trailing characters (heuristic)
+#      )+
+#   }x;
