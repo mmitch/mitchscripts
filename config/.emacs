@@ -80,10 +80,10 @@
 
 ;; I generally like this...
 (require 'marginalia nil :noerror)
-(when (require 'selectrum nil :noerror)
-  (selectrum-mode +1)
-  (selectrum-prescient-mode +1)
-  (prescient-persist-mode +1))
+(when (require 'vertico nil :noerror)
+  (vertico-mode 1)
+  (vertico-prescient-mode 1)
+  (prescient-persist-mode 1))
 
 ;; ...but I prefere ido for choosing files
 (when (require 'ido nil :noerror)
