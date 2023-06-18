@@ -3,6 +3,12 @@ set -e
 
 # simple status script plus dropbox indicator for dwm-mitch
 
+# configurable character sets because of font shenanigans
+#MEM_CHARSET=" ·■"
+#LOAD_CHARSET=" ·░▒▓█"
+MEM_CHARSET=" ░▓"
+LOAD_CHARSET=" ·-~×#"
+
 if dropbox > /dev/null 2>&1; then
     DROPBOX=yes
 else
@@ -24,9 +30,15 @@ else
     arc=0
 fi
 
-USED=■■■■■■■■■■■
-FREE="           "
-AVL=···········
+repeat_string()
+{
+    local string=$1 count=$2
+    printf "$string%.0s" $(seq "$count")
+}
+
+FREE=$(repeat_string "${MEM_CHARSET:0:1}" 11)
+AVL=$( repeat_string "${MEM_CHARSET:1:1}" 11)
+USED=$(repeat_string "${MEM_CHARSET:2:1}" 11)
 
 get_free_memory()
 {
@@ -68,26 +80,26 @@ update_load()
     read -r new_load _ < /proc/loadavg
     case $new_load in
 	0.[01]*)
-	    new_load=' '
+	    new_load=0
 	    ;;
 	0*)
-	    new_load='·'
+	    new_load=1
 	    ;;
 	1*)
-	    new_load='░'
+	    new_load=2
 	    ;;
 	2*)
-	    new_load='▒'
+	    new_load=3
 	    ;;
 	3*)
-	    new_load='▓'
+	    new_load=4
 	    ;;
 	*)
-	    new_load='█'
+	    new_load=5
 	    ;;
     esac
 
-    load="${load:1}$new_load"
+    load="${load:1}${LOAD_CHARSET:$new_load:1}"
 }
 
 while true; do
