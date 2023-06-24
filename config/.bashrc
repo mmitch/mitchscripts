@@ -5,7 +5,7 @@ HISTFILESIZE=2000
 shopt -s histappend
 
 # setup path
-source ~/git/mitchscripts/config/setup-PATH
+[ -e ~/git/mitchscripts/config/setup-PATH ] && source ~/git/mitchscripts/config/setup-PATH
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -77,7 +77,7 @@ case "$TERM" in
 	;;
 
     *)
-	export MC_SKIN=~/git/mitchscripts/config/mitch-mc-skin.ini
+	[ -e ~/git/mitchscripts/config/mitch-mc-skin.ini ] && export MC_SKIN=~/git/mitchscripts/config/mitch-mc-skin.ini
 	PS1="${LOC_PROMPT_ERRORCODE}${debian_chroot:+($debian_chroot)}\u@\h:\w${LOC_PROMPT_GIT}\$ "
 	;;
 esac
