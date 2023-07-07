@@ -30,6 +30,15 @@ else
     arc=0
 fi
 
+if command -v temprange.sh >/dev/null; then
+    update_temprange() {
+	TEMP="[$(temprange.sh)°C] "
+    }
+else
+    TEMP=
+    update_temprange() { : ; }
+fi
+ 
 repeat_string()
 {
     local string=$1 count=$2
@@ -132,10 +141,9 @@ while true; do
 
     get_free_memory
     update_load
+    update_temprange
 
-    temp_range="$(temprange.sh)°C"
-
-    xsetroot -name "$DROP$TIME [$free_memory] [$temp_range] [$load]"
+    xsetroot -name "$DROP$TIME [$free_memory] ${TEMP}[$load]"
 
     sleep 23
 done
