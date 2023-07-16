@@ -195,7 +195,9 @@
 
 ;; load ox-gfm.el if present
 (eval-after-load "org"
-  '(require 'ox-gfm nil :noerror))
+  (progn
+    '(require 'ox-gfm nil :noerror)
+    '(require 'org-archive)))
 
 ;; org-mode keybindings
 (require 'org)
