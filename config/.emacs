@@ -174,6 +174,14 @@
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
 ;;;
+;;; shell
+;;;
+
+(add-hook 'sh-mode-hook '(sh-electric-here-document-mode) 80)
+(add-hook 'sh-mode-hook '(setq indent-tabs-mode nil) 80)
+
+
+;;;
 ;;; use emacs to edit <textarea>s in Firefox
 ;;;
 
