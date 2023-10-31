@@ -8,7 +8,7 @@
 # false positives are no problem - the worst that can happen is a new emacs instance that takes a bit longer to start
 for ARG in "$@"; do
     case "$ARG" in
-	--daemon|-q|-Q|--batch)
+	--daemon|-q|-Q|--batch|-batch)
 	    exec /usr/bin/emacs "$@"
 	    ;;
     esac
