@@ -1,6 +1,9 @@
 #!/usr/bin/perl -w
-# 
-# 2005-2008 (c) by Christian Garbs <mitch@cgarbs.de>
+#
+# generate HTML page with personal Debian package repository contents
+#
+# Copyright (C) 2005-2008, 2024  Christian Garbs <mitch@cgarbs.de>
+# Licensed under GNU GPL v3 or later.
 #
 # usage:
 # (zcat Packages.gz ; echo ~~~START~SOURCES~~~ ; zcat Sources.gz) | Packager.pl > some.html
@@ -71,7 +74,7 @@ if ($line and $line =~ /^~~~START~SOURCES~~~$/) {
 
 }
 
-print <<EOF;
+print <<FOE;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html><head>
 <title>cgarbs.de Debian package repository</title>
@@ -92,16 +95,26 @@ print <<EOF;
 <li><a href="#4">Package details</a></li>
 </ul>
 <h1><a name="1">Repository access</a></h1>
-<p>The repository is available under:</p>
+<p>Configure your system like this:</p>
 <pre>
-deb     https://www.cgarbs.de/stuff ./
-deb-src https://www.cgarbs.de/stuff ./
+curl -o /etc/apt/keyrings/cgarbs.de-keyring.asc https://www.cgarbs.de/gpg-key
+
+cat &gt; /etc/apt/sources.list.d/cgarbs.de.list &lt;&lt;EOF
+deb     [signed-by=/etc/apt/keyrings/cgarbs.de-keyring.asc] https://www.cgarbs.de/stuff ./
+deb-src [signed-by=/etc/apt/keyrings/cgarbs.de-keyring.asc] https://www.cgarbs.de/stuff ./
+EOF
 </pre>
-<p>Put these lines in your <tt>/etc/apt/sources.list</tt> and you are ready to go.<br>
-My repository key is available <a href="/gpg-key">here</a>.</p>
 <p>(As the repository is available via HTTPS only, be sure to have <tt>apt-transport-https</tt> installed.)</p>
 
 <h1><a name="2">Repository content</a></h1>
+
+<p><b>Please note:</b> As of 2024, the only packages from here that I
+use somewhat regularly are <i>mplayer-dep-dev</i>,
+<i>photogallery</i>, <i>simplebackup</i> and <i>soundconvert</i>.  You
+can expect me to fix bugs that bug me whenand if I encounter them
+(eg. dependency problems after a new stable release).  The only
+architecture I still compile on is <i>amd64</i>.  Everything else in
+this repository is just of archaeological interest.</p>
 
 <p>This repository contains different categories of software for the
 <i>i386</i>, <i>amd64</i> and <i>sparc</i> architectures (the focus
@@ -171,7 +184,7 @@ fails, please <a href="mailto:debian\@cgarbs.de">contact me</a>.</p>
 
 <h1><a name="3">Package overview</a></h1>
 <p>The following packages are currently available:</p><ul>
-EOF
+FOE
     ;
 foreach my $package (sort keys %{$packages}) {
     print "<li><a href=\"#$package\">$package</a> ("
