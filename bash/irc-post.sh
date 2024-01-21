@@ -2,7 +2,7 @@
 #
 # send STDIN to USER via IRC without joining a channel
 #
-# Copyright (C) 2019, 2021  Christian Garbs <mitch@cgarbs.de>
+# Copyright (C) 2019, 2021, 2024  Christian Garbs <mitch@cgarbs.de>
 # licensed under GNU GPL v3 or later
 #
 
@@ -13,7 +13,11 @@ TARGET="$4"
 
 if [ -z "$IRCSERVER" ] || [ -z "$IRCPORT" ] || [ -z "$NICK" ] || [ -z "$TARGET" ] \
        || [ "$IRCSERVER" = "-h" ] || [ "$IRCSERVER" = "--help" ]; then
-    echo "usage:  irc-post.sh <IRCSERVER> <IRCPORT> <NICKNAME> <TARGET>"
+    cat <<EOF
+usage:  irc-post.sh <IRCSERVER> <IRCPORT> <NICKNAME> <TARGET>
+
+<TARGET> can either be a nick or a #channel
+EOF
     exit
 fi
 
