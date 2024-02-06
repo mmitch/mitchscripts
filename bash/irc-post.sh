@@ -28,7 +28,7 @@ connected=no
 exec >/dev/tcp/"$IRCSERVER"/"$IRCPORT" # todo: multi-server-fallback
 while read -r LINE; do
     if [ $connected = no ]; then
-	echo "USER $NICK 8 * : $NICK bot"
+	echo "USER $NICK 8 * :$NICK bot"
 	echo "NICK $NICK"
 	sleep 1
 	connected=yes
