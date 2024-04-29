@@ -254,6 +254,12 @@ share_file_once()
 # sauce: http://www.pcspinnt.de/2013/09/lazy-admins-using-the-shell-third-one/
 if [[ -e /usr/bin/less ]]; then
     man() {
+	# use pseudo-manpage 'expansion' to show 'Parameter Expansion' section from bash(1)
+	if [ "$1" = expansion ]; then
+	    man -P 'less -p "^ *Parameter Expansion"' bash
+	    return
+	fi
+
 	# NOTE: LESS_TERMCAP_us experimentally overwritten in green
 	# sauce: https://www.topbug.net/blog/2016/09/27/make-gnu-less-more-powerful/
 	env LESS_TERMCAP_mb=$'\E[01;31m' \
