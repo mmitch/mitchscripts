@@ -421,3 +421,7 @@ check-perl-deps() {
 diction() {
     command diction "$@" | grep --color=auto -P '\[.+?]'
 }
+
+# too lazy to add --user
+alias userctl='systemctl --user'
+
