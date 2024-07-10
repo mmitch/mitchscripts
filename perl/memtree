@@ -39,7 +39,7 @@ usage:  memtree [-h|--help] [-p <min_percent>] [<start_pid>...]
  -h or --help      shows this help
  -p <min_percent>  sets the minimum percentage for recursion into
                    child processes (default: ${min_percent})
- <start_pid>       start tree this process id
+ <start_pid>       start tree at this process id
                    (default: list all processes)
 
 Basically works like a combination of ps(1) and pstree(1):
