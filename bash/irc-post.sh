@@ -27,7 +27,7 @@ connected=no
 
 exec >/dev/tcp/"$IRCSERVER"/"$IRCPORT" # todo: multi-server-fallback
 while read -r LINE; do
-    if [ $connected = no ]; then
+    if [ "$connected" = no ]; then
 	echo "USER $NICK 8 * :$NICK bot"
 	echo "NICK $NICK"
 	sleep 1
@@ -36,6 +36,6 @@ while read -r LINE; do
     echo "PRIVMSG $TARGET :$LINE"
     sleep 0.5
 done
-if [ $connected = yes ]; then
+if [ "$connected" = yes ]; then
     echo "QUIT"
 fi
