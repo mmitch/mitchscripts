@@ -1,0 +1,148 @@
+#!/usr/bin/env perl
+#
+# Copyright (C) 2024  Christian Garbs <mitch@cgarbs.de>
+# Licensed under GNU GPL v3 or later.
+#
+# This script handles pulseaudio volume changes for a non-linear
+# left/right channel volume as I don't sit in the stereo center.
+#
+# This script is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# nomd is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with nomd.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# This script will call pactl(1) to change the volume of the
+# default PulseAudio audio sink.
+#
+# usage:
+# - softlink to "volume-up" and "volume-down" and call the links
+# OR
+# - call with "+" as first argument to raise volume;
+#   all other arguments (including none) lower the volume
+
+use strict;
+use warnings;
+
+sub get_default_sink {
+    my $line = (grep /^Default Sink:/, `LANG=C pactl info`)[0];
+    chomp $line;
+    $line =~ s/.*: //;
+    return $line;
+}
+
+sub get_sink_volume($) {
+    my ($sink) = @_;
+    my $volume_right;
+    open my $pactl, "-|", "LANG=C pactl list sinks" or die "can't open pactl: $!";
+
+    # find sink
+    while (my $line = <$pactl>) {
+	last if $line =~ /Name: ${sink}/;
+    }
+
+    # find volume of that sink
+    while (my $line = <$pactl>) {
+	if ($line =~ /^\s+Volume: .*front-right: .*?\s(\d+)%/) {
+	    $volume_right = $1;
+	    last;
+	}
+    }
+    
+    close $pactl or die "can't close pactl: $!";
+    die "no volume found" unless defined $volume_right;
+    return $volume_right;
+}
+
+sub set_sink_volume($$$) {
+    my ($sink, $volume_left, $volume_right) = @_;
+    system 'pactl', 'set-sink-volume', $sink, $volume_left . '%', $volume_right . '%';
+}
+
+sub unmute_sink($) {
+    my ($sink) = @_;
+    system 'pactl', 'set-sink-mute', $sink, 'false';
+}
+
+my @CURVE = (
+    [ 3,  5],
+    [ 6, 10],
+    [10, 14],
+    [13, 18],
+    [16, 21],
+    [19, 25],
+    [22, 30],
+    [25, 35],
+    [28, 40],
+    [32, 45],
+    [36, 50],
+    [38, 55],
+    [42, 60],
+    [46, 65],
+    [51, 70],
+    [55, 75],
+    [60, 80],
+    [64, 85],
+    [68, 90],
+    [73, 95],
+    [78,100],
+       );
+
+my $LAST_CURVE_IDX = @CURVE - 1;
+
+sub get_curve_idx($) {
+    my ($right_volume) = @_;
+    for my $idx (0 .. $LAST_CURVE_IDX) {
+	return $idx if $CURVE[$idx]->[1] >= $right_volume;
+    }
+    return $LAST_CURVE_IDX;
+}
+
+sub clamp($$$) {
+    my ($min, $val, $max) =  @_;
+    return $min if $val < $min;
+    return $max if $val > $max;
+    return $val;
+}
+
+sub get_curve($) {
+    my ($idx) = @_;
+    return @{$CURVE[clamp(0, $idx, $LAST_CURVE_IDX)]};
+}
+
+my $sink = get_default_sink();
+print "sink=$sink\n";
+
+unmute_sink($sink);
+
+my $right_old = get_sink_volume($sink);
+print "vol_old=$right_old\n";
+
+my $idx_old = get_curve_idx($right_old);
+
+print "idx_old=$idx_old\n";
+
+my $idx_new;;
+if ($0 =~ /volume-up$/) {
+    $idx_new = $idx_old + 1;
+} elsif ($0 =~ /volume-down$/) {
+    $idx_new = $idx_old - 1;
+} else {
+    my $first_arg_maybe = $ARGV[0] // '';
+    $idx_new = $idx_old + (($first_arg_maybe eq '+') ? +1 : -1);
+}
+
+print "idx_new=$idx_new\n";
+
+my ($left_new, $right_new) = get_curve($idx_new);
+set_sink_volume($sink, $left_new, $right_new);
+
+print "vol_new=$left_new $right_new\n";
