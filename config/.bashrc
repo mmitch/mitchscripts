@@ -56,7 +56,8 @@ case "$TERM" in
 	    merlin)
 		color=94
 		;;
-	    ks*)
+	    ks*) ;&
+	    ns*)
 		color=95
 		;;
 	    fluttershy)
