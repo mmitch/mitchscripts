@@ -40,7 +40,7 @@ config_must_not_be_set()
 config_must_be_set dateext /etc/logrotate.conf
 
 # compress should be disabled only when we use ZFS
-if df -T /var/log | grep -q -F " zfs "; then
+if [ "$(stat -f -c %T /var/log)" = zfs ] ; then
 
     {
 	echo /etc/logrotate.conf
