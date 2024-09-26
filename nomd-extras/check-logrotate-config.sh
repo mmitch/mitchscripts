@@ -5,7 +5,7 @@ OK() {
 }
 
 FAIL() {
-    echo "I:logrotate_config:$*"
+    echo "C:logrotate_config:$*"
 }
 
 config_is_set()
