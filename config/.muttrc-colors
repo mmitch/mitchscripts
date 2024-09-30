@@ -1,6 +1,6 @@
 # personalized mutt color scheme for 256 color terminals via ncurses
 # tested with neomutt 20180716+dfsg.1-1+deb10u2
-# include from your readl ~/.muttrc via "source /path/to/this/file"
+# include from your real ~/.muttrc via "source /path/to/this/file"
 
 
 #### global stuff
