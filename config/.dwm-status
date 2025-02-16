@@ -81,7 +81,7 @@ touch_synced()
     printf "%(%c)T\\n" -1 > "/var/run/user/$UID/$app-synced"
 }
 
-load='          '
+load='---------{'
 
 update_load()
 {
