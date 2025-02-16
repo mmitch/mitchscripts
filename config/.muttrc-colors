@@ -36,6 +36,8 @@ color index_author	color187 black '~P'
 # mails from service accounts
 color index_author	color65 black "~froot@"
 color index_author	color65 black "~fnews@"
+color index_author	color65 black "~fuucp@"
+color index_author	color204 black "~fcron@"
 color index_author	color204 black "~fblog@"
 color index_author	color138 black "~fbuilds@"
 color index_author	color138 black "~fnotifications@"
