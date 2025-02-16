@@ -40,6 +40,9 @@ FOLDERS=$(rest_get stats/folder | jq -r 'keys|join(" ")')
 # check which folder is shared with whom
 ALL_SHARES=$(rest_get system/config | jq -r '.folders[]| { id: .id, devices: .devices[].deviceID}|join("/")')
 
+# check if every folder is connected
+# TODO
+
 is_shared() {
     local DEVICE=$1 FOLDER=$2
     echo "$ALL_SHARES" | grep -q -F "$FOLDER/$DEVICE"
