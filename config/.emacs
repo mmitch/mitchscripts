@@ -180,6 +180,13 @@
 (add-hook 'sh-mode-hook '(sh-electric-here-document-mode) 80)
 (add-hook 'sh-mode-hook '(setq indent-tabs-mode nil) 80)
 
+;;;
+;;; grammar check
+;;;
+
+(when (require 'langtool nil :noerror)
+  (setq langtool-language-tool-jar "/home/mitch/git/languagetool/languagetool-standalone/target/LanguageTool-5.8-SNAPSHOT/LanguageTool-5.8-SNAPSHOT/languagetool-commandline.jar"))
+
 
 ;;;
 ;;; use emacs to edit <textarea>s in Firefox
