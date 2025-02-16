@@ -97,4 +97,13 @@ ifpresent emacs --daemon &
 ifpresent kdeconnect-indicator &
 
 # mal schauen, das geht bei jedem Restart kaputt
-ifpresent systemctl --user restart xdg-desktop-portal-gtk.service
+ifpresent systemctl --user restart xdg-desktop-portal-gtk.service &
+
+# Fan nach booten leiser
+ifpresent fan 80 &
+
+# auf Bildschirmschoner aufpassen
+ifpresent bin/keep-screensaver-saved.sh &
+
+# Stereo-Verteilung initialisieren
+ifpresent bin/volume-down &
