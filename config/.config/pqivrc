@@ -4,6 +4,7 @@ hide-info-box=1
 window-position=off
 disable-backends=archive,archive_cbx,libav,poppler,spectre,wand
 # gdkpixbuf,webp backends still active
+slideshow-interval=10
 
 [keybindings]
 a                    { goto_file_relative(-1);  }
