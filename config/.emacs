@@ -220,6 +220,10 @@
 ;;(define-key global-map "\C-ca" 'org-agenda)
 (setq org-log-done t)
 
+;; don't open LibreOffice files within emacs (they look like ZIP files)
+(add-to-list 'org-file-apps '("ods" . system))
+(add-to-list 'org-file-apps '("odt" . system))
+
 ;; don't indent prose paragraphs to headline indentation
 (setq org-adapt-indentation nil)
 
