@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# my-chroot - simple chroot wrapper with bind-mount handling
+# 
+# Copyright (C) 2025  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPL v2 or later
+#
+
+COMMAND=${1}
+CHROOT_ARG=${2}
+
+die() {
+    echo "ERROR: $@" >&2
+    exit 1
+}
+
+check-chroot() {
+    if [ "$CHROOT_ARG" ]; then
+       CHROOT=CHROOT_ARG
+    fi
+
+    if [ -z "$CHROOT" ]; then
+	die "no CHROOT given"
+    fi
+
+    if ! [ -d "$CHROOT" ]; then
+	die "CHROOT $CHROOT is no directory"
+    fi
+}
+
+do-mount() {
+    for dir in dev proc sys; do
+	mount --verbose --make-private --rbind /$dir $CHROOT/$dir
+    done
+}
+
+do-enter() {
+    chroot $CHROOT bash --login
+}
+
+do-umount() {
+    for dir in dev proc sys; do
+	umount --verbose $CHROOT/$dir
+    done
+}
+
+show-help() {
+    cat <<EOF
+usage:
+    $0 <COMMAND> [ <CHROOT> ]
+
+valid COMMANDs:
+- mount    - prepare bind-mounts for /dev, /proc and /sys in CHROOT
+- enter    - enter CHROOT (actual chroot(8) call)
+- umount   - remove bind-mounts from CHROOT
+
+CHROOT can either be given as a parameter or the environment variable \$CHROOT will be used
+
+EOF
+}
+
+case $COMMAND in
+
+    mount)
+	check-chroot
+	do-mount
+	;;
+
+    enter)
+	check-chroot
+	do-enter
+	;;
+
+    umount)
+	check-chroot
+	do-umount
+	;;
+    
+    -h)      ;&
+    --help)  ;&
+    h)       ;&
+    help)
+	show-help
+	;;
+
+    '')
+	die "no command given" 1>&2
+	;;
+    
+    *)
+	die "unknown command: $COMMAND" 1>&2
+	;;
+esac
