@@ -40,7 +40,10 @@ do-enter() {
 
 do-umount() {
     for dir in dev proc sys; do
-	umount --verbose $CHROOT/$dir
+	# umount for these normally fails because of being in use
+	# -f does not help here
+	# but -l does!
+        umount --verbose -l $CHROOT/$dir
     done
 }
 
