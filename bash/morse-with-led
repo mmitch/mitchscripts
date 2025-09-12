@@ -1,0 +1,74 @@
+#!/bin/bash
+#
+# morse-with-led - read text via STDIN and send as morse code
+#
+# Copyright (C) 2025  Christian Garbs <mitch@cgarbs.de>
+# licensed under GNU GPL v3 or later
+#
+# usage:
+#   echo -n "my message" | morse-with-led
+# (because you might not want the newline to be part of the morse code)
+#
+# This needs morsegen(1), it's available as a Debian package.
+# Adapt wait_unit(), on() and off() to your needs.
+#
+# THIS SCRIPT IS VERY INEFFICIENT AND WILL FORK LOTS OF EXTERNAL COMMANDS!
+
+# timing unit, adjust to taste
+wait_unit() {
+    sleep 0.1
+}
+
+# activate LED, beeper, buzzer or whatever
+on() {
+    # this is a homegrown script, use something else
+    set-thinkpad-led lid 1
+}
+
+# deactivate LED, beeper, buzzer or whatever
+off() {
+    # this is a homegrown script, use something else
+    set-thinkpad-led lid 0
+}
+
+dit() {
+    on
+    wait_unit
+    off
+    wait_unit
+}
+
+dah() {
+    on
+    wait_unit
+    wait_unit
+    wait_unit
+    off
+    wait_unit
+}
+
+pause() {
+    wait_unit
+    wait_unit
+    wait_unit
+    wait_unit
+}
+
+morsegen - | while read -r LINE; do
+    for (( IDX=0; IDX < ${#LINE}; IDX++ )); do
+	CHAR=${LINE:$IDX:1}
+	case $CHAR in
+	    '.')
+		dit
+		;;
+
+	    '-')
+		dah
+		;;
+
+	    ' ')
+		pause
+		;;
+	    esac
+    done
+done
