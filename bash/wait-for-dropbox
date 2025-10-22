@@ -2,21 +2,40 @@
 #
 # wait until syncthing is idle
 #
-# optionally needs dzen2 and zenity
+# needs dzen2
 
-# is there a syncthing?
-if ! pidof syncthing >/dev/null ; then
-    # warn
-    echo "Syncthing isn't running!" >&2
-    zenity --warning --text="Syncthing isn't running!" 2>/dev/null ||  true
-    # we're finished, nothing to do :)
+show_in_dzen2()
+{
+    dzen2 -bg darkred -fg grey80 -fn fixed -l 2 -e "button1=exec:touch $KILLTRIGGER;onstart=uncollapse;enterslave=collapse;entertitle=uncollapse" -ta left "$@"
+}
+
+warn_and_exit()
+{
+    echo "$@" >&2
+    ( echo "$@" | show_in_dzen2 -p 2 ) &
     exit 1
-fi
+}
 
-is_still_running()
+is_still_syncing()
 {
     STATUS=$(~/git/mitchscripts/bash/syncthing_status)
-    [ "$STATUS" ]
+    case $STATUS in
+	'')
+	    return 1
+	    ;;
+
+	'[ST:gone]')
+	    warn_and_exit "Syncthing isn't running!"
+	    ;;
+	
+	'[ST:offl]')
+	    warn_and_exit "Syncthing is offline"
+	    ;;
+
+	*)
+	    return 0
+	    ;;
+    esac
 }
 
 TIMER=2
@@ -24,7 +43,7 @@ TIMER=2
 KILLTRIGGER=/tmp/stop-wait-for-dropbox-flag
 
 # wait until idle
-if is_still_running; then
+if is_still_syncing; then
 
     if [ "$DISPLAY" ] && command -v dzen2 >/dev/null ; then
 
@@ -33,11 +52,11 @@ if is_still_running; then
 	rm -f $KILLTRIGGER
 	(
 	    echo '^tw()Waiting for Syncthing to settle...'
-	    while [ ! -e $KILLTRIGGER ] && is_still_running; do
+	    while [ ! -e $KILLTRIGGER ] && is_still_syncing; do
 		echo "$STATUS" | tr ^ \'
 		sleep $TIMER
 	    done
-	) | dzen2 -bg darkred -fg grey80 -fn fixed -l 2 -e "button1=exec:touch $KILLTRIGGER;onstart=uncollapse;enterslave=collapse;entertitle=uncollapse" -ta left
+	) | show_in_dzen2
 
 	rm -f $KILLTRIGGER
 
@@ -46,7 +65,7 @@ if is_still_running; then
         # text only
 
 	echo -n 'Waiting for Syncthing to settle...'
-	while is_still_running; do
+	while is_still_syncing; do
 	    sleep $TIMER
 	    echo -n .
 	done
