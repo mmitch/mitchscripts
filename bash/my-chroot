@@ -16,7 +16,7 @@ die() {
 
 check-chroot() {
     if [ "$CHROOT_ARG" ]; then
-       CHROOT=CHROOT_ARG
+       CHROOT=$CHROOT_ARG
     fi
 
     if [ -z "$CHROOT" ]; then
@@ -40,10 +40,9 @@ do-enter() {
 
 do-umount() {
     for dir in dev proc sys; do
-	# umount for these normally fails because of being in use
-	# -f does not help here
-	# but -l does!
-        umount --verbose -l $CHROOT/$dir
+	for mount in $(mount | awk '{print $3}' | grep "^$CHROOT/$dir" | tac); do
+	    umount --verbose -l "$mount"
+	done
     done
 }
 
