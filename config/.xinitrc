@@ -29,8 +29,8 @@ export FREETYPE_PROPERTIES=truetype:interpreter-version=35
 #export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
 export DMENU_COLORS="-fn -*-terminus-medium-r-*-*-18-*-*-*-*-*-*-*,-*-*-*-*-*-*-17-*-*-*-*-*-jisx0208.1983-* -nb #222 -nf #ddd -se #222"
 
-if [ -d Dropbox/backgrounds/ ]; then
-    ( sleep 2; cd Dropbox/backgrounds/ && ./feh-random-bg ) &
+if [ -d Cryptbox/backgrounds/ ]; then
+    ( sleep 2; cd Cryptbox/backgrounds/ && ./feh-random-bg ) &
 else
     ifpresent floatbg -satmid 0.2 -satvar 0.15 -fase 0.1 -value 0.3 &
 fi
