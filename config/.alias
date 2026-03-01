@@ -426,3 +426,7 @@ diction() {
 # too lazy to add --user
 alias userctl='systemctl --user'
 
+# find biggest files
+find-biggest-files() {
+    find ${1:-.} -type f -exec du -ah {} + | grep -v "/$" | sort -h
+}
