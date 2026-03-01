@@ -86,10 +86,6 @@ ifpresent xkbset -a
 # ein Terminal starten
 # ( sleep 2; x-terminal-emulator ) &
 
-# Screensaver
-# -secure disabled remote-Steuerung! (mplayer, dwm-mitch etc.)
-[ -x ~/bin/slock ] && [ -x /usr/bin/xautolock ] && ( xset +dpms s blank s 240; /usr/bin/xautolock -time 4 -locker ~/bin/slock -notify 30 -notifier "notify-send -u critical -t 10000 -i important -- 'LOCKING SCREEN' 'in 30 seconds'" ) &
-
 # emacs vorstarten
 ifpresent emacs --daemon &
 
@@ -103,6 +99,7 @@ ifpresent systemctl --user restart xdg-desktop-portal-gtk.service &
 ifpresent fan 80 &
 
 # auf Bildschirmschoner aufpassen
+# startet ihn auch initial nach ca. 1 Minute
 ifpresent bin/keep-screensaver-saved.sh &
 
 # Stereo-Verteilung initialisieren
