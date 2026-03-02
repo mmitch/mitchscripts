@@ -14,7 +14,7 @@ is_screen_saved_but_not_off() {
     pidof slock >/dev/null && { xset q | grep -q 'Monitor is On'; }
 }
 
-PIDFILE=/var/run/user/$UID/keep-screensaver-saves.sh
+PIDFILE=/var/run/user/$UID/keep-screensaver-saved.pid
 
 if [ -e "$PIDFILE" ]; then
     read -r pid < "$PIDFILE"
