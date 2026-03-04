@@ -5,6 +5,10 @@ log() {
     echo "dpms watch: $*" | ~/git/mitchscripts/bash/irc-post.sh localhost 6667 nomd \#chatops
 }
 
+log_maybe() {
+    [ "$quiet_for_cron" = yes ] || log "$@"
+}
+
 on_exit() {
     rm -f "$PIDFILE"
     log "EXITING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -16,19 +20,40 @@ is_screen_saved_but_not_off() {
 
 PIDFILE=/var/run/user/$UID/keep-screensaver-saved.pid
 
-if [ -e "$PIDFILE" ]; then
-    read -r pid < "$PIDFILE"
-    log "found PIDFILE in $PIDFILE with PID $pid"
-    if [ -d /proc/$pid ]; then
-	log "ERROR: pid still exists, won't start!"
-	exit 1
-    else
-	log 'PID does not exist any more, starting anyways, capturing PIDFILE'
+prevent_duplicate_run() {
+    if [ -e "$PIDFILE" ]; then
+	read -r pid < "$PIDFILE"
+	local PID_FOUND="found PIDFILE in $PIDFILE with PID $pid"
+	if [ -d /proc/$pid ]; then
+	    log_maybe "$PID_FOUND"
+	    log_maybe "ERROR: pid still exists, won't start!"
+	    exit 1
+	else
+	    log "$PID_FOUND"
+	    log 'PID does not exist any more, starting anyways, capturing PIDFILE'
+	fi
     fi
+
+    echo $$ > "$PIDFILE"
+}
+
+check_x11_connectivity() {
+    export DISPLAY=:0
+
+    if ! xhost >/dev/null 2>&1; then
+	log_maybe "DISPLAY=$DISPLAY seems invalid, not starting"
+	exit 1
+    fi
+}
+
+##################################################
+
+if [ "$1" = -quiet ]; then
+    quiet_for_cron=yes
 fi
 
-echo $$ > "$PIDFILE"
-
+check_x11_connectivity
+prevent_duplicate_run
 trap on_exit EXIT
 
 log 'started'
