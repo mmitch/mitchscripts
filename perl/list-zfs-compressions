@@ -1,0 +1,31 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+my @pools;
+open my $zpool, "zpool list -H -o name|" or die "can't open zpool: $!";
+while (my $line = <$zpool>) {
+    chomp $line;
+    push @pools, $line;
+}
+close $zpool or die "can't close zpool: $!";
+
+my $data;
+foreach  my $pool (@pools) {
+    open my $zfs, "zfs get -H -o name,property,value compression,compressratio,used,logicalused -p -r -t filesystem $pool|" or die "can't open zfs for pool $pool: $!";
+    while (my $line = <$zfs>) {
+	chomp $line;
+	my @columns = split /\t/, $line, 3;
+	$data->{$columns[0]}->{$columns[1]} = $columns[2];
+    }
+    close $zfs or die "can't close zfs pool $pool: $!";
+}
+
+print "FILESYSTEM,USED,LOGICALUSED,COMPRESSION,COMPRESSRATIO\n";
+foreach my $filesystem (sort keys %{$data}) {
+    print "$filesystem";
+    foreach my $property (qw(used logicalused compression compressratio)) {
+	printf ",%s", $data->{$filesystem}->{$property};
+    }
+    print "\n";
+}
