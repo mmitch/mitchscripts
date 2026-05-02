@@ -38,11 +38,26 @@ prevent_duplicate_run() {
 }
 
 check_x11_connectivity() {
+    if ! pidof dwm; then
+	log_maybe "no dwm found, not starting"
+	exit 1
+    fi
+
     export DISPLAY=:0
 
     if ! xhost >/dev/null 2>&1; then
 	log_maybe "DISPLAY=$DISPLAY seems invalid, not starting"
 	exit 1
+    fi
+}
+
+start_screensaver_if_missing() {
+    if ! pidof -q xautolock; then
+	log 'xautolock is gone! checking for X11 connectivity'
+	check_x11_connectivity
+
+	log 'xautolock is gone! trying to restart'
+	( nohup ~/bin/start-screensaver.sh & ) &
     fi
 }
 
@@ -55,6 +70,8 @@ fi
 check_x11_connectivity
 prevent_duplicate_run
 trap on_exit EXIT
+
+start_screensaver_if_missing
 
 log 'started'
 
@@ -73,8 +90,5 @@ while sleep 59; do
 	fi
     fi
 
-    if ! pidof -q xautolock; then
-	log 'xautolock is gone! trying to restart'
-	( nohup ~/bin/start-screensaver.sh & ) &
-    fi
+    start_screensaver_if_missing
 done
