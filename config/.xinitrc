@@ -22,9 +22,6 @@ ifpresent()
 
 [ -r ~/.Xresources ] && xrdb ~/.Xresources
 
-# use old font rendering, see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=866685
-export FREETYPE_PROPERTIES=truetype:interpreter-version=35
-
 #export DMENU_COLORS="-fn fixed -nb #336 -nf #ccc -sb #669 -sf #eee"
 #export DMENU_COLORS="-fn fixed -nb #222 -nf #ddd -se #222"
 export DMENU_COLORS="-fn -*-terminus-medium-r-*-*-18-*-*-*-*-*-*-*,-*-*-*-*-*-*-17-*-*-*-*-*-jisx0208.1983-* -nb #222 -nf #ddd -se #222"
