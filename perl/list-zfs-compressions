@@ -12,20 +12,31 @@ close $zpool or die "can't close zpool: $!";
 
 my $data;
 foreach  my $pool (@pools) {
-    open my $zfs, "zfs get -H -o name,property,value compression,compressratio,used,logicalused -p -r -t filesystem $pool|" or die "can't open zfs for pool $pool: $!";
+    open my $zfs, "zfs get -H -o name,property,value compression,compressratio,used,logicalused,mountpoint,canmount -p -r -t filesystem $pool|" or die "can't open zfs for pool $pool: $!";
     while (my $line = <$zfs>) {
 	chomp $line;
-	my @columns = split /\t/, $line, 3;
-	$data->{$columns[0]}->{$columns[1]} = $columns[2];
+	my ($name, $property, $value) = split /\t/, $line, 3;
+	$data->{$name}->{$property} = $value;
+
+	my $mountpoint = $data->{$name}->{'mountpoint'};
+	if ($mountpoint and -d $mountpoint) {
+	    open my $df, "df --output=used $mountpoint|" or die "can't open df for $mountpoint: $!";
+	    my $line = <$df>;
+	    $line = <$df>;
+	    $line =~ tr/0-9//cd;
+	    $data->{$name}->{'localused'} = $line;
+	    close $df or die "can't open df for $mountpoint: $!";
+	}
     }
     close $zfs or die "can't close zfs pool $pool: $!";
 }
 
-print "FILESYSTEM,USED,LOGICALUSED,COMPRESSION,COMPRESSRATIO\n";
+print "FILESYSTEM,USED,LOGICALUSED,LOCALUSED,COMPRESSION,COMPRESSRATIO\n";
 foreach my $filesystem (sort keys %{$data}) {
     print "$filesystem";
-    foreach my $property (qw(used logicalused compression compressratio)) {
-	printf ",%s", $data->{$filesystem}->{$property};
+    foreach my $property (qw(used logicalused localused compression compressratio)) {
+	continue if ($data->{$filesystem}->{$property} // '') eq 'off';
+	printf ",%s", $data->{$filesystem}->{$property} // '';
     }
     print "\n";
 }
