@@ -18,14 +18,17 @@ foreach  my $pool (@pools) {
 	my ($name, $property, $value) = split /\t/, $line, 3;
 	$data->{$name}->{$property} = $value;
 
-	my $mountpoint = $data->{$name}->{'mountpoint'};
-	if ($mountpoint and -d $mountpoint) {
-	    open my $df, "df --output=used $mountpoint|" or die "can't open df for $mountpoint: $!";
-	    my $line = <$df>;
-	    $line = <$df>;
-	    $line =~ tr/0-9//cd;
-	    $data->{$name}->{'localused'} = $line;
-	    close $df or die "can't open df for $mountpoint: $!";
+	if ($property eq 'mountpoint') {
+	    my $mountpoint = $value;
+	    my $localused = '';
+	    if ( -d $mountpoint ) {
+		open my $df, "df --output=used --block-size 1 $mountpoint|" or die "can't open df for $mountpoint: $!";
+		<$df>; # skip first line
+		$localused = <$df>;
+		$localused =~ tr/0-9//cd;
+		close $df or die "can't open df for $mountpoint: $!";
+	    }
+	    $data->{$name}->{'localused'} = $localused;
 	}
     }
     close $zfs or die "can't close zfs pool $pool: $!";
