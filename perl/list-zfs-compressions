@@ -33,9 +33,9 @@ foreach  my $pool (@pools) {
 
 print "FILESYSTEM,USED,LOGICALUSED,LOCALUSED,COMPRESSION,COMPRESSRATIO\n";
 foreach my $filesystem (sort keys %{$data}) {
+    next if ($data->{$filesystem}->{'canmount'} // '') eq 'off';
     print "$filesystem";
     foreach my $property (qw(used logicalused localused compression compressratio)) {
-	next if ($data->{$filesystem}->{'canmount'} // '') eq 'off';
 	printf ",%s", $data->{$filesystem}->{$property} // '';
     }
     print "\n";
