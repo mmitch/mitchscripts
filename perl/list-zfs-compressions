@@ -47,34 +47,43 @@ sub plain_writer {
 
 #### parse commandline parameters
 
-my $flag = shift @ARGV // '';
+my $formatter = \&dont_format;
+my @columns = qw( name used logicalused localused compression compressratio );
+my $writer = \&csv_writer;
+my $sorter = sub { ($a->{'name'} // '') cmp ($b->{'name'} // '') };
 
-if ($flag eq '-h') {
-    print <<"END";
+foreach my $flag (@ARGV) {
+
+    if ($flag eq '-h') {
+	print <<"END";
 $0 - print zfs compression statistics
 usage:
   -h    - show this help
+  -s    - sort by size instead of mountpoint
   -H    - use human-readable output:
            - numbers with suffixes like G, M, k
              (needs Number::Bytes::Human)
            - reorder columns
            - plain text instead of CSV
 END
-    exit;
-}
+	exit;
+    }
 
-my $formatter = \&dont_format;
-my @columns = qw( name used logicalused localused compression compressratio );
-my $writer = \&csv_writer;
-if ($flag eq '-H') {
-    if ($have_number_bytes_human) {
-	$formatter = \&humanize_numbers;
+    if ($flag eq '-H') {
+	if ($have_number_bytes_human) {
+	    $formatter = \&humanize_numbers;
+	}
+	else {
+	    warn "Number::Bytes::Human not found, using plain numbers\n";
+	}
+	@columns = qw( compression compressratio localused name );
+	$writer = \&plain_writer;
     }
-    else {
-	warn "Number::Bytes::Human not found, using plain numbers\n";
+
+    if ($flag eq '-s') {
+	$sorter = sub { ($a->{'localused'} // 0) <=> ($b->{'localused'} // 0) };
     }
-    @columns = qw( compression compressratio localused name );
-    $writer = \&plain_writer;
+
 }
 
 #### gather data
@@ -112,12 +121,21 @@ foreach  my $pool (@pools) {
     close $zfs or die "can't close zfs pool $pool: $!";
 }
 
-#### format data
+#### filter data
+
+my @filesystems = grep {
+    ($_->{'canmount'} // '') ne 'off'
+} values %{$data};
+
+#### sort data
+
+my @sorted_filesystems = sort $sorter @filesystems;
+
+#### format data in lines
 
 my @rows;
-foreach my $mountpoint (sort keys %{$data}) {
-    my $filesystem = $data->{$mountpoint};
-    next if ($filesystem->{'canmount'} // '') eq 'off';
+my @lines;
+foreach my $filesystem (@sorted_filesystems) {
     
     my @cols = ();
     foreach my $property (@columns) {
