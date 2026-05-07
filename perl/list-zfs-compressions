@@ -2,6 +2,83 @@
 use strict;
 use warnings;
 
+our $have_number_bytes_human;
+
+BEGIN {
+    eval { require Number::Bytes::Human; };
+    $have_number_bytes_human = not $@;
+}
+
+#### number formatters
+
+sub dont_format {
+    return shift;
+}
+
+sub humanize_numbers {
+    my $value = shift;
+    if ($value =~ /^[0-9]+$/) {
+	return Number::Bytes::Human::format_bytes($value);
+    }
+    return $value;
+}
+
+#### writers
+
+sub csv_writer {
+    my ($lines, $columns) = @_;
+    
+    printf "%s\n", join(',', map { uc $_ } @{$columns});
+    foreach my $line (@{$lines}) {
+	printf "%s\n", join(',', @{$line});
+    }
+}
+
+sub plain_writer {
+    my ($lines, $columns) = @_;
+
+    my $formatstring = join(' ', ('%-8s') x scalar( @{$columns} )) . "\n";
+
+    foreach my $line (@{$lines}) {
+	printf $formatstring, @{$line};
+    }
+    
+}
+
+#### parse commandline parameters
+
+my $flag = shift @ARGV // '';
+
+if ($flag eq '-h') {
+    print <<"END";
+$0 - print zfs compression statistics
+usage:
+  -h    - show this help
+  -H    - use human-readable output:
+           - numbers with suffixes like G, M, k
+             (needs Number::Bytes::Human)
+           - reorder columns
+           - plain text instead of CSV
+END
+    exit;
+}
+
+my $formatter = \&dont_format;
+my @columns = qw( name used logicalused localused compression compressratio );
+my $writer = \&csv_writer;
+if ($flag eq '-H') {
+    if ($have_number_bytes_human) {
+	$formatter = \&humanize_numbers;
+    }
+    else {
+	warn "Number::Bytes::Human not found, using plain numbers\n";
+    }
+    @columns = qw( compression compressratio localused name );
+    $writer = \&plain_writer;
+}
+
+#### gather data
+
 my @pools;
 open my $zpool, "zpool list -H -o name|" or die "can't open zpool: $!";
 while (my $line = <$zpool>) {
@@ -29,17 +106,28 @@ foreach  my $pool (@pools) {
 		close $df or die "can't open df for $mountpoint: $!";
 	    }
 	    $data->{$name}->{'localused'} = $localused;
+	    $data->{$name}->{'name'} = $name;
 	}
     }
     close $zfs or die "can't close zfs pool $pool: $!";
 }
 
-print "FILESYSTEM,USED,LOGICALUSED,LOCALUSED,COMPRESSION,COMPRESSRATIO\n";
-foreach my $filesystem (sort keys %{$data}) {
-    next if ($data->{$filesystem}->{'canmount'} // '') eq 'off';
-    print "$filesystem";
-    foreach my $property (qw(used logicalused localused compression compressratio)) {
-	printf ",%s", $data->{$filesystem}->{$property} // '';
+#### format data
+
+my @rows;
+foreach my $mountpoint (sort keys %{$data}) {
+    my $filesystem = $data->{$mountpoint};
+    next if ($filesystem->{'canmount'} // '') eq 'off';
+    
+    my @cols = ();
+    foreach my $property (@columns) {
+	my $unformatted_value = $filesystem->{$property} // '';
+	my $formatted_value = &{$formatter}($unformatted_value);
+	push @cols, $formatted_value;
     }
-    print "\n";
+    push @rows, [ @cols ];
 }
+
+#### print results
+
+&{$writer}(\@rows, \@columns);
