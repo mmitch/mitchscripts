@@ -315,6 +315,12 @@ github-clone() {
 # $*: filenames to encode
 tomkv() { for FILE in "$@"; do nice -n20 ionice -c3 ffmpeg -i "$FILE" "$FILE".mkv; done }
 
+# reencode videos to AV1 SRT in MP4
+# much smaller size than tomkv() gives at the cost of much longer encoding time
+# seems to play without problems even on the older Fire TV stick
+# $*: filenames to encode
+toav1() { for FILE in "$@"; do nice -n20 ionice -c3 ffmpeg -i "$FILE" -c:v libsvtav1 -preset 5 -crf 32 -pix_fmt yuv420p10le "$FILE".av1.mp4; done }
+
 # reminder to switch from k4dirstat to qdirstat (no KDE dependencies)
 alias k4dirstat='echo "use qdirstat instead"'
 
