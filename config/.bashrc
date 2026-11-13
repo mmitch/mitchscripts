@@ -35,7 +35,7 @@ else
     LOC_PROMPT_GIT=''
 fi
 
-# boost colorfulness (experimental)
+# boost colorfulness
 case "$TERM" in
     xterm*)
 	# promote xterm to xterm-256color (and keep xterm-256color after that)
@@ -44,7 +44,7 @@ case "$TERM" in
 	export MC_SKIN=modarin256-defbg-thin.ini
 
 	case $HOSTNAME in
-	    zecora)
+	    miep)
 		color=53
 		;;
 	    yggdrasil)
@@ -53,21 +53,21 @@ case "$TERM" in
 	    hasi)
 		color=22
 		;;
-	    merlin)
+	    derpy)
 		color=94
 		;;
 	    ks*) ;&
 	    ns*)
-		color=95
+		color=26
 		;;
 	    fluttershy)
 		color=25
 		;;
-	    ms1067a1)
+	    hetzner)
 		color=77
 		;;
-		# reserve colors:
-		# 23 33 26 32 58
+		# colors in reserve:
+		# 23 33 32 58 95
 	    *)
 		color=237
 		;;
