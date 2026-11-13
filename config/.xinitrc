@@ -48,9 +48,6 @@ export GTK_OVERLAY_SCROLLING=0
 # ask SSH password
 ifpresent ~/bin/ssh-addkeys < /dev/null
 
-# start notification if networked
-(ssh -X mitch "/home/mitch/git/mitchscripts/bash/start_notification.sh &" &) &
-
 # Thinkpad blaue links-/rechts-Tasten im Cursorblock
 #xmodmap -e 'keycode 233 = F33'
 #xmodmap -e 'keycode 234 = F34'
