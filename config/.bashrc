@@ -45,7 +45,7 @@ case "$TERM" in
 
 	case $HOSTNAME in
 	    miep)
-		color=53
+		color=33
 		;;
 	    yggdrasil)
 		color=59
@@ -67,7 +67,7 @@ case "$TERM" in
 		color=77
 		;;
 		# colors in reserve:
-		# 23 33 32 58 95
+		# 32 58 95
 	    *)
 		color=237
 		;;
